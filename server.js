@@ -8,7 +8,7 @@ import nodePackage from "./package.json" assert { type: "json" };
 import connectMongoDB from "./server/util/connectMongoDB.js";
 import { createRouteURL } from "./server/util/route.js";
 import articleRouter from "./server/routers/articleRoutes.js";
-import userRouter from "./server/routers/userRoutes";
+import userRouter from "./server/routers/userRoutes.js";
 
 // Import configuration.
 const { version, name } = nodePackage;

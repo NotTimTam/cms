@@ -1,7 +1,7 @@
 import ArticleModel from "../models/Article.js";
 import { nameToAlias } from "../util/alias.js";
 import { handleUnexpectedError } from "../util/controller.js";
-import { aliasRegex } from "../util/regex.js";
+import { aliasRegex, nameRegex } from "../util/regex.js";
 
 /**
  * Create a new article.
@@ -12,17 +12,17 @@ export const createArticle = async (req, res) => {
 	try {
 		let { name, alias, content } = req.body;
 
-		if (!name)
-			return res
-				.status(400)
-				.send('No "name" property provided for article creation.');
+		if (!name) return res.status(400).send('No "name" property provided.');
+
+		if (typeof name !== "string" || !nameRegex.test(name))
+			return res.status(400).send('Invalid "name" property provided.');
 
 		if (!alias) alias = nameToAlias(name);
-		else if (!aliasRegex.test(alias))
+		else if (typeof alias !== "string" || !aliasRegex.test(alias))
 			return res
 				.status(400)
 				.send(
-					`Invalid "alias" property provided for article creation. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+					`Invalid "alias" property provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
 				);
 
 		if (await ArticleModel.findOne({ alias }))
@@ -112,17 +112,17 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 
 		const { name, alias, content } = req.body;
 
-		if (!name)
-			return res
-				.status(400)
-				.send('No "name" property provided for article creation.');
+		if (!name) return res.status(400).send('No "name" property provided.');
+
+		if (typeof name !== "string" || !nameRegex.test(name))
+			return res.status(400).send('Invalid "name" property provided.');
 
 		if (!alias) alias = nameToAlias(name);
-		else if (!aliasRegex.test(alias))
+		else if (typeof alias !== "string" || !aliasRegex.test(alias))
 			return res
 				.status(400)
 				.send(
-					`Invalid "alias" property provided for article creation. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+					`Invalid "alias" property provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
 				);
 
 		if (await ArticleModel.findOne({ alias }))

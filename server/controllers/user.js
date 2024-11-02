@@ -1,5 +1,6 @@
 import UserModel from "../models/User.js";
 import { handleUnexpectedError } from "../util/controller.js";
+import { emailRegex, nameRegex } from "../util/regex.js";
 
 /**
  * Create a new user.
@@ -9,6 +10,50 @@ import { handleUnexpectedError } from "../util/controller.js";
 export const createUser = async (req, res) => {
 	try {
 		let { name, username, password, email } = req.body;
+
+		if (!name)
+			return res.status(400).send('No "name" property provided for.');
+
+		if (typeof name !== "string" || !nameRegex.test(name))
+			return res
+				.status(400)
+				.send(
+					`Invalid "name" property provided for. Expected a string between 1 and 1024 characters in length.`
+				);
+
+		if (!username)
+			return res.status(400).send('No "username" property provided for.');
+
+		if (typeof username !== "string" || !nameRegex.test(username))
+			return res
+				.status(400)
+				.send(
+					`Invalid "username" property provided for. Expected a string between 1 and 1024 characters in length.`
+				);
+
+		if (await UserModel.findOne({ username }))
+			return res
+				.status(422)
+				.send(`A user already exists with that username.`);
+
+		if (!password || typeof password !== "string")
+			return res
+				.status(400)
+				.send('Expected a "password" string property.');
+
+		if (email) {
+			if (typeof email !== "string" || !emailRegex.test(email))
+				return res
+					.status(400)
+					.send(
+						`Invalid "email" property provided for. Expected a valid email address.`
+					);
+
+			if (await UserModel.findOne({ email }))
+				return res
+					.status(422)
+					.send(`A user already exists with that email.`);
+		}
 
 		const user = new UserModel({
 			name,

@@ -1,0 +1,27 @@
+{
+	"name": "cms",
+	"version": "indev-0",
+	"private": true,
+	"main": "server.js",
+	"type": "module",
+	"scripts": {
+		"dev": "npx nodemon server.js",
+		"build": "next build",
+		"start": "node server.js",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@nottimtam/console.js": "^1.1.1",
+		"@nottimtam/taskman.js": "^1.1.42",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.5",
+		"express": "^4.21.1",
+		"express-rate-limit": "^7.4.1",
+		"mongoose": "^8.8.0",
+		"multer": "^1.4.5-lts.1",
+		"next": "15.0.2",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"sass": "^1.80.6"
+	}
+}

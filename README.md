@@ -29,7 +29,7 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Automatic search archival.
 -   Analytics and Accessibility integration.
 -   Drag/Drop article editor, a cross between wordpress and SP Page Builder?
--   CMS-level update system as well as extension update system.
+-   CMS-level update system as well as extension update system. CMS level update system may have to update database models automatically.
 -   User creatable/exportable/uploadable templates.
 -   Global template and templates for specific menu items.
 -   User management as well as role and permission definitions.

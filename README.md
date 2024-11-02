@@ -1,5 +1,7 @@
 # cms
 
+**NOTICE:** This project is a work in progress. Track its development through `canary` branch commits.
+
 ## Purpose
 
 To create an interface for content curation and elegant front-end GUI for users to explore that content.

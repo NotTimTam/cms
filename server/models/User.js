@@ -22,6 +22,21 @@ const UserSchema = new mongoose.Schema(
 			required: false,
 			match: [emailRegex, "Invalid email address provided to User."],
 		},
+		groups: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "UserGroup",
+				required: false,
+			},
+		],
+		verified: {
+			type: Boolean,
+			default: false,
+			required: [
+				true,
+				"You must provide the User's verification status.",
+			],
+		},
 	},
 	{ timestamps: true }
 );

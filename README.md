@@ -35,6 +35,7 @@ The designations front-end, and back-end, refer not to application architecture 
 -   User management as well as role and permission definitions.
 -   Extension installer.
 -   Front-end icon pack support?
+-   Global Configuration, can be used to define password validation regex, and user experience on the back-end/front-end.
 -   Modules/Extensions
     -   User feedback module.
     -   Form module.

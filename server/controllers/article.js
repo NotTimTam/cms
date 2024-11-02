@@ -6,7 +6,7 @@ import { aliasRegex } from "../util/regex.js";
 /**
  * Create a new article.
  * @param {Express.Request} req The API request object.
- * @param {Object} req.body The article update object.
+ * @param {Object} req.body The article creation object.
  */
 export const createArticle = async (req, res) => {
 	try {
@@ -34,7 +34,7 @@ export const createArticle = async (req, res) => {
 
 		await article.save();
 
-		return res.status(200).send({ article });
+		return res.status(200).json({ article });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
@@ -43,7 +43,7 @@ export const createArticle = async (req, res) => {
 /**
  * Query articles.
  */
-export const queryArticles = async (req, res) => {
+export const findArticles = async (req, res) => {
 	try {
 		const articles = await ArticleModel.find({});
 

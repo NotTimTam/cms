@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
 	createArticle,
-	queryArticles,
+	findArticles,
 	findArticleById,
 	findArticleByIdAndDelete,
 	findArticleByIdAndUpdate,
@@ -10,7 +10,7 @@ import {
 
 const articleRouter = Router();
 
-articleRouter.route("/").get(queryArticles).post(createArticle);
+articleRouter.route("/").get(findArticles).post(createArticle);
 articleRouter.get("/alias/:alias", findArticleByAlias);
 articleRouter
 	.route("/:id")

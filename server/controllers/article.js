@@ -9,8 +9,6 @@ import { aliasRegex } from "../util/regex.js";
  * @param {Object} req.body The article update object.
  */
 export const createArticle = async (req, res) => {
-	console.log(req.body);
-
 	try {
 		let { name, alias, content } = req.body;
 

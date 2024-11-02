@@ -16,7 +16,7 @@ const ArticleSchema = new mongoose.Schema(
 		},
 		content: {
 			type: String,
-			required: [true, "No content provided to Article."],
+			required: false,
 			default: "",
 		},
 	},

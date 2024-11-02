@@ -1,9 +1,12 @@
 import "./index.scss";
 
 export const metadata = {
-	title: "Administrator",
+	title: {
+		template: "%s | Administrator",
+		default: "Administrator",
+	},
 };
 
-export default function RootLayout({ children }) {
+export default function AdministratorLayout({ children }) {
 	return children;
 }

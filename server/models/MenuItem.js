@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { aliasRegex } from "../util/regex.js";
+import { aliasRegex, nameRegex } from "../util/regex.js";
 
 const MenuItemSchema = new mongoose.Schema(
 	{
@@ -16,6 +16,7 @@ const MenuItemSchema = new mongoose.Schema(
 		name: {
 			type: String,
 			required: [true, "No MenuItem name provided."],
+			match: [nameRegex, "Invalid name provided to MenuItem."],
 		},
 		alias: {
 			type: String,

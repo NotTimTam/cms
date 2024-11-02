@@ -44,3 +44,7 @@ The designations front-end, and back-end, refer not to application architecture 
     -   Directory module.
     -   Captcha module.
     -   App event logging (probably build as an internal tool)
+    -   Stop robots from mapping administrator routes.
+    -   Create notices about not storing confidential data within CMS.
+    -   Create notices about not pasting JavaScript from the web.
+    -   Can extensions add custom data to your database?

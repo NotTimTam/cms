@@ -1,7 +1,12 @@
 /**
+ * Used for validating item names.
+ */
+export const nameRegex = /^.{1,1024}$/;
+
+/**
  * Used for validating item aliases.
  */
-export const aliasRegex = /^[a-zA-Z0-9_-]+$/;
+export const aliasRegex = /^[a-z0-9_-]{1,1024}$/;
 
 /**
  * Used for validating email addresses.

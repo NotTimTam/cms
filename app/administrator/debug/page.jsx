@@ -3,7 +3,7 @@
 import API from "@/util/api";
 import { useEffect, useState } from "react";
 
-const CreateArticleForm = () => {
+const CreateArticleForm = ({ getArticles }) => {
 	return (
 		<form
 			onSubmit={async (e) => {
@@ -16,15 +16,15 @@ const CreateArticleForm = () => {
 						content: { value: content },
 					} = e.target;
 
-					const res = await API.post(`/api/articles`, {
+					await API.post(`/api/articles`, {
 						name,
 						alias,
 						content,
 					});
 
-					console.log(res.data);
+					getArticles();
 				} catch (err) {
-					console.error(err);
+					console.error(err.data);
 				}
 			}}
 		>
@@ -44,24 +44,37 @@ const CreateArticleForm = () => {
 	);
 };
 
-const ArticleList = () => {
-	const [articles, setArticles] = useState([]);
-
-	const getArticles = async () => {};
-
-	useEffect(() => {
-		getArticles();
-	}, []);
-
-	return articles.map(({ _id, name, alias }) => (
-		<div key={_id}>
+const ArticleList = ({ articles }) => {
+	return articles.map(({ _id, name, alias, content }) => (
+		<div
+			key={_id}
+			style={{
+				border: "1px solid black",
+				padding: 8,
+			}}
+		>
 			<h4>{name}</h4>
 			<sup>{alias}</sup>
+			<p>{content}</p>
 		</div>
 	));
 };
 
 export default function Debug() {
+	const [articles, setArticles] = useState([]);
+
+	const getArticles = async () => {
+		try {
+			setArticles((await API.get("/api/articles")).data.articles);
+		} catch (err) {
+			console.error(err.data);
+		}
+	};
+
+	useEffect(() => {
+		getArticles();
+	}, []);
+
 	return (
 		<>
 			<div>
@@ -73,8 +86,8 @@ export default function Debug() {
 				</p>
 			</div>
 
-			<CreateArticleForm />
-			<ArticleList />
+			<CreateArticleForm getArticles={getArticles} />
+			<ArticleList articles={articles} />
 		</>
 	);
 }

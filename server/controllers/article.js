@@ -1,6 +1,7 @@
 import ArticleModel from "../models/Article.js";
 import { nameToAlias } from "../util/alias.js";
 import { handleUnexpectedError } from "../util/controller.js";
+import { aliasRegex } from "../util/regex.js";
 
 /**
  * Create a new article.
@@ -19,6 +20,17 @@ export const createArticle = async (req, res) => {
 				.send('No "name" property provided for article creation.');
 
 		if (!alias) alias = nameToAlias(name);
+		else if (!aliasRegex.test(alias))
+			return res
+				.status(400)
+				.send(
+					`Invalid "alias" property provided for article creation. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+				);
+
+		if (await ArticleModel.findOne({ alias }))
+			return res
+				.status(422)
+				.send("An article already exists with that alias.");
 
 		const article = new ArticleModel({ name, alias, content });
 
@@ -101,6 +113,24 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 			return res.status(404).send(`No article found with id "${id}"`);
 
 		const { name, alias, content } = req.body;
+
+		if (!name)
+			return res
+				.status(400)
+				.send('No "name" property provided for article creation.');
+
+		if (!alias) alias = nameToAlias(name);
+		else if (!aliasRegex.test(alias))
+			return res
+				.status(400)
+				.send(
+					`Invalid "alias" property provided for article creation. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+				);
+
+		if (await ArticleModel.findOne({ alias }))
+			return res
+				.status(422)
+				.send("An article already exists with that alias.");
 
 		article.name = name;
 		article.alias = alias;

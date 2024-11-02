@@ -35,7 +35,7 @@ The designations front-end, and back-end, refer not to application architecture 
 -   User management as well as role and permission definitions.
 -   Extension installer.
 -   Front-end icon pack support?
--   Modules
+-   Modules/Extensions
     -   User feedback module.
     -   Form module.
         -   Data should be trackable, and form should have some sort of event that occurs when it is filled out. Perhaps a JavaScript method will fire?
@@ -43,3 +43,4 @@ The designations front-end, and back-end, refer not to application architecture 
     -   Glossary module.
     -   Directory module.
     -   Captcha module.
+    -   App event logging (probably build as an internal tool)

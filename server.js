@@ -8,6 +8,7 @@ import nodePackage from "./package.json" assert { type: "json" };
 import connectMongoDB from "./server/util/connectMongoDB.js";
 import { createRouteURL } from "./server/util/route.js";
 import articleRouter from "./server/routers/articleRoutes.js";
+import userRouter from "./server/routers/userRoutes";
 
 // Import configuration.
 const { version, name } = nodePackage;
@@ -50,6 +51,7 @@ app.use(express.json(), cors(), rateLimiter);
 const apiRoute = `api`;
 
 app.use(createRouteURL(apiRoute, "articles"), articleRouter);
+app.use(createRouteURL(apiRoute, "users"), userRouter);
 
 nextJS.prepare().then(async () => {
 	log(`Staring ${name} version ${version}`);

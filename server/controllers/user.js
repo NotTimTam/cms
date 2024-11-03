@@ -1,6 +1,77 @@
 import UserModel from "../models/User.js";
 import { handleUnexpectedError } from "../util/controller.js";
-import { emailRegex, nameRegex } from "../util/regex.js";
+import { emailRegex, nameRegex } from "../../util/regex.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+/**
+ * Login as a user.
+ * @param {Express.Request} req The API request object.
+ * @param {Object} req.body The user login object.
+ * @param {string} req.body.username The user's username. (if no email address is provided)
+ * @param {string} req.body.email The user's email address. (if no username is provided)
+ * @param {string} req.body.password The user's password.
+ */
+export const loginUser = async (req, res) => {
+	try {
+		const { username, email, password } = req.body;
+
+		if (!username && !email)
+			return res
+				.status(400)
+				.send("You must provide a username or email address.");
+
+		if (
+			username &&
+			(typeof username !== "string" || !nameRegex.test(username))
+		)
+			return res.status(400).send("Invalid username provided.");
+
+		if (email && (typeof email !== "string" || !emailRegex.test(email)))
+			return res.status(400).send("Invalid email address provided.");
+
+		let user;
+		if (username)
+			user = await UserModel.findOne({ username }).select("+password");
+		else if (email)
+			user = await UserModel.findOne({ email }).select("+password");
+
+		if (!user || !(await bcrypt.compare(password, user.password)))
+			return res
+				.status(404)
+				.send(`Incorrect username or password provided.`);
+
+		await jwt.sign(
+			{},
+			process.env.JWT_SECRET,
+			{
+				expiresIn: "1w",
+			},
+			(error, token) => {
+				if (error) throw error;
+
+				return res.status(200).json({ token });
+			}
+		);
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Authenticate user.
+ * @param {Express.Request} req The API request object.
+ * @param {string} req.userId The user's ID, provided by authentication middleware.
+ */
+export const authenticateUser = async (req, res) => {
+	try {
+		const { userId } = req;
+
+		throw new Error("Handle user authentication.");
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
 
 /**
  * Create a new user.
@@ -11,24 +82,23 @@ export const createUser = async (req, res) => {
 	try {
 		let { name, username, password, email } = req.body;
 
-		if (!name)
-			return res.status(400).send('No "name" property provided for.');
+		if (!name) return res.status(400).send('No "name" property provided.');
 
 		if (typeof name !== "string" || !nameRegex.test(name))
 			return res
 				.status(400)
 				.send(
-					`Invalid "name" property provided for. Expected a string between 1 and 1024 characters in length.`
+					`Invalid "name" property provided. Expected a string between 1 and 1024 characters in length.`
 				);
 
 		if (!username)
-			return res.status(400).send('No "username" property provided for.');
+			return res.status(400).send('No "username" property provided.');
 
 		if (typeof username !== "string" || !nameRegex.test(username))
 			return res
 				.status(400)
 				.send(
-					`Invalid "username" property provided for. Expected a string between 1 and 1024 characters in length.`
+					`Invalid "username" property provided. Expected a string between 1 and 1024 characters in length.`
 				);
 
 		if (await UserModel.findOne({ username }))
@@ -46,7 +116,7 @@ export const createUser = async (req, res) => {
 				return res
 					.status(400)
 					.send(
-						`Invalid "email" property provided for. Expected a valid email address.`
+						`Invalid "email" property provided. Expected a valid email address.`
 					);
 
 			if (await UserModel.findOne({ email }))
@@ -58,7 +128,7 @@ export const createUser = async (req, res) => {
 		const user = new UserModel({
 			name,
 			username,
-			password,
+			password: await bcrypt.hash(password, 12),
 			email,
 			verified: false,
 			groups: [],

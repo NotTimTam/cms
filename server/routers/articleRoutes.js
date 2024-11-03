@@ -15,7 +15,7 @@ articleRouter.get("/alias/:alias", findArticleByAlias);
 articleRouter
 	.route("/:id")
 	.get(findArticleById)
-	.put(findArticleByIdAndUpdate)
+	.patch(findArticleByIdAndUpdate)
 	.delete(findArticleByIdAndDelete);
 
 export default articleRouter;

@@ -1,7 +1,7 @@
 import ArticleModel from "../models/Article.js";
 import { nameToAlias } from "../util/alias.js";
 import { handleUnexpectedError } from "../util/controller.js";
-import { aliasRegex, nameRegex } from "../util/regex.js";
+import { aliasRegex, nameRegex } from "../../util/regex.js";
 
 /**
  * Create a new article.

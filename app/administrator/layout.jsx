@@ -7,6 +7,6 @@ export const metadata = {
 	},
 };
 
-export default function AdministratorLayout({ children }) {
+export default async function AdministratorLayout({ children }) {
 	return children;
 }

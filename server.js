@@ -6,9 +6,9 @@ import { rateLimit } from "express-rate-limit";
 import { error, log } from "@nottimtam/console.js";
 import nodePackage from "./package.json" assert { type: "json" };
 import connectMongoDB from "./server/util/connectMongoDB.js";
-import { createRouteURL } from "./server/util/route.js";
 import articleRouter from "./server/routers/articleRoutes.js";
 import userRouter from "./server/routers/userRoutes.js";
+import API from "./util/api.js";
 
 // Import configuration.
 const { version, name } = nodePackage;
@@ -18,7 +18,12 @@ const {
 	RATELIMIT_INTERVAL = "60000",
 	RATELIMIT_REQUESTS = "10000",
 	RATELIMIT_INFO_IN_HEADERS = "true",
+	JWT_SECRET,
 } = process.env;
+
+// Validate environment variables.
+if (!JWT_SECRET)
+	throw new Error('No "JWT_SECRET" environment variable defined.');
 
 // Initialize express app.
 const app = express();
@@ -50,8 +55,8 @@ app.use(express.json(), cors(), rateLimiter);
 // Load and configure API.
 const apiRoute = `api`;
 
-app.use(createRouteURL(apiRoute, "articles"), articleRouter);
-app.use(createRouteURL(apiRoute, "users"), userRouter);
+app.use(API.createRouteURL(apiRoute, "articles"), articleRouter);
+app.use(API.createRouteURL(apiRoute, "users"), userRouter);
 
 nextJS.prepare().then(async () => {
 	log(`Staring ${name} version ${version}`);

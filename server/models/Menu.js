@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { nameRegex } from "../util/regex.js";
+import { nameRegex } from "../../util/regex.js";
 
 const MenuSchema = new mongoose.Schema(
 	{

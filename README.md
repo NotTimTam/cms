@@ -36,6 +36,8 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Extension installer.
 -   Front-end icon pack support?
 -   Global Configuration, can be used to define password validation regex, and user experience on the back-end/front-end.
+-   Favicon/Metadata control. Perhaps at template level.
+-   Bcrypt Salt Length in env.
 -   Modules/Extensions
     -   User feedback module.
     -   Form module.

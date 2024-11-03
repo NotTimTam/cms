@@ -1,3 +1,4 @@
+import AdministratorContextProvider from "./components/AdministratorContext";
 import "./index.scss";
 
 export const metadata = {
@@ -8,5 +9,9 @@ export const metadata = {
 };
 
 export default async function AdministratorLayout({ children }) {
-	return <main className="--cms-administrator">{children}</main>;
+	return (
+		<AdministratorContextProvider>
+			<main className="--cms-administrator">{children}</main>
+		</AdministratorContextProvider>
+	);
 }

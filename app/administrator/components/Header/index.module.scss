@@ -1,0 +1,26 @@
+header.--cms-header {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+
+	padding: var(--padding);
+
+	background-color: var(--background-color-1);
+
+	h1.--cms-header-title {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: var(--padding);
+		font-size: 1.25rem;
+	}
+
+	nav.--cms-header-nav {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: var(--gap);
+	}
+}

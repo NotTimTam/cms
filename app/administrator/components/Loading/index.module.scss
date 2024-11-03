@@ -1,0 +1,22 @@
+div.--cms-loading-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	flex-grow: 2;
+
+	width: 100%;
+	height: 100%;
+
+	svg.--cms-loading-spinner {
+		animation: cms-loading-spinner 0.5s linear infinite;
+		animation-fill-mode: both;
+
+		@keyframes cms-loading-spinner {
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+	}
+}

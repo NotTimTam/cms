@@ -25,7 +25,9 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Deliver regular HTML/CSS/JS for client, deliver Next.js for administrator.
 -   SCSS/JS/HTML/SVG support.
 -   Custom internal back-end 404s, and clientside 404s.
+-   Include Lucide license in administrative portal.
 -   Articles built in markdown, html, maybe modes for the editor.
+-   Headless popups.
 -   A **GOOD** code editor.
 -   Global theme and style control over every aspect of the site for one uniform design, article/module level style overrides.
 -   Similar to global styles, user-controllable global defaults for how links, video players, menus, etc operate.

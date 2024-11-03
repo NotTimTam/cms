@@ -4,7 +4,13 @@ Core styles for administrator pages.
 */
 
 :root {
-	--background-color: #1e1d22;
+	--background-color: hsl(252, 12%, 12%);
+	--background-color-1: hsl(252, 12%, 18%);
+	--background-color-2: hsl(252, 12%, 24%);
+	--background-color-3: hsl(252, 12%, 28%);
+	--background-color-4: hsl(252, 12%, 36%);
+	--background-color-5: hsl(252, 12%, 42%);
+	--background-color-6: hsl(252, 12%, 48%);
 	--text-color: #ffffff;
 	--border-color: #ffffff;
 	--margin: 1rem;
@@ -36,10 +42,14 @@ button {
 
 	font-size: 1rem;
 
-	border: 1px solid var(--border-color);
-	padding: 0.5rem;
+	padding: var(--padding);
 
 	color: var(--text-color);
+
+	svg {
+		color: inherit;
+		font-size: inherit;
+	}
 
 	cursor: pointer;
 
@@ -67,15 +77,20 @@ main.--cms-administrator {
 	display: flex;
 	flex-direction: column;
 
+	div.--cms-page-loader {
+		flex-grow: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
 	div.--cms-dashboard {
 		display: grid;
 		grid-template-columns: auto 1fr;
 		grid-template-rows: auto 1fr;
 
-		aside.--cms-menu {
-			grid-row: 1 / 3;
-			grid-column: 1 / 2;
-		}
+		flex-grow: 2;
 
 		header.--cms-header {
 			grid-row: 1 / 2;
@@ -101,15 +116,19 @@ main.--cms-administrator {
 			display: flex;
 			flex-direction: column;
 
-			padding: 1rem;
-			gap: 0.5rem;
+			padding: var(--margin);
+			gap: var(--padding);
 
 			h2 {
-				margin-bottom: 1rem;
+				margin-bottom: var(--margin);
 			}
 
 			label {
 				font-weight: 800;
+			}
+
+			button {
+				border: 1px solid var(--border-color);
 			}
 
 			input,
@@ -118,7 +137,7 @@ main.--cms-administrator {
 				border: 1px solid var(--border-color);
 				background-color: var(--text-color);
 				color: var(--background-color);
-				padding: 0.5rem;
+				padding: var(--padding);
 				font-size: 1rem;
 			}
 		}

@@ -3,7 +3,7 @@
 import API from "@/util/api";
 import { useRouter } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
-import Loading from "./Loading";
+import Loading from "../app/administrator/components/Loading";
 
 /**
  * A React context that providers the current logged-in user.

@@ -1,5 +1,9 @@
-import LoadingComponent from "@/components/Loading";
+import LoadingComponent from "@/app/administrator/components/Loading";
 
 export default function Loading() {
-	return <LoadingComponent />;
+	return (
+		<div className="--cms-page-loader">
+			<LoadingComponent />
+		</div>
+	);
 }

@@ -1,6 +1,7 @@
 import { getToken } from "@/app/cookies";
 import AuthenticatedUserProvider from "@/components/AuthenticatedUserContext";
 import SideMenu from "../components/SideMenu";
+import Header from "../components/Header";
 
 export const metadata = {
 	title: "Dashboard",
@@ -16,17 +17,7 @@ export default async function DashboardLayout({ children }) {
 		>
 			<div className="--cms-dashboard">
 				<SideMenu />
-				<header className="--cms-header">
-					<section>Home Dashboard</section>
-
-					<section>
-						<ul>
-							<li>Take a Tour</li>
-							<li>Joomla 5 DEMO</li>
-							<li>User Menu</li>
-						</ul>
-					</section>
-				</header>
+				<Header />
 				<article className="--cms-content">{children}</article>
 			</div>
 		</AuthenticatedUserProvider>

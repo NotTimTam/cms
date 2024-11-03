@@ -5,6 +5,7 @@ import { AdministratorContext } from "../AdministratorContext";
 import { usePathname } from "next/navigation";
 import styles from "./index.module.scss";
 import Link from "next/link";
+import { ChevronDown, CodeSquare, Github, UserCircle } from "lucide-react";
 
 const Header = () => {
 	const pathname = usePathname();
@@ -25,7 +26,19 @@ const Header = () => {
 			</h1>
 
 			<nav className={styles["--cms-header-nav"]}>
-				<button>User Menu</button>
+				<Link
+					target="_blank"
+					rel="noopener noreferrer"
+					href="https://www.github.com/NotTimTam/cms"
+				>
+					<CodeSquare />
+					Source
+				</Link>
+
+				<button>
+					<UserCircle />
+					User Menu <ChevronDown />
+				</button>
 			</nav>
 		</header>
 	);

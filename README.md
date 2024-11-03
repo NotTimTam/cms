@@ -24,6 +24,7 @@ The designations front-end, and back-end, refer not to application architecture 
 
 -   Deliver regular HTML/CSS/JS for client, deliver Next.js for administrator.
 -   SCSS/JS/HTML/SVG support.
+-   Custom internal back-end 404s, and clientside 404s.
 -   Articles built in markdown, html, maybe modes for the editor.
 -   A **GOOD** code editor.
 -   Global theme and style control over every aspect of the site for one uniform design, article/module level style overrides.

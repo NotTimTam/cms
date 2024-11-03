@@ -8,7 +8,7 @@ export const metadata = {
 export default async function LoginLayout({ children }) {
 	const token = await getToken();
 
-	if (token) redirect("/administrator/dashboard");
+	// if (token) redirect("/administrator/dashboard");
 
 	return <article className="--cms-form-container">{children}</article>;
 }

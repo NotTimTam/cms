@@ -21,7 +21,7 @@ class API {
 			},
 		});
 
-		console.log(data);
+		return data;
 	};
 
 	/**

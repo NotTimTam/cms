@@ -1,12 +1,19 @@
 import { getToken } from "@/app/cookies";
-import AuthenticatedWrapper from "@/components/AuthenticatedWrapper";
+import AuthenticatedUserProvider from "@/components/AuthenticatedUserContext";
+
+export const metadata = {
+	title: "Dashboard",
+};
 
 export default async function DashboardLayout({ children }) {
 	const token = await getToken();
 
 	return (
-		<AuthenticatedWrapper token={token} redirect="/administrator/login">
+		<AuthenticatedUserProvider
+			token={token}
+			redirect="/administrator/login"
+		>
 			{children}
-		</AuthenticatedWrapper>
+		</AuthenticatedUserProvider>
 	);
 }

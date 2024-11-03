@@ -19,7 +19,7 @@ export const authenticationMiddleware = async (req, res, next) => {
 		if (!authorization.includes("Bearer "))
 			return res.status(401).send("Authorization malformed.");
 
-		const [bearer, token] = authorization.split(" ");
+		const [Bearer, token] = authorization.split(" ");
 
 		if (!token)
 			return res.status(401).send("Authorization token malformed.");

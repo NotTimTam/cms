@@ -12,6 +12,11 @@ Core styles for administrator pages.
 	border: none;
 }
 
+ul,
+ol {
+	margin-left: 1rem;
+}
+
 html {
 	width: 100vw;
 	min-height: 100vh;
@@ -50,15 +55,15 @@ form {
 		background-color: #efefef;
 		padding: 0.5rem;
 	}
+}
 
-	button {
-		border: 1px solid black;
-		padding: 0.5rem;
+button {
+	border: 1px solid black;
+	padding: 0.5rem;
 
-		cursor: pointer;
+	cursor: pointer;
 
-		&:hover {
-			background-color: #efefef;
-		}
+	&:hover {
+		background-color: #efefef;
 	}
 }

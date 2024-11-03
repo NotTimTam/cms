@@ -8,5 +8,5 @@ export const metadata = {
 };
 
 export default async function AdministratorLayout({ children }) {
-	return children;
+	return <main className="--cms-administrator">{children}</main>;
 }

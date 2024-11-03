@@ -10,5 +10,5 @@ export default async function LoginLayout({ children }) {
 
 	if (token) redirect("/administrator/dashboard");
 
-	return children;
+	return <article className="--cms-form-container">{children}</article>;
 }

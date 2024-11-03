@@ -7,6 +7,7 @@ import { emailRegex } from "@/util/regex";
 export default function Login() {
 	return (
 		<form
+			className="--cms-form"
 			onSubmit={async (e) => {
 				e.preventDefault();
 
@@ -38,7 +39,9 @@ export default function Login() {
 		>
 			<h1>Login</h1>
 
-			<label htmlFor="username">Username or Email Address</label>
+			<label required htmlFor="username">
+				Username or Email Address
+			</label>
 			<input
 				type="text"
 				name="username"
@@ -47,7 +50,9 @@ export default function Login() {
 				required
 			/>
 
-			<label htmlFor="password">Password</label>
+			<label required htmlFor="password">
+				Password
+			</label>
 			<input
 				type="password"
 				name="password"

@@ -15,6 +15,8 @@ To create an interface for content curation and elegant front-end GUI for users 
 -   Extension &mdash; An extension will extend the features of the site in some way. They can introduce new modules, menu item types, or overall features. They should be universally installable, and able to access and manipulate the API of the site with permission.
 -   Template &mdash; Templates determine how the content of each page should display, what the site's page positions should be, etc. Should follow a rigid structure.
 -   User &mdash; A user on the site. Can be a front-end or back-end user.
+-   Category
+-   Tag
 
 ## Features
 

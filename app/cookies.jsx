@@ -8,7 +8,8 @@ import { redirect as redir } from "next/navigation";
  * @returns {string|undefined} The token or `undefined` if one doesn't exist.
  */
 export async function getToken() {
-	return (await cookies()).get("token");
+	const token = (await cookies()).get("token");
+	return token && token.value;
 }
 
 /**

@@ -8,11 +8,15 @@ import {
 	loginUser,
 	authenticateUser,
 } from "../controllers/user.js";
+import { authenticationMiddleware } from "../middleware/userMiddleware.js";
 
 const userRouter = Router();
 
 userRouter.route("/").get(findUsers).post(createUser);
-userRouter.route("/auth").post(loginUser).get(authenticateUser);
+userRouter
+	.route("/auth")
+	.post(loginUser)
+	.get(authenticationMiddleware, authenticateUser);
 userRouter
 	.route("/:id")
 	.get(findUserById)

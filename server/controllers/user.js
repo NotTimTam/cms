@@ -42,7 +42,7 @@ export const loginUser = async (req, res) => {
 				.send(`Incorrect username or password provided.`);
 
 		await jwt.sign(
-			{},
+			{ userId: user._id },
 			process.env.JWT_SECRET,
 			{
 				expiresIn: "1w",
@@ -61,13 +61,13 @@ export const loginUser = async (req, res) => {
 /**
  * Authenticate user.
  * @param {Express.Request} req The API request object.
- * @param {string} req.userId The user's ID, provided by authentication middleware.
+ * @param {string} req.user The user provided by authentication middleware.
  */
 export const authenticateUser = async (req, res) => {
 	try {
-		const { userId } = req;
+		const { user } = req;
 
-		throw new Error("Handle user authentication.");
+		return res.status(200).json({ user });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

@@ -7,6 +7,24 @@ class API {
 	static articles = `${API.route}/articles`;
 
 	/**
+	 * Authenticate the user.
+	 * @param {string} token The token to authenticate with.
+	 * @returns {Object} The user object, or `undefined` if the user is not authorized.
+	 */
+	static authenticate = async (token) => {
+		if (!token || typeof token !== "string")
+			throw new TypeError("Expected a string for authentication token.");
+
+		const { data } = await API.get(API.createRouteURL(API.users, "auth"), {
+			headers: {
+				authorization: `Bearer ${token}`,
+			},
+		});
+
+		console.log(data);
+	};
+
+	/**
 	 * Create a valid API route url from a series of strings.
 	 * @param  {...string} branches The branch strings to use. Should not start or end with a slash.
 	 * @returns {string} A valid API route url.

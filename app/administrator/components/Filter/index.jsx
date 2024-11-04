@@ -37,7 +37,7 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 					autoComplete="off"
 					value={query.search || ""}
 					onChange={({ target: { value } }) =>
-						setQuery({ ...query, search: value })
+						setQuery((query) => ({ ...query, search: value }))
 					}
 				/>
 				<button disabled={disabled} type="submit" aria-label="Search">
@@ -59,11 +59,13 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 									className="--cms-popup-content"
 									style={{ minWidth: rect.width }}
 								>
-									<ul>
-										<li>Category</li>
-										<li>Tag</li>
-										<li>Author</li>
-									</ul>
+									<nav className={styles["--cms-popup-nav"]}>
+										<ul>
+											<li>Category</li>
+											<li>Tag</li>
+											<li>Author</li>
+										</ul>
+									</nav>
 								</div>
 							);
 						};
@@ -151,27 +153,63 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 						const PopupContent = () => {
 							const closePopup = useContext(PopupContext);
 
+							const potentialItemsPerPage = [
+								20,
+								50,
+								100,
+								200,
+								500,
+								1000,
+								"all",
+							];
+
 							return (
 								<div
 									className="--cms-popup-content"
 									style={{ minWidth: rect.width }}
 								>
-									<ul>
-										<li>Category</li>
-										<li>Tag</li>
-										<li>Author</li>
-									</ul>
+									<nav className={styles["--cms-popup-nav"]}>
+										{potentialItemsPerPage.map(
+											(count, index) => (
+												<button
+													aria-selected={
+														query.itemsPerPage ===
+														count
+															? "true"
+															: undefined
+													}
+													key={index}
+													type="button"
+													aria-label={`Show ${count} ${
+														count === "all"
+															? "items."
+															: "items per page."
+													}`}
+													onClick={() =>
+														closePopup(count)
+													}
+												>
+													{count === "all"
+														? `All`
+														: String(count)}
+												</button>
+											)
+										)}
+									</nav>
 								</div>
 							);
 						};
 
-						const res = await createHeadlessPopup(
+						const itemsPerPage = await createHeadlessPopup(
 							<PopupContent />,
 							[rect.x, rect.bottom]
 						);
+
+						if (res)
+							setQuery((query) => ({ ...query, itemsPerPage }));
 					}}
 				>
-					Items Per Page <ChevronDown />
+					{query.itemsPerPage || "20"} <ChevronDown />
 				</button>
 			</section>
 		</form>

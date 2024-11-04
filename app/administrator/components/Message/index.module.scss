@@ -1,0 +1,32 @@
+div.--cms-message {
+	--color: var(--info-color);
+	&[type="error"] {
+		--color: var(--error-color);
+	}
+	&[type="warning"] {
+		--color: var(--warning-color);
+	}
+	&[type="success"] {
+		--color: var(--success-color);
+	}
+
+	border: 1px solid var(--color);
+	border-radius: var(--padding);
+
+	svg {
+		color: var(--color);
+	}
+
+	padding: var(--padding);
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: var(--padding);
+
+	p.--cms-message-content {
+		color: var(--color);
+	}
+}

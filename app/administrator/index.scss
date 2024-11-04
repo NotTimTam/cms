@@ -11,6 +11,12 @@ Core styles for administrator pages.
 	--background-color-4: hsl(252, 12%, 36%);
 	--background-color-5: hsl(252, 12%, 42%);
 	--background-color-6: hsl(252, 12%, 48%);
+
+	--error-color: #d32f2f;
+	--warning-color: #f57c00;
+	--success-color: #388e3c;
+	--info-color: #42a5f5;
+
 	--text-color: #ffffff;
 	--border-color: #ffffff;
 	--margin: 1rem;
@@ -167,7 +173,7 @@ div.--cms-popup-content {
 	font-family: inherit;
 	margin-top: var(--gap);
 
-	border-radius: 1rem;
+	border-radius: var(--margin);
 
 	display: flex;
 	flex-direction: column;

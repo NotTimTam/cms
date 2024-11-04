@@ -30,7 +30,7 @@ header.--cms-header {
 		a,
 		button {
 			border: 1px solid var(--border-color);
-			border-radius: 2rem;
+			border-radius: calc(var(--margin) * 2);
 
 			background-color: var(--border-color);
 

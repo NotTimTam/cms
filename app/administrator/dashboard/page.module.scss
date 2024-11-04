@@ -10,7 +10,7 @@ div.--cms-dashboard {
 		gap: var(--padding);
 
 		background-color: var(--background-color-1);
-		border-radius: 1rem;
+		border-radius: var(--margin);
 
 		padding: var(--margin);
 	}

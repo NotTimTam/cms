@@ -21,15 +21,15 @@ export default function AuthenticatedUserProvider({
 
 	const authenticateUser = async () => {
 		try {
-			if (!token) throw new Error("No token in current context.");
+			if (!token) throw { data: "No token in current context." };
 
 			const authenticated = await API.authenticate(token);
 
-			if (!authenticated) throw new Error("User is not authenticated!");
+			if (!authenticated) throw { data: "User is not authenticated." };
 
 			setUser(authenticated.user);
 		} catch (error) {
-			console.error(error);
+			console.error(error.data);
 			if (redirect) router.push(redirect);
 		}
 	};

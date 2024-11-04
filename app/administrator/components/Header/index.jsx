@@ -9,7 +9,6 @@ import {
 	ChevronDown,
 	CodeSquare,
 	FileUser,
-	Github,
 	LogOut,
 	UserCircle,
 } from "lucide-react";
@@ -21,10 +20,16 @@ const Header = () => {
 
 	const { menu } = useContext(AdministratorContext);
 
-	const menuFinder = ({ href, content }) =>
-		href ? href === pathname : content ? content.find(menuFinder) : null;
+	const findMenuMapper = (menu) => {
+		const { href, content } = menu;
+		if (href && href === pathname) return menu;
+		else if (content) return content.map(findMenuMapper);
+	};
 
-	const currentMenu = menu.find(menuFinder);
+	const currentMenu = (menu
+		.map(findMenuMapper)
+		.flat()
+		.filter((menu) => menu) || [])[0];
 
 	return (
 		<header className={styles["--cms-header"]}>

@@ -75,24 +75,7 @@ aside.--cms-menu {
 		align-items: stretch;
 
 		a {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
 			justify-content: flex-start;
-			padding: var(--padding);
-			gap: var(--gap);
-			text-decoration: unset;
-			color: inherit;
-
-			svg {
-				color: inherit;
-				font-size: inherit;
-			}
-
-			&:hover {
-				background-color: var(--border-color);
-				color: var(--background-color);
-			}
 
 			&[aria-selected] {
 				&:not(:hover) {
@@ -114,7 +97,7 @@ aside.--cms-menu {
 				header.--cms-menu-section-header {
 					button {
 						&:not(:hover) {
-							background-color: var(--background-color-6);
+							background-color: var(--background-color-3);
 						}
 
 						svg.--cms-menu-section-toggle-indicator {

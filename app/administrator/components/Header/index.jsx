@@ -5,7 +5,16 @@ import { AdministratorContext } from "../AdministratorContext";
 import { usePathname } from "next/navigation";
 import styles from "./index.module.scss";
 import Link from "next/link";
-import { ChevronDown, CodeSquare, Github, UserCircle } from "lucide-react";
+import {
+	ChevronDown,
+	CodeSquare,
+	FileUser,
+	Github,
+	LogOut,
+	UserCircle,
+} from "lucide-react";
+import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
+import { deleteToken } from "@/app/cookies";
 
 const Header = () => {
 	const pathname = usePathname();
@@ -17,8 +26,6 @@ const Header = () => {
 
 	const currentMenu = menu.find(menuFinder);
 
-	console.log(currentMenu);
-
 	return (
 		<header className={styles["--cms-header"]}>
 			<h1 className={styles["--cms-header-title"]}>
@@ -27,6 +34,7 @@ const Header = () => {
 
 			<nav className={styles["--cms-header-nav"]}>
 				<Link
+					className="--cms-button"
 					target="_blank"
 					rel="noopener noreferrer"
 					href="https://www.github.com/NotTimTam/cms"
@@ -35,7 +43,45 @@ const Header = () => {
 					Source
 				</Link>
 
-				<button>
+				<button
+					onClick={async (e) => {
+						const rect = e.target.getBoundingClientRect();
+
+						const PopupContent = () => {
+							const closePopup = useContext(PopupContext);
+
+							return (
+								<nav
+									style={{ minWidth: rect.width }}
+									className={styles["--cms-popup-content"]}
+								>
+									<Link
+										aria-label="My Profile"
+										className="--cms-button"
+										href="/administrator/dashboard/users/me"
+									>
+										<FileUser /> My Profile
+									</Link>
+
+									<button
+										aria-label="Logout"
+										onClick={() => {
+											closePopup();
+											deleteToken("/administrator/login");
+										}}
+									>
+										<LogOut /> Logout
+									</button>
+								</nav>
+							);
+						};
+
+						const res = await createHeadlessPopup(
+							<PopupContent />,
+							[rect.x, rect.bottom]
+						);
+					}}
+				>
 					<UserCircle />
 					User Menu <ChevronDown />
 				</button>

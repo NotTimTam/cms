@@ -28,6 +28,7 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Include Lucide license in administrative portal.
 -   Articles built in markdown, html, maybe modes for the editor.
 -   Headless popups.
+-   Customizable admin dashboard.
 -   A **GOOD** code editor.
 -   Global theme and style control over every aspect of the site for one uniform design, article/module level style overrides.
 -   Similar to global styles, user-controllable global defaults for how links, video players, menus, etc operate.

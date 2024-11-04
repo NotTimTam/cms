@@ -70,7 +70,6 @@ const menu = [
 				<span>Menus</span>
 			</>
 		),
-		href: "/administrator/dashboard/menus",
 	},
 
 	{
@@ -82,7 +81,6 @@ const menu = [
 				<span>Extensions</span>
 			</>
 		),
-		href: "/administrator/dashboard/extensions",
 	},
 
 	{
@@ -94,7 +92,30 @@ const menu = [
 				<span>Users</span>
 			</>
 		),
-		href: "/administrator/dashboard/users",
+		content: [
+			{
+				type: "a",
+				title: "Users",
+				label: (
+					<>
+						<FileText />
+						<span>Users</span>
+					</>
+				),
+				href: "/administrator/dashboard/users",
+			},
+			{
+				type: "a",
+				title: "User Roles",
+				label: (
+					<>
+						<FileText />
+						<span>User Roles</span>
+					</>
+				),
+				href: "/administrator/dashboard/roles",
+			},
+		],
 	},
 
 	{

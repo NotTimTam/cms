@@ -33,7 +33,8 @@ ol {
 	margin-left: var(--margin);
 }
 
-button {
+button,
+a.--cms-button {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -45,6 +46,8 @@ button {
 	padding: var(--padding);
 
 	color: var(--text-color);
+
+	text-decoration: none;
 
 	svg {
 		color: inherit;
@@ -63,16 +66,18 @@ svg {
 	color: var(--text-color);
 }
 
+html {
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+		Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+		sans-serif;
+}
+
 main.--cms-administrator {
 	width: 100vw;
 	min-height: 100vh;
 
 	background-color: var(--background-color);
 	color: var(--text-color);
-
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-		Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
-		sans-serif;
 
 	display: flex;
 	flex-direction: column;

@@ -1,0 +1,17 @@
+div.--cms-dashboard {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	padding: var(--padding);
+	gap: var(--padding);
+
+	section.--cms-dashboard-section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding);
+
+		background-color: var(--background-color-1);
+		border-radius: 1rem;
+
+		padding: var(--padding);
+	}
+}

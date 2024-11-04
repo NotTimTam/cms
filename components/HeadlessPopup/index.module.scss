@@ -1,0 +1,207 @@
+div.--cms-headless-popup-renderer {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	width: 100vw;
+	height: 100vh;
+
+	z-index: 1000;
+
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+
+	div.--cms-headless-popup-wrapper {
+		width: 100%;
+		height: 100%;
+
+		position: relative;
+
+		div.--cms-headless-popup-container {
+			width: max-content;
+			height: max-content;
+			max-width: 100%;
+			max-height: 100%;
+		}
+	}
+}
+
+// @use "@/styles/util" as *;
+
+// $button-size: 2.5rem;
+
+// div.popupWrapperContainer {
+// 	@include flex-column;
+
+// 	padding: $padding;
+
+// 	max-height: 100vh;
+
+// 	&[message] {
+// 		div.popupWrapper {
+// 			padding: 0;
+// 			border: none;
+// 			background: none;
+// 		}
+
+// 		div.buttonContainer button.closeButton {
+// 			border-top-left-radius: $border-radius;
+// 			border-top-right-radius: $border-radius;
+// 			border-width: calc($border-width * 2);
+// 		}
+// 	}
+
+// 	div.buttonContainer {
+// 		@include flex-row;
+// 		justify-content: flex-end;
+// 		gap: $gap;
+// 		padding: 0 $padding;
+
+// 		button {
+// 			height: $button-size;
+// 			width: $button-size;
+
+// 			border-color: $border-color !important;
+
+// 			@media (min-width: $mobile-l) {
+// 				border-bottom: none !important;
+
+// 				border-bottom-left-radius: 0;
+// 				border-bottom-right-radius: 0;
+
+// 				box-shadow: none;
+// 			}
+
+// 			&:active {
+// 				transform: unset;
+// 			}
+
+// 			&.closeButton {
+// 				margin-left: auto;
+// 			}
+// 		}
+// 	}
+// 	div.popupWrapper {
+// 		@include flex-column;
+// 		border: $border;
+
+// 		box-shadow: $box-shadow;
+
+// 		max-width: 100%;
+
+// 		background-color: $background-light-color;
+
+// 		overflow: hidden;
+// 		overflow-y: auto;
+
+// 		padding: $gap;
+// 	}
+
+// 	@media (max-width: $mobile-l) {
+// 		padding: 0;
+// 		padding-top: $padding;
+// 		gap: $padding;
+
+// 		width: 100vw;
+// 		height: 100vh;
+
+// 		background-color: $emphasis;
+
+// 		div.popupWrapper {
+// 			flex-grow: 2;
+// 			border: none;
+// 			border-radius: 0;
+// 			box-shadow: inset $box-shadow;
+// 			border-top: $border-width $border-style $error;
+// 		}
+// 	}
+// }
+
+// div.dropdownWrapperContainer {
+// 	div.dropdownWrapper {
+// 		border: $border;
+
+// 		background: $background-light-color;
+
+// 		overflow: hidden;
+
+// 		box-shadow: $box-shadow;
+
+// 		button {
+// 			box-shadow: none;
+
+// 			width: 100%;
+
+// 			background: none;
+// 			border: none;
+
+// 			color: $text-color;
+
+// 			padding: $padding;
+
+// 			justify-content: flex-start;
+
+// 			&:hover {
+// 				background-color: $background-color;
+// 			}
+
+// 			&:focus {
+// 				z-index: 2;
+// 			}
+
+// 			&:active {
+// 				transform: unset;
+// 				color: $text-color-alt;
+// 				background-color: $light-emphasis;
+// 			}
+
+// 			&.error {
+// 				color: $error;
+// 			}
+// 		}
+// 	}
+// }
+
+// div.popupRequestContainer {
+// 	div.subContainer {
+// 		position: absolute;
+// 		top: 0;
+// 		left: 0;
+
+// 		width: 100vw;
+// 		height: 100vh;
+
+// 		z-index: 1002;
+
+// 		cursor: pointer;
+
+// 		transition: $transition;
+// 		transition-property: background-color;
+
+// 		background-color: transparent;
+
+// 		@include flex-column;
+// 		align-items: center;
+// 		justify-content: center;
+
+// 		div.popupRequest {
+// 			cursor: auto;
+
+// 			-webkit-backface-visibility: hidden;
+// 			backface-visibility: hidden;
+// 			-webkit-font-smoothing: subpixel-antialiased;
+
+// 			max-width: 100vw;
+// 			max-height: 100vh;
+// 			width: max-content;
+// 			height: max-content;
+
+// 			position: absolute;
+
+// 			&.hidden {
+// 				opacity: 0;
+// 			}
+// 		}
+// 	}
+// }

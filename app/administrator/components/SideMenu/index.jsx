@@ -86,6 +86,7 @@ const SideMenu = () => {
 		if (type === "a")
 			return (
 				<Link
+					className="--cms-button"
 					aria-selected={href === pathname ? "true" : undefined}
 					key={index}
 					aria-label={title}

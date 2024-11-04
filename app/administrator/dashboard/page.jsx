@@ -3,14 +3,15 @@
 import { deleteToken } from "@/app/cookies";
 import { AuthenticatedUserContext } from "@/components/AuthenticatedUserContext";
 import { useContext } from "react";
+import styles from "./page.module.scss";
 
 export default function Dashboard() {
 	const [user] = useContext(AuthenticatedUserContext);
 
 	return (
-		<div className="--cms-dashboard">
-			<section>
-				<header>
+		<div className={styles["--cms-dashboard"]}>
+			<section className={styles["--cms-dashboard-section"]}>
+				<header className={styles["--cms-dashboard-section-header"]}>
 					<h2>Site</h2>
 				</header>
 				<ul>
@@ -22,8 +23,8 @@ export default function Dashboard() {
 					<li>Plugins</li>
 				</ul>
 			</section>
-			<section>
-				<header>
+			<section className={styles["--cms-dashboard-section"]}>
+				<header className={styles["--cms-dashboard-section-header"]}>
 					<h2>Site Information</h2>
 				</header>
 				<ul>
@@ -32,8 +33,8 @@ export default function Dashboard() {
 					<li>Something Disabled</li>
 				</ul>
 			</section>
-			<section>
-				<header>
+			<section className={styles["--cms-dashboard-section"]}>
+				<header className={styles["--cms-dashboard-section-header"]}>
 					<h2>System</h2>
 				</header>
 				<ul>
@@ -43,15 +44,15 @@ export default function Dashboard() {
 				</ul>
 			</section>
 
-			<section>
-				<header>
+			<section className={styles["--cms-dashboard-section"]}>
+				<header className={styles["--cms-dashboard-section-header"]}>
 					<h2>Notification</h2>
 				</header>
 				<kbd>Display notifications here...</kbd>
 			</section>
 
-			<section>
-				<header>
+			<section className={styles["--cms-dashboard-section"]}>
+				<header className={styles["--cms-dashboard-section-header"]}>
 					<h2>Recently Added Articles</h2>
 				</header>
 				<kbd>Load articles here...</kbd>

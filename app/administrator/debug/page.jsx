@@ -1,6 +1,6 @@
 "use client";
 
-import API from "@/util/api";
+import API from "@/util/API";
 import { useEffect, useState } from "react";
 
 const CreateArticleForm = ({ getArticles }) => {

@@ -1,0 +1,38 @@
+form.--cms-filter-form {
+	flex-direction: row;
+
+	flex-wrap: wrap;
+	justify-content: space-between;
+
+	section {
+		display: flex;
+		flex-direction: row;
+		gap: var(--gap);
+
+		flex-wrap: wrap;
+
+		button {
+			* {
+				pointer-events: none;
+			}
+		}
+	}
+}
+
+nav.--cms-popup-nav {
+	display: flex;
+	flex-direction: column;
+
+	a,
+	button {
+		justify-content: flex-start;
+		color: var(--background-color);
+
+		&:hover {
+			background-color: var(--background-color-6);
+			color: var(--text-color);
+		}
+
+		padding: var(--padding) var(--margin);
+	}
+}

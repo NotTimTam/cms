@@ -1,5 +1,6 @@
 "use client";
 
+import StorageInterface from "@/util/StorageInterface";
 import {
 	BadgeInfo,
 	Blocks,
@@ -11,7 +12,7 @@ import {
 	Users,
 	Wrench,
 } from "lucide-react";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 const menu = [
 	{
@@ -162,7 +163,10 @@ export default function AdministratorContextProvider({ children }) {
 
 	return (
 		<AdministratorContext.Provider
-			value={{ menu, state: [administrator, setAdministrator] }}
+			value={{
+				menu,
+				state: [administrator, setAdministrator],
+			}}
 		>
 			{children}
 		</AdministratorContext.Provider>

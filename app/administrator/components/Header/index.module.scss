@@ -51,37 +51,14 @@ header.--cms-header {
 	}
 }
 
-nav.--cms-popup-content {
-	background-color: var(--border-color);
-	color: var(--background-color);
-	border-radius: var(--gap);
-	font-family: inherit;
-	margin-top: var(--gap);
-
-	border-radius: 1rem;
-
+nav.--cms-user-menu {
 	display: flex;
 	flex-direction: column;
-
-	overflow: hidden;
-
-	opacity: 1;
-
-	animation: popup-fade-in 0.15s ease-in;
-
-	@keyframes popup-fade-in {
-		0% {
-			opacity: 0;
-		}
-		100% {
-			opacity: 1;
-		}
-	}
 
 	a,
 	button {
 		justify-content: flex-start;
-		color: inherit;
+		color: var(--background-color);
 
 		&:hover {
 			background-color: var(--background-color-6);

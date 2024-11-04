@@ -116,35 +116,74 @@ main.--cms-administrator {
 
 		align-items: center;
 		justify-content: center;
+	}
+}
 
-		form.--cms-form {
-			display: flex;
-			flex-direction: column;
+form.--cms-form {
+	display: flex;
+	flex-direction: column;
 
-			padding: var(--margin);
-			gap: var(--padding);
+	padding: var(--margin);
+	gap: var(--padding);
 
-			h2 {
-				margin-bottom: var(--margin);
-			}
+	color: inherit;
 
-			label {
-				font-weight: 800;
-			}
+	h2 {
+		margin-bottom: var(--margin);
+	}
 
-			button {
-				border: 1px solid var(--border-color);
-			}
+	label {
+		font-weight: 800;
+	}
 
-			input,
-			textarea,
-			select {
-				border: 1px solid var(--border-color);
-				background-color: var(--text-color);
-				color: var(--background-color);
-				padding: var(--padding);
-				font-size: 1rem;
-			}
+	button {
+		border: 1px solid var(--border-color);
+	}
+
+	input,
+	textarea,
+	select {
+		border: 1px solid var(--border-color);
+		color: var(--text-color);
+		background-color: var(--background-color);
+		padding: var(--padding);
+		font-size: 1rem;
+
+		&::placeholder {
+			color: var(--background-color-6);
+		}
+	}
+
+	&[disabled] {
+		pointer-events: none;
+		opacity: 0.5;
+	}
+}
+
+div.--cms-popup-content {
+	background-color: var(--border-color);
+	color: var(--background-color);
+	border-radius: var(--gap);
+	font-family: inherit;
+	margin-top: var(--gap);
+
+	border-radius: 1rem;
+
+	display: flex;
+	flex-direction: column;
+
+	overflow: hidden;
+
+	opacity: 1;
+
+	animation: popup-fade-in 0.15s ease-in;
+
+	@keyframes popup-fade-in {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
 		}
 	}
 }

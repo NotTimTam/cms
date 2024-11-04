@@ -19,8 +19,8 @@ userRouter
 	.get(authenticationMiddleware, authenticateUser);
 userRouter
 	.route("/:id")
-	.get(findUserById)
-	.patch(findUserByIdAndUpdate)
-	.delete(findUserByIdAndDelete);
+	.get(authenticationMiddleware, findUserById)
+	.patch(authenticationMiddleware, findUserByIdAndUpdate)
+	.delete(authenticationMiddleware, findUserByIdAndDelete);
 
 export default userRouter;

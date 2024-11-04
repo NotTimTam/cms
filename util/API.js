@@ -1,7 +1,7 @@
 /**
  * An interface that simplifies the process of using JavaScript's `Fetch` api.
  */
-class API {
+export default class API {
 	static route = "api";
 	static users = `${API.route}/users`;
 	static articles = `${API.route}/articles`;
@@ -111,5 +111,3 @@ class API {
 	static delete = async (url, __additionalConfig) =>
 		API.__req(url, { method: "DELETE", ...__additionalConfig });
 }
-
-export default API;

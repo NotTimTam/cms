@@ -56,28 +56,32 @@ const Header = () => {
 							const closePopup = useContext(PopupContext);
 
 							return (
-								<nav
-									style={{ minWidth: rect.width }}
-									className={styles["--cms-popup-content"]}
-								>
-									<Link
-										aria-label="My Profile"
-										className="--cms-button"
-										href="/administrator/dashboard/users/me"
+								<div className="--cms-popup-content">
+									<nav
+										style={{ minWidth: rect.width }}
+										className={styles["--cms-user-menu"]}
 									>
-										<FileUser /> My Profile
-									</Link>
+										<Link
+											aria-label="My Profile"
+											className="--cms-button"
+											href="/administrator/dashboard/users/me"
+										>
+											<FileUser /> My Profile
+										</Link>
 
-									<button
-										aria-label="Logout"
-										onClick={() => {
-											closePopup();
-											deleteToken("/administrator/login");
-										}}
-									>
-										<LogOut /> Logout
-									</button>
-								</nav>
+										<button
+											aria-label="Logout"
+											onClick={() => {
+												closePopup();
+												deleteToken(
+													"/administrator/login"
+												);
+											}}
+										>
+											<LogOut /> Logout
+										</button>
+									</nav>
+								</div>
 							);
 						};
 

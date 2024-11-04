@@ -1,7 +1,7 @@
 "use client";
 
 import { setToken } from "@/app/cookies";
-import API from "@/util/api";
+import API from "@/util/API";
 import { emailRegex } from "@/util/regex";
 
 export default function Login() {

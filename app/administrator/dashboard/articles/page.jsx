@@ -1,14 +1,9 @@
-import Filter from "../../components/Filter";
+import Content from "./content";
 
 export const metadata = {
 	title: "Articles",
 };
 
 export default function Articles() {
-	return (
-		<>
-			<Filter />
-			List articles here...
-		</>
-	);
+	return <Content />;
 }

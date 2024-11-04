@@ -11,12 +11,15 @@ const Content = () => {
 		data: { articleQuery },
 	} = SessionStorage;
 
-	const [query, setQuery] = useState(articleQuery || {});
+	const [query, setQuery] = useState(
+		articleQuery || {
+			itemsPerPage: 20,
+		}
+	);
 
 	const executeQuery = (query) => {
-		console.log("MAKING SEARCH");
-
 		try {
+			SessionStorage.setItem("articleQuery", query);
 		} catch (err) {
 			console.error(err.data);
 		}

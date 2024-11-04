@@ -3,7 +3,7 @@
 import { ChevronDown, Search } from "lucide-react";
 import styles from "./index.module.scss";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 	// Handlers
@@ -20,6 +20,10 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 
 		executeQuery({});
 	};
+
+	useEffect(() => {
+		executeQuery(query);
+	}, [query]);
 
 	return (
 		<form
@@ -205,11 +209,14 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 							[rect.x, rect.bottom]
 						);
 
-						if (res)
+						if (itemsPerPage != null)
 							setQuery((query) => ({ ...query, itemsPerPage }));
 					}}
 				>
-					{query.itemsPerPage || "20"} <ChevronDown />
+					{(query.itemsPerPage === "all"
+						? "All"
+						: query.itemsPerPage) || "20"}{" "}
+					<ChevronDown />
 				</button>
 			</section>
 		</form>

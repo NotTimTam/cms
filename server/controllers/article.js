@@ -13,19 +13,21 @@ export const createArticle = async (req, res) => {
 		const {
 			user: { _id: author },
 		} = req;
-		let { name, alias, content } = req.body;
 
-		if (!name) return res.status(400).send('No "name" property provided.');
+		let { status, featured, access, tags, notes, name, alias, content } =
+			req.body;
+
+		if (!name) return res.status(400).send("No article name provided.");
 
 		if (typeof name !== "string" || !nameRegex.test(name))
-			return res.status(400).send('Invalid "name" property provided.');
+			return res.status(400).send("Invalid article name provided.");
 
 		if (!alias) alias = nameToAlias(name);
 		else if (typeof alias !== "string" || !aliasRegex.test(alias))
 			return res
 				.status(400)
 				.send(
-					`Invalid "alias" property provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+					`Invalid article alias provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
 				);
 
 		if (await ArticleModel.findOne({ alias }))
@@ -48,9 +50,17 @@ export const createArticle = async (req, res) => {
  */
 export const findArticles = async (req, res) => {
 	try {
-		const articles = await ArticleModel.find({});
+		const articles = await ArticleModel.find({})
+			.select("+status")
+			.populate("author")
+			.lean();
 
-		return res.status(200).json({ articles });
+		return res.status(200).json({
+			articles: articles.map((article) => ({
+				...article,
+				author: article.author.name,
+			})),
+		});
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
@@ -115,31 +125,33 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 		if (!article)
 			return res.status(404).send(`No article found with id "${id}"`);
 
-		const { name, alias, content } = req.body;
+		console.log(req.body);
 
-		if (!name) return res.status(400).send('No "name" property provided.');
+		// const { name, alias, content } = req.body;
 
-		if (typeof name !== "string" || !nameRegex.test(name))
-			return res.status(400).send('Invalid "name" property provided.');
+		// if (!name) return res.status(400).send('No "name" property provided.');
 
-		if (!alias) alias = nameToAlias(name);
-		else if (typeof alias !== "string" || !aliasRegex.test(alias))
-			return res
-				.status(400)
-				.send(
-					`Invalid "alias" property provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
-				);
+		// if (typeof name !== "string" || !nameRegex.test(name))
+		// 	return res.status(400).send('Invalid "name" property provided.');
 
-		if (await ArticleModel.findOne({ alias }))
-			return res
-				.status(422)
-				.send("An article already exists with that alias.");
+		// if (!alias) alias = nameToAlias(name);
+		// else if (typeof alias !== "string" || !aliasRegex.test(alias))
+		// 	return res
+		// 		.status(400)
+		// 		.send(
+		// 			`Invalid "alias" property provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+		// 		);
 
-		article.name = name;
-		article.alias = alias;
-		article.content = content;
+		// if (await ArticleModel.findOne({ alias }))
+		// 	return res
+		// 		.status(422)
+		// 		.send("An article already exists with that alias.");
 
-		await article.save();
+		// article.name = name;
+		// article.alias = alias;
+		// article.content = content;
+
+		// await article.save();
 
 		return res.status(200).json({ article });
 	} catch (error) {

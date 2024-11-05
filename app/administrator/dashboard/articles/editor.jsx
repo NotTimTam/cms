@@ -16,6 +16,10 @@ import { aliasRegex, nameRegex } from "@/util/regex";
 import Tabs from "../../components/Tabs";
 import { capitalizeWords } from "@/util/display";
 import Message from "../../components/Message";
+import API from "@/util/API";
+import { getToken } from "@/app/cookies";
+import { useRouter, useSearchParams } from "next/navigation";
+import Loading from "../../components/Loading";
 
 const defaultArticle = {
 	status: "unpublished",
@@ -24,16 +28,20 @@ const defaultArticle = {
 	tags: [],
 	category: undefined,
 	notes: "",
-	title: "",
+	name: "",
 	alias: "",
 };
 
-const Editor = ({ id }) => {
+const Editor = () => {
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const id = searchParams.get("id");
+
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState(null);
 
 	const [tab, setTab] = useState(0);
-	const [article, setArticle] = useState(id ? {} : defaultArticle);
+	const [article, setArticle] = useState(id ? { _id: id } : defaultArticle);
 
 	/**
 	 * Unpublished
@@ -49,7 +57,18 @@ const Editor = ({ id }) => {
 		setLoading(true);
 
 		try {
-			const res = await getArticle();
+			if (!article._id) return;
+
+			const token = await getToken();
+
+			const {
+				data: { article: newArticle },
+			} = await API.get(
+				API.createRouteURL(API.articles, id),
+				API.createAuthorizationConfig(token)
+			);
+
+			setArticle(newArticle);
 		} catch (error) {
 			console.error(error);
 
@@ -65,6 +84,25 @@ const Editor = ({ id }) => {
 		setLoading(true);
 
 		try {
+			const token = await getToken();
+
+			console.log(article._id);
+
+			const {
+				data: { article: newArticle },
+			} = article._id
+				? await API.patch(
+						API.createRouteURL(API.articles, article._id),
+						article,
+						API.createAuthorizationConfig(token)
+				  )
+				: await API.post(
+						API.articles,
+						article,
+						API.createAuthorizationConfig(token)
+				  );
+
+			setArticle(newArticle);
 		} catch (error) {
 			console.error(error);
 
@@ -75,14 +113,26 @@ const Editor = ({ id }) => {
 	};
 
 	useEffect(() => {
-		getArticle();
+		if (id) getArticle();
 	}, [id]);
+
+	if (loading) return <Loading />;
 
 	return (
 		<>
+			{message && (
+				<div className={styles["--cms-message-container"]}>
+					{message}
+				</div>
+			)}
+
 			<nav className="--cms-nav">
 				<section>
-					<button className="--cms-success" aria-label="Save">
+					<button
+						className="--cms-success"
+						aria-label="Save"
+						onClick={saveArticle}
+					>
 						<Save /> Save
 					</button>
 					<span>
@@ -100,9 +150,14 @@ const Editor = ({ id }) => {
 						</button>
 					</span>
 
-					<button className="--cms-error" aria-label="Close">
+					<button
+						className="--cms-error"
+						aria-label="Close"
+						onClick={() =>
+							router.push("/administrator/dashboard/articles")
+						}
+					>
 						<X /> Close
-						{/* HANDLE ALERTS FOR EXITING WITHOUT SAVING */}
 					</button>
 				</section>
 
@@ -145,20 +200,20 @@ const Editor = ({ id }) => {
 					className={`--cms-form ${styles["--cms-editor-title-form"]}`}
 				>
 					<section>
-						<label htmlFor="title" required>
-							Title
+						<label htmlFor="name" required>
+							Name
 						</label>
 						<input
 							type="text"
-							name="title"
-							id="title"
+							name="name"
+							id="name"
 							placeholder="My Article"
 							autoComplete="off"
-							value={article.title || ""}
+							value={article.name || ""}
 							onChange={({ target: { value } }) =>
 								setArticle((article) => ({
 									...article,
-									title: value,
+									name: value,
 								}))
 							}
 							pattern={nameRegex}

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
-import { statusEnum } from "@/util/enum.js";
+import { statusEnum } from "../../util/enum.js";
 
 const ArticleSchema = new mongoose.Schema(
 	{
@@ -36,9 +36,11 @@ const ArticleSchema = new mongoose.Schema(
 			required: [true, "Article featured status not provided."],
 			default: false,
 		},
-
-		// access
-
+		access: {
+			type: String,
+			required: [true, "You must provide the article access level."],
+			default: "public",
+		},
 		category: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Category",
@@ -57,6 +59,15 @@ const ArticleSchema = new mongoose.Schema(
 			select: false,
 			required: [true, "You must provide the Article's status."],
 			default: "unpublished",
+		},
+		hits: {
+			type: Number,
+			required: [
+				true,
+				"You must provide the hit count for this Article.",
+			],
+			default: 0,
+			min: 0,
 		},
 	},
 	{ timestamps: true }

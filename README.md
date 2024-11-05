@@ -31,6 +31,8 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Customizable admin dashboard.
 -   Git-like versioning on articles?
 -   Article version history.
+-   Article editor exit without saving alert.
+-   Article listing toggle featured/status by tapping corresponding listing button.
 -   A **GOOD** code editor.
 -   Global theme and style control over every aspect of the site for one uniform design, article/module level style overrides.
 -   Similar to global styles, user-controllable global defaults for how links, video players, menus, etc operate.

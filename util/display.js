@@ -4,6 +4,7 @@
  * @returns {string} The string, adjusted with each word capitalized.
  */
 export const capitalizeWords = (str) =>
+	str &&
 	str
 		.split(" ")
 		.map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)

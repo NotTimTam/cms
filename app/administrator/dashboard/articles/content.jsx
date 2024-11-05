@@ -11,7 +11,7 @@ const Content = () => {
 
 	switch (view) {
 		case "edit":
-			return <Editor id={id} />;
+			return <Editor />;
 		default:
 			return <Listings />;
 	}

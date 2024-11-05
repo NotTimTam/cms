@@ -6,7 +6,7 @@ export const nameRegex = /^.{1,1024}$/;
 /**
  * Used for validating item aliases.
  */
-export const aliasRegex = /^[a-z0-9_-]{1,1024}$/;
+export const aliasRegex = /^[a-z0-9_\-]{1,1024}$/;
 
 /**
  * Used for validating email addresses.

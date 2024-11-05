@@ -25,6 +25,17 @@ export default class API {
 	};
 
 	/**
+	 * Creates a header object with an authorization token.
+	 * @param {string} token The authorization token.
+	 * @returns {Object} Authorization headers.
+	 */
+	static createAuthorizationConfig = (token) => ({
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+	});
+
+	/**
 	 * Create a valid API route url from a series of strings.
 	 * @param  {...string} branches The branch strings to use.
 	 * @returns {string} A valid API route url.

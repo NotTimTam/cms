@@ -16,12 +16,15 @@ const Tabs = ({ items, currentItem, setCurrentItem }) => {
 			<nav className={`--cms-nav ${styles["--cms-tabs-nav"]}`}>
 				{items.map(({ header, ariaLabel }, index) => (
 					<button
+						key={index}
 						aria-label={ariaLabel}
 						onClick={() => setCurrentItem(index)}
 						aria-selected={
 							currentItem === index ? "true" : undefined
 						}
-						className={currentItem === index && "--cms-info"}
+						className={
+							currentItem === index ? "--cms-info" : undefined
+						}
 					>
 						{header}
 					</button>

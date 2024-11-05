@@ -1,3 +1,7 @@
+div.--cms-message-container {
+	padding: var(--padding) var(--padding) 0 var(--padding);
+}
+
 section.--cms-listings {
 	display: flex;
 	flex-direction: column;

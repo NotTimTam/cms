@@ -32,64 +32,78 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 			className={`--cms-form ${styles["--cms-filter-form"]}`}
 		>
 			<section>
-				<input
-					disabled={disabled}
-					type="text"
-					placeholder="Search"
-					aria-placeholder="Search"
-					aria-autocomplete="none"
-					autoComplete="off"
-					value={query.search || ""}
-					onChange={({ target: { value } }) =>
-						setQuery((query) => ({ ...query, search: value }))
-					}
-				/>
-				<button disabled={disabled} type="submit" aria-label="Search">
-					<Search />
-				</button>
-				<button
-					disabled={disabled}
-					type="button"
-					className={styles["--cms-filter-form-search-tools"]}
-					aria-label="Search Tools"
-					onClick={async (e) => {
-						const rect = e.target.getBoundingClientRect();
+				<span>
+					<input
+						disabled={disabled}
+						type="text"
+						placeholder="Search"
+						aria-placeholder="Search"
+						aria-autocomplete="none"
+						autoComplete="off"
+						value={query.search || ""}
+						onChange={({ target: { value } }) =>
+							setQuery((query) => ({ ...query, search: value }))
+						}
+					/>
+					<button
+						disabled={disabled}
+						type="submit"
+						aria-label="Search"
+						className="--cms-info"
+					>
+						<Search />
+					</button>
+				</span>
+				<span>
+					<button
+						disabled={disabled}
+						type="button"
+						className={`--cms-info ${styles["--cms-filter-form-search-tools"]}`}
+						aria-label="Search Tools"
+						onClick={async (e) => {
+							const rect = e.target.getBoundingClientRect();
 
-						const PopupContent = () => {
-							const closePopup = useContext(PopupContext);
+							const PopupContent = () => {
+								const closePopup = useContext(PopupContext);
 
-							return (
-								<div
-									className="--cms-popup-content"
-									style={{ minWidth: rect.width }}
-								>
-									<nav className={styles["--cms-popup-nav"]}>
-										<ul>
-											<li>Category</li>
-											<li>Tag</li>
-											<li>Author</li>
-										</ul>
-									</nav>
-								</div>
+								return (
+									<div
+										className="--cms-popup-content"
+										style={{ minWidth: rect.width }}
+									>
+										<nav
+											className={
+												styles["--cms-popup-nav"]
+											}
+										>
+											<ul>
+												<li>Category</li>
+												<li>Tag</li>
+												<li>Author</li>
+											</ul>
+										</nav>
+									</div>
+								);
+							};
+
+							const res = await createHeadlessPopup(
+								<PopupContent />,
+								[rect.x, rect.bottom]
 							);
-						};
-
-						const res = await createHeadlessPopup(
-							<PopupContent />,
-							[rect.x, rect.bottom]
-						);
-					}}
-				>
-					Search Tools <ChevronDown />
-				</button>
-				<button
-					disabled={disabled}
-					onClick={handleClear}
-					type="reset"
-					aria-label="Clear Search"
-				>
-					Clear
-				</button>
+						}}
+					>
+						Filter Options <ChevronDown />
+					</button>
+					<button
+						disabled={disabled}
+						onClick={handleClear}
+						type="reset"
+						aria-label="Clear Search"
+						className={styles["--cms-filter-form-clear"]}
+					>
+						Clear
+					</button>
+				</span>
 			</section>
 
 			<section>
@@ -97,6 +111,7 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 					disabled={disabled}
 					type="button"
 					aria-label="Sort By"
+					className="--cms-highlight"
 					onClick={async (e) => {
 						const rect = e.target.getBoundingClientRect();
 
@@ -150,6 +165,7 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 				<button
 					disabled={disabled}
 					type="button"
+					className="--cms-highlight"
 					aria-label="Items Per Page"
 					onClick={async (e) => {
 						const rect = e.target.getBoundingClientRect();

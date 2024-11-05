@@ -60,6 +60,9 @@ nav.--cms-user-menu {
 		justify-content: flex-start;
 		color: var(--background-color);
 
+		border: none;
+		border-radius: 0;
+
 		&:hover {
 			background-color: var(--background-color-6);
 			color: var(--text-color);

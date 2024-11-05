@@ -24,6 +24,30 @@ form.--cms-filter-form {
 
 		flex-wrap: wrap;
 
+		> span {
+			display: flex;
+			flex-direction: row;
+			align-items: stretch;
+			justify-content: center;
+			flex-wrap: nowrap;
+
+			:first-child {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+				&:not(input) {
+					border-right: none;
+				}
+			}
+
+			:last-child {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				&:not(button) {
+					border-left: none;
+				}
+			}
+		}
+
 		button {
 			* {
 				pointer-events: none;

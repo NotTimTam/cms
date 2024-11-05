@@ -2,7 +2,7 @@
  * An interface that simplifies the process of using JavaScript's `Fetch` api.
  */
 export default class API {
-	static route = "api";
+	static route = "/api";
 	static users = `${API.route}/users`;
 	static articles = `${API.route}/articles`;
 
@@ -26,23 +26,11 @@ export default class API {
 
 	/**
 	 * Create a valid API route url from a series of strings.
-	 * @param  {...string} branches The branch strings to use. Should not start or end with a slash.
+	 * @param  {...string} branches The branch strings to use.
 	 * @returns {string} A valid API route url.
 	 */
 	static createRouteURL = (...branches) =>
-		`/${branches
-			.map((branch) => {
-				branch = branch.trim();
-				if (branch[0] === "/" || branch[0] === "\\") branch.shift();
-				if (
-					branch[branch.length - 1] === "/" ||
-					branch[branch.length - 1] === "\\"
-				)
-					branch.pop();
-
-				return branch;
-			})
-			.join("/")}`;
+		branches.map((branch) => branch.trim()).join("/");
 
 	static __getData = async (response) => {
 		// Read the body of the response based on its content type

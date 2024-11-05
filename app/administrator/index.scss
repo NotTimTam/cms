@@ -30,6 +30,16 @@ Core styles for administrator pages.
 	--margin: 1rem;
 	--padding: 0.5rem;
 	--gap: 0.25rem;
+
+	--mobile-s: 320px;
+	--mobile-m: 375px;
+	--mobile-l: 425px;
+	--mobile: 425px;
+	--tablet: 768px;
+	--laptop: 1024px;
+	--laptop-l: 1440px;
+	--desktop: 2560px;
+	--ultra-4k: 3840px;
 }
 
 *,
@@ -239,9 +249,47 @@ main.--cms-administrator {
 	}
 }
 
+nav.--cms-nav {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--gap);
+	justify-content: space-between;
+	padding: var(--padding);
+	flex-wrap: wrap;
+
+	> section {
+		display: flex;
+		flex-direction: row;
+		gap: var(--gap);
+		flex-wrap: wrap;
+
+		> span {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+
+			> :first-child {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+
+				border-right: 1px solid var(--background-color) !important;
+			}
+
+			> :last-child {
+				border-left: none;
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+		}
+	}
+}
+
 form.--cms-form {
 	display: flex;
 	flex-direction: column;
+
+	max-width: 100%;
 
 	padding: var(--margin);
 	gap: var(--padding);

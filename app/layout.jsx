@@ -1,9 +1,6 @@
 export const metadata = {
-	title: {
-		template: "%s | CMS",
-		default: "CMS",
-	},
-	description: "cms description",
+	title: "No Title Defined",
+	description: "No Description Defined",
 };
 
 export default function RootLayout({ children }) {

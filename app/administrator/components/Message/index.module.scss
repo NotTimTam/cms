@@ -26,7 +26,12 @@ div.--cms-message {
 	flex-wrap: wrap;
 	gap: var(--padding);
 
+	overflow: hidden;
+
+	max-width: 100%;
+
 	p.--cms-message-content {
+		max-width: 100%;
 		color: var(--color);
 	}
 }

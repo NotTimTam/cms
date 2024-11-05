@@ -53,7 +53,7 @@ app.disable("x-powered-by");
 app.use(express.json(), cors(), rateLimiter);
 
 // Load and configure API.
-const apiRoute = `api`;
+const apiRoute = `/api`;
 
 app.use(API.createRouteURL(apiRoute, "articles"), articleRouter);
 app.use(API.createRouteURL(apiRoute, "users"), userRouter);

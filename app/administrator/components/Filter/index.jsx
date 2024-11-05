@@ -3,14 +3,15 @@
 import { ChevronDown, Search } from "lucide-react";
 import styles from "./index.module.scss";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
+import Message from "../Message";
 
 const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 	// Handlers
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		executeQuery(query);
+		executeQuery();
 	};
 
 	const handleClear = (e) => {
@@ -18,12 +19,15 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 
 		setQuery({});
 
-		executeQuery({});
+		executeQuery();
 	};
 
-	useEffect(() => {
-		executeQuery(query);
-	}, [query]);
+	if (!query)
+		return (
+			<Message type="error">
+				No query attribute passed to Filter component.
+			</Message>
+		);
 
 	return (
 		<form
@@ -50,6 +54,7 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 						type="submit"
 						aria-label="Search"
 						className="--cms-info"
+						onClick={executeQuery}
 					>
 						<Search />
 					</button>
@@ -90,6 +95,8 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 								<PopupContent />,
 								[rect.x, rect.bottom]
 							);
+
+							executeQuery();
 						}}
 					>
 						Filter Options <ChevronDown />
@@ -158,6 +165,8 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 							<PopupContent />,
 							[rect.x, rect.bottom]
 						);
+
+						executeQuery();
 					}}
 				>
 					Sort By <ChevronDown />
@@ -225,8 +234,11 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 							[rect.x, rect.bottom]
 						);
 
-						if (itemsPerPage != null)
+						if (itemsPerPage != null) {
 							setQuery((query) => ({ ...query, itemsPerPage }));
+
+							executeQuery();
+						}
 					}}
 				>
 					{(query.itemsPerPage === "all"

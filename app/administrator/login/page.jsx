@@ -4,13 +4,22 @@ import { setToken } from "@/app/cookies";
 import API from "@/util/API";
 import { emailRegex } from "@/util/regex";
 import { Lock, LogIn, User } from "lucide-react";
+import { useState } from "react";
+import Message from "../components/Message";
 
 export default function Login() {
+	const [message, setMessage] = useState(null);
+	const [loading, setLoading] = useState(false);
+
 	return (
 		<form
 			className="--cms-form"
+			disabled={loading}
 			onSubmit={async (e) => {
 				e.preventDefault();
+
+				setMessage(null);
+				setLoading(true);
 
 				try {
 					const {
@@ -33,9 +42,12 @@ export default function Login() {
 
 					setToken(token, "/administrator");
 				} catch (error) {
-					alert(error.data);
 					console.error(error.data);
+
+					setMessage(<Message type="error">{error.data}</Message>);
 				}
+
+				setLoading(false);
 			}}
 		>
 			<h1>Login</h1>
@@ -62,9 +74,11 @@ export default function Login() {
 				required
 			/>
 
-			<button type="submit">
+			<button type="submit" className="--cms-highlight">
 				<LogIn /> Login
 			</button>
+
+			{message}
 		</form>
 	);
 }

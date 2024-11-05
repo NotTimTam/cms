@@ -65,7 +65,9 @@ export const findArticleById = async (req, res) => {
 	try {
 		const { id } = req.params;
 
-		const article = await ArticleModel.findById(id);
+		const article = await ArticleModel.findById(id).select(
+			"+status +notes"
+		);
 
 		if (!article)
 			return res.status(404).send(`No article found with id "${id}"`);

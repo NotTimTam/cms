@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
+import { statusEnum } from "@/util/enum.js";
 
 const ArticleSchema = new mongoose.Schema(
 	{
@@ -23,6 +24,39 @@ const ArticleSchema = new mongoose.Schema(
 			type: String,
 			required: false,
 			default: "",
+		},
+		notes: {
+			type: String,
+			required: false,
+			default: "",
+			select: false,
+		},
+		featured: {
+			type: Boolean,
+			required: [true, "Article featured status not provided."],
+			default: false,
+		},
+
+		// access
+
+		category: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Category",
+			required: false,
+		},
+		tags: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Tag",
+				required: false,
+			},
+		],
+		status: {
+			type: String,
+			enum: statusEnum,
+			select: false,
+			required: [true, "You must provide the Article's status."],
+			default: "unpublished",
 		},
 	},
 	{ timestamps: true }

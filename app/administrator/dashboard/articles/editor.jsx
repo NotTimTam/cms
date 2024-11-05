@@ -9,20 +9,74 @@ import {
 	Save,
 	X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "./page.module.scss";
 import { aliasRegex, nameRegex } from "@/util/regex";
 import Tabs from "../../components/Tabs";
 import { capitalizeWords } from "@/util/display";
+import Message from "../../components/Message";
 
 const defaultArticle = {
 	status: "unpublished",
+	featured: false,
+	access: "public",
+	tags: [],
+	category: undefined,
+	notes: "",
+	title: "",
+	alias: "",
 };
 
 const Editor = ({ id }) => {
+	const [loading, setLoading] = useState(false);
+	const [message, setMessage] = useState(null);
+
 	const [tab, setTab] = useState(0);
 	const [article, setArticle] = useState(id ? {} : defaultArticle);
+
+	/**
+	 * Unpublished
+	 * Published
+	 * Trashed
+	 * Archived
+	 */
+
+	// Functions
+	const getArticle = async () => {
+		setMessage(null);
+
+		setLoading(true);
+
+		try {
+			const res = await getArticle();
+		} catch (error) {
+			console.error(error);
+
+			setMessage(<Message type="error">{error.data}</Message>);
+		}
+
+		setLoading(false);
+	};
+
+	const saveArticle = async () => {
+		setMessage(null);
+
+		setLoading(true);
+
+		try {
+		} catch (error) {
+			console.error(error);
+
+			setMessage(<Message type="error">{error.data}</Message>);
+		}
+
+		setLoading(false);
+	};
+
+	useEffect(() => {
+		getArticle();
+	}, [id]);
 
 	return (
 		<>

@@ -1,0 +1,16 @@
+header.--cms-curate nav.--cms-curate-nav {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--gap);
+	justify-content: space-between;
+	padding: var(--padding);
+	flex-wrap: wrap;
+
+	section {
+		display: flex;
+		flex-direction: row;
+		gap: var(--gap);
+		flex-wrap: wrap;
+	}
+}

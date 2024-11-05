@@ -1,0 +1,10 @@
+section.--cms-listings {
+	display: flex;
+	flex-direction: column;
+	gap: var(--margin);
+	padding: var(--padding);
+
+	background-color: var(--background-color-2);
+
+	flex-grow: 2;
+}

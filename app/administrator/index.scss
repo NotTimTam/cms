@@ -12,10 +12,18 @@ Core styles for administrator pages.
 	--background-color-5: hsl(252, 12%, 42%);
 	--background-color-6: hsl(252, 12%, 48%);
 
-	--error-color: #d32f2f;
-	--warning-color: #f57c00;
-	--success-color: #388e3c;
-	--info-color: #42a5f5;
+	--error-color: hsl(0, 65%, 51%);
+	--error-color-2: hsl(0, 65%, 56%);
+	--error-color-3: hsl(0, 65%, 64%);
+	--warning-color: hsl(30, 100%, 48%);
+	--warning-color-2: hsl(30, 100%, 56%);
+	--warning-color-3: hsl(30, 100%, 62%);
+	--success-color: hsl(123, 43%, 39%);
+	--success-color-2: hsl(123, 43%, 46%);
+	--success-color-3: hsl(123, 43%, 54%);
+	--info-color: hsl(207, 90%, 61%);
+	--info-color-2: hsl(207, 90%, 68%);
+	--info-color-3: hsl(207, 90%, 74%);
 
 	--text-color: #ffffff;
 	--border-color: #ffffff;
@@ -51,9 +59,9 @@ a.--cms-button {
 
 	padding: var(--padding);
 
-	color: var(--text-color);
-
 	text-decoration: none;
+
+	border: 1px solid transparent;
 
 	svg {
 		color: inherit;
@@ -62,9 +70,110 @@ a.--cms-button {
 
 	cursor: pointer;
 
-	&:hover {
-		background-color: var(--border-color);
-		color: var(--background-color);
+	border-radius: var(--gap);
+
+	@mixin button-color(
+		$text-color: var(--text-color),
+		$border-color: var(--background-color),
+		$background-color: transparent,
+		$h-text-color: var(--background-color),
+		$h-border-color: var(--border-color),
+		$h-background-color: var(--border-color),
+		$a-text-color: var(--background-color),
+		$a-border-color: var(--background-color-6),
+		$a-background-color: var(--background-color-6)
+	) {
+		color: $text-color;
+		background-color: $background-color;
+		border-color: $border-color;
+
+		&:hover {
+			color: $h-text-color;
+			background-color: $h-background-color;
+			border-color: $h-border-color;
+		}
+
+		&:active {
+			color: $a-text-color;
+			background-color: $a-background-color;
+			border-color: $a-border-color;
+		}
+	}
+
+	@include button-color();
+
+	&.--cms-success {
+		@include button-color(
+			var(--text-color),
+			var(--success-color),
+			var(--success-color),
+			var(--text-color),
+			var(--success-color-2),
+			var(--success-color-2),
+			var(--text-color),
+			var(--success-color-3),
+			var(--success-color-3)
+		);
+	}
+
+	&.--cms-error {
+		@include button-color(
+			var(--text-color),
+			var(--error-color),
+			var(--error-color),
+			var(--text-color),
+			var(--error-color-2),
+			var(--error-color-2),
+			var(--text-color),
+			var(--error-color-3),
+			var(--error-color-3)
+		);
+	}
+
+	&.--cms-warning {
+		@include button-color(
+			var(--text-color),
+			var(--warning-color),
+			var(--warning-color),
+			var(--text-color),
+			var(--warning-color-2),
+			var(--warning-color-2),
+			var(--text-color),
+			var(--warning-color-3),
+			var(--warning-color-3)
+		);
+	}
+
+	&.--cms-info {
+		@include button-color(
+			var(--text-color),
+			var(--info-color),
+			var(--info-color),
+			var(--text-color),
+			var(--info-color-2),
+			var(--info-color-2),
+			var(--text-color),
+			var(--info-color-3),
+			var(--info-color-3)
+		);
+	}
+
+	&.--cms-highlight {
+		@include button-color(var(--text-color), var(--background-color-6));
+	}
+
+	&[disabled] {
+		pointer-events: none;
+		opacity: 0.5;
+	}
+}
+
+input,
+textarea,
+select {
+	&[disabled] {
+		pointer-events: none;
+		opacity: 0.5;
 	}
 }
 
@@ -111,6 +220,11 @@ main.--cms-administrator {
 		article.--cms-content {
 			grid-row: 2 / 3;
 			grid-column: 2 / 3;
+
+			display: flex;
+			flex-direction: column;
+
+			overflow: auto;
 		}
 	}
 
@@ -134,12 +248,28 @@ form.--cms-form {
 
 	color: inherit;
 
+	h1,
 	h2 {
 		margin-bottom: var(--margin);
+		align-self: stretch;
+		text-align: center;
 	}
 
 	label {
 		font-weight: 800;
+
+		display: inline-flex;
+		flex-direction: row;
+		align-items: center;
+		gap: var(--gap);
+
+		&[required] {
+			&::after {
+				content: "*";
+				display: inline;
+				color: var(--error-color);
+			}
+		}
 	}
 
 	button {
@@ -154,6 +284,8 @@ form.--cms-form {
 		background-color: var(--background-color);
 		padding: var(--padding);
 		font-size: 1rem;
+		border-radius: var(--gap);
+		margin-bottom: var(--padding);
 
 		&::placeholder {
 			color: var(--background-color-6);
@@ -162,7 +294,6 @@ form.--cms-form {
 
 	&[disabled] {
 		pointer-events: none;
-		opacity: 0.5;
 	}
 }
 

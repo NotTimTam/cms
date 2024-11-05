@@ -3,6 +3,7 @@
 import { setToken } from "@/app/cookies";
 import API from "@/util/API";
 import { emailRegex } from "@/util/regex";
+import { Lock, LogIn, User } from "lucide-react";
 
 export default function Login() {
 	return (
@@ -40,7 +41,7 @@ export default function Login() {
 			<h1>Login</h1>
 
 			<label required htmlFor="username">
-				Username or Email Address
+				<User /> Username or Email Address
 			</label>
 			<input
 				type="text"
@@ -51,7 +52,7 @@ export default function Login() {
 			/>
 
 			<label required htmlFor="password">
-				Password
+				<Lock /> Password
 			</label>
 			<input
 				type="password"
@@ -61,7 +62,9 @@ export default function Login() {
 				required
 			/>
 
-			<button type="submit">Submit</button>
+			<button type="submit">
+				<LogIn /> Login
+			</button>
 		</form>
 	);
 }

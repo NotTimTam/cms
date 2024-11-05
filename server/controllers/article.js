@@ -10,6 +10,9 @@ import { aliasRegex, nameRegex } from "../../util/regex.js";
  */
 export const createArticle = async (req, res) => {
 	try {
+		const {
+			user: { _id: author },
+		} = req;
 		let { name, alias, content } = req.body;
 
 		if (!name) return res.status(400).send('No "name" property provided.');
@@ -30,7 +33,7 @@ export const createArticle = async (req, res) => {
 				.status(422)
 				.send("An article already exists with that alias.");
 
-		const article = new ArticleModel({ name, alias, content });
+		const article = new ArticleModel({ name, alias, content, author });
 
 		await article.save();
 

@@ -3,6 +3,11 @@ import { aliasRegex, nameRegex } from "../../util/regex.js";
 
 const ArticleSchema = new mongoose.Schema(
 	{
+		author: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: [true, "You must provide the Article's author."],
+		},
 		name: {
 			type: String,
 			required: [true, "No Article name provided."],

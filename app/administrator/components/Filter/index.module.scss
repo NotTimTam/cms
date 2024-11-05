@@ -4,6 +4,19 @@ form.--cms-filter-form {
 	flex-wrap: wrap;
 	justify-content: space-between;
 
+	padding: 0;
+
+	gap: var(--gap);
+
+	input {
+		background: none;
+		margin-bottom: 0;
+
+		&::placeholder {
+			color: var(--text-color);
+		}
+	}
+
 	section {
 		display: flex;
 		flex-direction: row;
@@ -27,6 +40,9 @@ nav.--cms-popup-nav {
 	button {
 		justify-content: flex-start;
 		color: var(--background-color);
+
+		border-radius: 0;
+		border: none;
 
 		&:hover {
 			background-color: var(--background-color-6);

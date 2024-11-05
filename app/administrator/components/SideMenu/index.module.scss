@@ -63,6 +63,9 @@ aside.--cms-menu {
 		}
 
 		button.--cms-menu-toggle {
+			border-radius: 0;
+			border: none;
+
 			width: 100%;
 
 			justify-content: flex-start;
@@ -75,6 +78,9 @@ aside.--cms-menu {
 		align-items: stretch;
 
 		a {
+			border-radius: 0;
+			border: none;
+
 			justify-content: flex-start;
 
 			&[aria-selected] {
@@ -123,6 +129,9 @@ aside.--cms-menu {
 				}
 
 				button {
+					border-radius: 0;
+					border: none;
+
 					justify-content: flex-start;
 
 					svg.--cms-menu-section-toggle-indicator {

@@ -1,6 +1,12 @@
 "use client";
 
-import { ChevronDown, CircleHelp, Cog, Ellipsis, Plus } from "lucide-react";
+import {
+	ChevronDown,
+	CircleHelp,
+	Ellipsis,
+	Plus,
+	Settings,
+} from "lucide-react";
 import Link from "next/link";
 
 const Curate = ({ new: newHref = "", actions, options = "", help = "" }) => {
@@ -26,7 +32,7 @@ const Curate = ({ new: newHref = "", actions, options = "", help = "" }) => {
 					className="--cms-button --cms-highlight"
 					disabled={!options}
 				>
-					<Cog /> Options
+					<Settings /> Options
 				</Link>
 
 				<Link

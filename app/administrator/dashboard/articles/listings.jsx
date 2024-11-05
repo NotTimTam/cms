@@ -11,11 +11,13 @@ import API from "@/util/API";
 import {
 	Archive,
 	CheckCircle,
+	ChevronsUpDown,
 	CircleHelp,
 	EllipsisVertical,
 	Sparkles,
 	Square,
 	Trash2,
+	X,
 	XCircle,
 } from "lucide-react";
 import Link from "next/link";
@@ -80,22 +82,54 @@ const Listings = () => {
 						No articles found with that query.
 					</Message>
 				) : (
-					<table>
+					<table className={styles["--cms-listings-table"]}>
 						<thead>
 							<tr>
 								<th>
-									<Square />
+									<button aria-label="Select All">
+										<Square />
+									</button>
 								</th>
 								<th>
-									<EllipsisVertical />
+									<button aria-label="Order">
+										<ChevronsUpDown />
+									</button>
 								</th>
-								<th>FEATURED</th>
-								<th>STATUS</th>
-								<th>TITLE</th>
-								<th>ACCESS</th>
-								<th>AUTHOR</th>
-								<th>DATE CREATED</th>
-								<th>HITS</th>
+								<th>
+									<button aria-label="Featured">
+										Featured <ChevronsUpDown />
+									</button>
+								</th>
+								<th>
+									<button aria-label="Status">
+										Status <ChevronsUpDown />
+									</button>
+								</th>
+								<th>
+									<button aria-label="Title">
+										Title <ChevronsUpDown />
+									</button>
+								</th>
+								<th>
+									<button aria-label="Access">
+										Access <ChevronsUpDown />
+									</button>
+								</th>
+								<th>
+									<button aria-label="Author">
+										Author <ChevronsUpDown />
+									</button>
+								</th>
+								<th>
+									<button aria-label="Date Created">
+										Date Created <ChevronsUpDown />
+									</button>
+								</th>
+								<th>
+									<button aria-label="Hits">
+										Hits <ChevronsUpDown />
+									</button>
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -113,45 +147,63 @@ const Listings = () => {
 									hits,
 								}) => (
 									<tr key={_id}>
-										<th>
-											<Square />
-										</th>
-										<th>
-											<EllipsisVertical />
-										</th>
-										<th>
-											{featured && (
-												<Sparkles color="var(--warning-color)" />
-											)}
-										</th>
-										<th>
-											{(() => {
-												console.log(status);
-												switch (status) {
-													case "published":
-														return (
-															<CheckCircle color="var(--success-color)" />
-														);
-													case "unpublished":
-														return (
-															<XCircle color="var(--error-color)" />
-														);
-													case "trashed":
-														return (
-															<Trash2 color="var(--background-color-6)" />
-														);
-													case "archived":
-														return (
-															<Archive color="var(--info-color)" />
-														);
-													default:
-														return <CircleHelp />;
-												}
-											})()}
-										</th>
-										<th>
+										<td>
+											<button aria-label="Select Article">
+												<Square />
+											</button>
+										</td>
+										<td>
+											<button aria-label="Reorder Article">
+												<EllipsisVertical />
+											</button>
+										</td>
+										<td>
+											<button aria-label="Featured">
+												{featured ? (
+													<Sparkles color="var(--warning-color)" />
+												) : (
+													<X />
+												)}
+											</button>
+										</td>
+										<td>
+											<button aria-label="Status">
+												{(() => {
+													switch (status) {
+														case "published":
+															return (
+																<CheckCircle color="var(--success-color)" />
+															);
+														case "unpublished":
+															return (
+																<XCircle color="var(--error-color)" />
+															);
+														case "trashed":
+															return (
+																<Trash2 color="var(--background-color-6)" />
+															);
+														case "archived":
+															return (
+																<Archive color="var(--info-color)" />
+															);
+														default:
+															return (
+																<CircleHelp />
+															);
+													}
+												})()}
+											</button>
+										</td>
+										<td
+											className={
+												styles[
+													"--cms-article-listing-info"
+												]
+											}
+										>
 											<h3>
 												<Link
+													aria-label="Open Article"
 													href={`/administrator/dashboard/articles?view=edit&id=${_id}`}
 												>
 													{name}
@@ -165,11 +217,15 @@ const Listings = () => {
 													<b>Category:</b> {category}
 												</p>
 											)}
-										</th>
-										<th>{capitalizeWords(access)}</th>
-										<th>{author}</th>
-										<th>{createdAt}</th>
-										<th>{hits}</th>
+										</td>
+										<td>{capitalizeWords(access)}</td>
+										<td>{author}</td>
+										<td>
+											{new Date(
+												createdAt
+											).toLocaleString()}
+										</td>
+										<td>{hits}</td>
 									</tr>
 								)
 							)}

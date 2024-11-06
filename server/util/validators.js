@@ -1,6 +1,8 @@
 import ArticleModel from "../models/Article.js";
+import UserModel from "../models/User.js";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
+import { statusEnum } from "../../util/enum.js";
 
 export class ValidatorError {
 	constructor(code, message) {
@@ -52,6 +54,57 @@ export const validateArticle = async (article) => {
 		throw new ValidatorError(
 			404,
 			"An article already exists with that alias."
+		);
+
+	if (!article.author)
+		throw new ValidatorError(400, "No author ID provided to article.");
+
+	const author = await UserModel.findById(article.author);
+
+	if (!author)
+		throw new ValidatorError(404, "No author user found with that ID.");
+
+	if (!article.content) article.content = "";
+	else if (typeof article.content !== "string")
+		throw new ValidatorError(
+			400,
+			"Invalid article content provided. Expected a string."
+		);
+
+	if (!article.notes) article.notes = "";
+	else if (typeof article.notes !== "string")
+		throw new ValidatorError(
+			400,
+			"Invalid article notes provided. Expected a string."
+		);
+
+	if (!article.featured) article.featured = false;
+	else if (typeof article.featured !== "boolean")
+		throw new ValidatorError(
+			400,
+			'Invalid article "featured" status provided. Expected a boolean.'
+		);
+
+	// Access
+	// Category
+	// Tags
+
+	if (!article.status) article.status = "unpublished";
+	else if (!statusEnum.includes(article.status))
+		throw new ValidatorError(
+			400,
+			`Invalid article status provided. Expected one of: ${statusEnum}`
+		);
+
+	if (!article.hits) article.hits = 0;
+	else if (
+		typeof article.hits !== "number" ||
+		article.hits < 0 ||
+		!Number.isInteger(article.hits)
+	)
+		throw new ValidatorError(
+			400,
+			"Invalid article hits count provided. Expected an integer above 0."
 		);
 
 	return article;

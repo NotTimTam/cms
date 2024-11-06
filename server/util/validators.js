@@ -50,7 +50,14 @@ export const validateArticle = async (article) => {
 			`Invalid article alias provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
 		);
 
-	if (await ArticleModel.findOne({ alias: article.alias }))
+	const existsWithAlias = await ArticleModel.findOne({
+		alias: article.alias,
+	});
+	if (
+		existsWithAlias &&
+		(!article._id ||
+			existsWithAlias._id.toString() !== article._id.toString())
+	)
 		throw new ValidatorError(
 			404,
 			"An article already exists with that alias."

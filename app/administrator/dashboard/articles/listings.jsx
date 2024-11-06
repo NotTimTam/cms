@@ -9,7 +9,7 @@ import List from "../../components/List";
 import Loading from "../../components/Loading";
 import {
 	Archive,
-	CheckCircle,
+	CheckCircle2,
 	ChevronDown,
 	ChevronsUpDown,
 	ChevronUp,
@@ -23,6 +23,7 @@ import styles from "./page.module.scss";
 import Link from "next/link";
 import { capitalizeWords } from "@/util/display";
 import Filter from "../../components/Filter";
+import { getToken } from "@/app/cookies";
 
 let lastQuery;
 
@@ -55,8 +56,38 @@ const Listings = () => {
 					) : (
 						<Sparkle color="var(--background-color-6)" />
 					),
-				(index) =>
-					console.warn("NO LOGIC TO HANDLE FEATURING AN ARTICLE"),
+				async (index) => {
+					setLoading(true);
+
+					setMessage(null);
+
+					try {
+						const token = await getToken();
+
+						const article = articles[index];
+
+						const {
+							data: { article: newArticle },
+						} = await API.patch(
+							API.createRouteURL(API.articles, article._id),
+							{ featured: !article.featured },
+							API.createAuthorizationConfig(token)
+						);
+
+						let newArticleListings = [...articles];
+
+						newArticleListings[index] = newArticle;
+
+						setArticles(newArticleListings);
+					} catch (error) {
+						console.error(error.data);
+						setMessage(
+							<Message type="error">{error.data}</Message>
+						);
+					}
+
+					setLoading(false);
+				},
 				"Featured"
 			),
 		},
@@ -68,7 +99,9 @@ const Listings = () => {
 
 					switch (status) {
 						case "published":
-							return <CheckCircle color="var(--success-color)" />;
+							return (
+								<CheckCircle2 color="var(--success-color)" />
+							);
 						case "unpublished":
 							return <XCircle color="var(--error-color)" />;
 						case "trashed":
@@ -79,8 +112,43 @@ const Listings = () => {
 							return <CircleHelp />;
 					}
 				},
-				(index) =>
-					console.warn("NO LOGIC TO HANDLE CHANGING ARTICLE STATUS"),
+				async (index) => {
+					setLoading(true);
+
+					setMessage(null);
+
+					try {
+						const token = await getToken();
+
+						const article = articles[index];
+
+						const {
+							data: { article: newArticle },
+						} = await API.patch(
+							API.createRouteURL(API.articles, article._id),
+							{
+								status:
+									article.status === "published"
+										? "unpublished"
+										: "published",
+							},
+							API.createAuthorizationConfig(token)
+						);
+
+						let newArticleListings = [...articles];
+
+						newArticleListings[index] = newArticle;
+
+						setArticles(newArticleListings);
+					} catch (error) {
+						console.error(error.data);
+						setMessage(
+							<Message type="error">{error.data}</Message>
+						);
+					}
+
+					setLoading(false);
+				},
 				"Status"
 			),
 		},
@@ -171,9 +239,9 @@ const Listings = () => {
 			} = await API.get(`${API.articles}?${searchParams.toString()}`);
 
 			setArticles(articles);
-		} catch (err) {
-			console.error(err.data);
-			setMessage(<Message type="error">{err.data}</Message>);
+		} catch (error) {
+			console.error(error.data);
+			setMessage(<Message type="error">{error.data}</Message>);
 		}
 
 		setLoading(false);

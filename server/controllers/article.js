@@ -152,14 +152,20 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 			return res.status(404).send(`No article found with id "${id}"`);
 
 		try {
-			req.body = await validateArticle({ ...article, ...req.body });
+			req.body = await validateArticle({
+				...(await ArticleModel.findById(id).lean()),
+				...req.body,
+			});
 		} catch (error) {
 			if (error instanceof ValidatorError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}
 
-		article = { ...article, ...req.body }; // Store new values.
+		// Store new values.
+		for (const [key, value] of Object.entries(req.body)) {
+			article[key] = value;
+		}
 
 		await article.save();
 

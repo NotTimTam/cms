@@ -12,6 +12,7 @@ const Filter = ({
 	executeQuery,
 	disabled,
 	sortingOptions,
+	defaultQuery = {},
 }) => {
 	// Handlers
 	const handleSubmit = (e) => {
@@ -21,7 +22,7 @@ const Filter = ({
 	const handleClear = (e) => {
 		e.preventDefault();
 
-		setQuery({});
+		setQuery(defaultQuery);
 	};
 
 	if (!query)

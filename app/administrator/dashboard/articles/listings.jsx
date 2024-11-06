@@ -26,6 +26,16 @@ import Filter from "../../components/Filter";
 
 let lastQuery;
 
+const defaultQuery = {
+	search: "",
+	page: 0,
+	itemsPerPage: 20,
+	sort: {
+		field: "createdAt",
+		dir: -1,
+	},
+};
+
 const Listings = () => {
 	// Hooks
 	const SessionStorage = new StorageInterface(window.sessionStorage);
@@ -133,17 +143,7 @@ const Listings = () => {
 	const [selection, setSelection] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [articles, setArticles] = useState([]);
-	const [query, setQuery] = useState(
-		articleQuery || {
-			search: "",
-			page: 0,
-			itemsPerPage: 20,
-			sort: {
-				field: "name",
-				dir: 1,
-			},
-		}
-	);
+	const [query, setQuery] = useState(articleQuery || defaultQuery);
 	const [message, setMessage] = useState(null);
 
 	// Functions
@@ -229,7 +229,13 @@ const Listings = () => {
 			) : (
 				<>
 					<Filter
-						{...{ query, setQuery, executeQuery, sortingOptions }}
+						{...{
+							query,
+							setQuery,
+							executeQuery,
+							sortingOptions,
+							defaultQuery,
+						}}
 					/>
 
 					<List

@@ -14,9 +14,7 @@ import jwt from "jsonwebtoken";
  */
 export const loginUser = async (req, res) => {
 	try {
-		const {
-			credentials: { username, email, password },
-		} = req.body;
+		const { username, email, password } = req.body;
 
 		if (!username && !email)
 			return res

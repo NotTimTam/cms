@@ -3,23 +3,25 @@
 import { ChevronDown, Search } from "lucide-react";
 import styles from "./index.module.scss";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
-import { useContext } from "react";
+import { Fragment, useContext } from "react";
 import Message from "../Message";
 
-const Filter = ({ query, setQuery, executeQuery, disabled }) => {
+const Filter = ({
+	query,
+	setQuery,
+	executeQuery,
+	disabled,
+	sortingOptions,
+}) => {
 	// Handlers
 	const handleSubmit = (e) => {
 		e.preventDefault();
-
-		executeQuery();
 	};
 
 	const handleClear = (e) => {
 		e.preventDefault();
 
 		setQuery({});
-
-		executeQuery();
 	};
 
 	if (!query)
@@ -95,8 +97,6 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 								<PopupContent />,
 								[rect.x, rect.bottom]
 							);
-
-							executeQuery();
 						}}
 					>
 						Filter Options <ChevronDown />
@@ -131,45 +131,62 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 									style={{ minWidth: rect.width }}
 								>
 									<nav className={styles["--cms-popup-nav"]}>
-										<button
-											type="button"
-											aria-label="Sort by date created, ascending."
-											onClick={() =>
-												closePopup({
-													field: "createdAt",
-													direction: -1,
-												})
+										{Object.entries(sortingOptions).map(
+											([field, { label }], index) => {
+												return (
+													<Fragment key={index}>
+														<button
+															type="button"
+															aria-label={`${label} Ascending.`}
+															onClick={() =>
+																closePopup({
+																	field,
+																	dir: -1,
+																})
+															}
+														>
+															{label} Ascending
+														</button>
+														<button
+															type="button"
+															aria-label={`${label} Descending.`}
+															onClick={() =>
+																closePopup({
+																	field,
+																	dir: 1,
+																})
+															}
+														>
+															{label} Descending
+														</button>
+													</Fragment>
+												);
 											}
-										>
-											Date Created Ascending
-										</button>
-
-										<button
-											type="button"
-											aria-label="Sort by date created, descending."
-											onClick={() =>
-												closePopup({
-													field: "createdAt",
-													direction: 1,
-												})
-											}
-										>
-											Date Created Descending
-										</button>
+										)}
 									</nav>
 								</div>
 							);
 						};
 
-						const res = await createHeadlessPopup(
+						const sort = await createHeadlessPopup(
 							<PopupContent />,
 							[rect.x, rect.bottom]
 						);
 
-						executeQuery();
+						if (sort) {
+							setQuery({ ...query, sort });
+						}
 					}}
 				>
-					Sort By <ChevronDown />
+					{query.sort ? (
+						<>
+							{sortingOptions[query.sort.field].label}{" "}
+							{query.sort.dir === -1 ? "Ascending" : "Descending"}
+						</>
+					) : (
+						"Sort By"
+					)}
+					<ChevronDown />
 				</button>
 				<button
 					disabled={disabled}
@@ -236,8 +253,6 @@ const Filter = ({ query, setQuery, executeQuery, disabled }) => {
 
 						if (itemsPerPage != null) {
 							setQuery((query) => ({ ...query, itemsPerPage }));
-
-							executeQuery();
 						}
 					}}
 				>

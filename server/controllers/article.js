@@ -2,6 +2,7 @@ import ArticleModel from "../models/Article.js";
 import { nameToAlias } from "../util/alias.js";
 import { handleUnexpectedError } from "../util/controller.js";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
+import { validateArticle, ValidatorError } from "../util/validators.js";
 
 /**
  * Create a new article.
@@ -14,28 +15,17 @@ export const createArticle = async (req, res) => {
 			user: { _id: author },
 		} = req;
 
-		let { status, featured, access, tags, notes, name, alias, content } =
-			req.body;
+		req.body.author = author;
 
-		if (!name) return res.status(400).send("No article name provided.");
+		try {
+			req.body = validateArticle(req.body);
+		} catch (error) {
+			if (error instanceof ValidatorError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
 
-		if (typeof name !== "string" || !nameRegex.test(name))
-			return res.status(400).send("Invalid article name provided.");
-
-		if (!alias) alias = nameToAlias(name);
-		else if (typeof alias !== "string" || !aliasRegex.test(alias))
-			return res
-				.status(400)
-				.send(
-					`Invalid article alias provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
-				);
-
-		if (await ArticleModel.findOne({ alias }))
-			return res
-				.status(422)
-				.send("An article already exists with that alias.");
-
-		const article = new ArticleModel({ name, alias, content, author });
+		const article = new ArticleModel(req.body);
 
 		await article.save();
 
@@ -58,7 +48,7 @@ export const findArticles = async (req, res) => {
 		return res.status(200).json({
 			articles: articles.map((article) => ({
 				...article,
-				author: article.author.name,
+				author: { name: article.author.name, _id: article.author._id },
 			})),
 		});
 	} catch (error) {
@@ -120,38 +110,29 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 	try {
 		const { id } = req.params;
 
+		if (req.body._id && id.toString() !== req.body._id.toString())
+			return res
+				.status(400)
+				.send(
+					'Request body "_id" parameter does not match request "_id" parameter.'
+				);
+
 		const article = await ArticleModel.findById(id);
 
 		if (!article)
 			return res.status(404).send(`No article found with id "${id}"`);
 
-		console.log(req.body);
+		try {
+			req.body = validateArticle(req.body);
+		} catch (error) {
+			if (error instanceof ValidatorError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
 
-		// const { name, alias, content } = req.body;
+		article = { ...article, ...req.body }; // Store new values.
 
-		// if (!name) return res.status(400).send('No "name" property provided.');
-
-		// if (typeof name !== "string" || !nameRegex.test(name))
-		// 	return res.status(400).send('Invalid "name" property provided.');
-
-		// if (!alias) alias = nameToAlias(name);
-		// else if (typeof alias !== "string" || !aliasRegex.test(alias))
-		// 	return res
-		// 		.status(400)
-		// 		.send(
-		// 			`Invalid "alias" property provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
-		// 		);
-
-		// if (await ArticleModel.findOne({ alias }))
-		// 	return res
-		// 		.status(422)
-		// 		.send("An article already exists with that alias.");
-
-		// article.name = name;
-		// article.alias = alias;
-		// article.content = content;
-
-		// await article.save();
+		await article.save();
 
 		return res.status(200).json({ article });
 	} catch (error) {

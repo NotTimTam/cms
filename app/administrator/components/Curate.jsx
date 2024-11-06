@@ -11,7 +11,10 @@ import Link from "next/link";
 
 const Curate = ({ new: newHref = "", actions, options = "", help = "" }) => {
 	return (
-		<nav className="--cms-nav">
+		<nav
+			className="--cms-nav --cms-sticky"
+			style={{ backgroundColor: "var(--background-color)" }}
+		>
 			<section>
 				<Link
 					href={newHref}

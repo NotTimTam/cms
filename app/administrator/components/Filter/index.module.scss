@@ -4,9 +4,14 @@ form.--cms-filter-form {
 	flex-wrap: wrap;
 	justify-content: space-between;
 
-	padding: 0;
+	background-color: var(--background-color-2);
 
 	gap: var(--gap);
+	padding: var(--padding);
+	padding-bottom: 0;
+
+	position: sticky;
+	left: 0;
 
 	input {
 		background: none;
@@ -59,6 +64,8 @@ form.--cms-filter-form {
 nav.--cms-popup-nav {
 	display: flex;
 	flex-direction: column;
+
+	overflow-y: auto;
 
 	a,
 	button {

@@ -191,18 +191,38 @@ const Listings = () => {
 		if (lastQuery) {
 			const parsed = JSON.parse(lastQuery);
 
-			let changed = [];
+			let changed = [
+				...Object.entries(query)
+					.filter(([key, value]) => {
+						const checkValue =
+							typeof parsed[key] === "object"
+								? JSON.stringify(parsed[key])
+								: parsed[key];
+						const currentValue =
+							typeof value === "object"
+								? JSON.stringify(value)
+								: value;
 
-			for (const [key, value] of Object.entries(query)) {
-				const checkValue =
-					typeof parsed[key] === "object"
-						? JSON.stringify(parsed[key])
-						: parsed[key];
-				const currentValue =
-					typeof value === "object" ? JSON.stringify(value) : value;
+						if (checkValue !== currentValue) return true;
+						else return false;
+					})
+					.map(([key]) => key),
+				...Object.entries(parsed)
+					.filter(([key, value]) => {
+						const checkValue =
+							typeof query[key] === "object"
+								? JSON.stringify(query[key])
+								: query[key];
+						const currentValue =
+							typeof value === "object"
+								? JSON.stringify(value)
+								: value;
 
-				if (checkValue !== currentValue) changed.push(key);
-			}
+						if (checkValue !== currentValue) return true;
+						else return false;
+					})
+					.map(([key]) => key),
+			];
 
 			changed = changed.filter((key) => key !== "search");
 

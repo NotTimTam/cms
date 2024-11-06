@@ -74,8 +74,8 @@ const Listings = () => {
 				"Status"
 			),
 		},
-		title: {
-			label: "Title",
+		name: {
+			label: "Name",
 			listing: new List.Element((index) => {
 				const { name, alias, category, _id } = articles[index];
 
@@ -136,9 +136,10 @@ const Listings = () => {
 	const [query, setQuery] = useState(
 		articleQuery || {
 			search: "",
+			page: 0,
 			itemsPerPage: 20,
 			sort: {
-				field: "title",
+				field: "name",
 				dir: 1,
 			},
 		}
@@ -152,10 +153,22 @@ const Listings = () => {
 		try {
 			SessionStorage.setItem("articleQuery", query); // Remember this query.
 
+			// Calculate search params.
+			const { search, page, itemsPerPage, sort } = query;
+			const searchParams = new URLSearchParams();
+
+			if (search) searchParams.append("search", search);
+			if (page) searchParams.append("page", page);
+			if (itemsPerPage) searchParams.append("itemsPerPage", itemsPerPage);
+			if (sort) {
+				searchParams.append("sortField", sort.field);
+				searchParams.append("sortDir", sort.dir);
+			}
+
 			// Get articles.
 			const {
 				data: { articles },
-			} = await API.get(API.articles);
+			} = await API.get(`${API.articles}?${searchParams.toString()}`);
 
 			setArticles(articles);
 		} catch (err) {

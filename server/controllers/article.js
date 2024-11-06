@@ -1,7 +1,6 @@
 import ArticleModel from "../models/Article.js";
-import { nameToAlias } from "../util/alias.js";
 import { handleUnexpectedError } from "../util/controller.js";
-import { aliasRegex, nameRegex } from "../../util/regex.js";
+import { sortEnum } from "../../util/enum.js";
 import { validateArticle, ValidatorError } from "../util/validators.js";
 
 /**
@@ -18,7 +17,7 @@ export const createArticle = async (req, res) => {
 		req.body.author = author;
 
 		try {
-			req.body = validateArticle(req.body);
+			req.body = await validateArticle(req.body);
 		} catch (error) {
 			if (error instanceof ValidatorError)
 				return res.status(error.code).send(error.message);
@@ -40,7 +39,37 @@ export const createArticle = async (req, res) => {
  */
 export const findArticles = async (req, res) => {
 	try {
-		const articles = await ArticleModel.find({})
+		const {
+			search,
+			page = 0,
+			itemsPerPage = 20,
+			sortField = "createdAt",
+			sortDir = "-1",
+		} = req.query;
+
+		if (!sortEnum.includes(sortField))
+			return res
+				.status(400)
+				.send(
+					`Invalid "sortField" provided. Must be one of: ${sortEnum}`
+				);
+		if (sortDir !== "-1" && sortDir !== "1")
+			return res
+				.status(400)
+				.send(
+					'Invalid "sortDir" provided. Expected either "-1" or "1".'
+				);
+
+		const query = {};
+
+		if (search)
+			query["$or"] = [
+				{ name: { $regex: search, $options: "i" } },
+				{ alias: { $regex: search, $options: "i" } },
+			];
+
+		const articles = await ArticleModel.find(query)
+			.sort({ [sortField]: +sortDir })
 			.select("+status")
 			.populate("author")
 			.lean();
@@ -123,7 +152,7 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 			return res.status(404).send(`No article found with id "${id}"`);
 
 		try {
-			req.body = validateArticle(req.body);
+			req.body = await validateArticle(req.body);
 		} catch (error) {
 			if (error instanceof ValidatorError)
 				return res.status(error.code).send(error.message);

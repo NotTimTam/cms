@@ -11,6 +11,7 @@ import {
 	List,
 	Logs,
 	Menu,
+	Notebook,
 	Parentheses,
 	Plus,
 	SquareStack,
@@ -257,6 +258,28 @@ const menu = (siteMenus, siteExtensions) =>
 				},
 				{
 					type: "d",
+				},
+				{
+					type: "a",
+					title: "Fields",
+					label: (
+						<>
+							<TextCursorInput />
+							<span>Fields</span>
+						</>
+					),
+					href: "/administrator/dashboard/users/fields",
+				},
+				{
+					type: "a",
+					title: "Field Groups",
+					label: (
+						<>
+							<Parentheses />
+							<span>Field Groups</span>
+						</>
+					),
+					href: "/administrator/dashboard/users/fieldgroups",
 				},
 			],
 		},

@@ -189,7 +189,7 @@ const Listings = () => {
 			label: "Author",
 			listing: new List.Element((index) => (
 				<Link
-					href={`/administrator/dashboard/users/${articles[index].author._id}`}
+					href={`/administrator/dashboard/users?view=edit&id=${articles[index].author._id}`}
 				>
 					{articles[index].author.name}
 				</Link>

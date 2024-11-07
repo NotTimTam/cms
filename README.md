@@ -62,3 +62,15 @@ The designations front-end, and back-end, refer not to application architecture 
     -   Create notices about not storing confidential data within CMS.
     -   Create notices about not pasting JavaScript from the web.
     -   Can extensions add custom data to your database?
+-   (J) extension equivalents:
+    -   Contacts/Directory
+    -   JSitemap PRO
+    -   DOCman
+    -   Events Booking
+    -   JFilters
+    -   JLex Helpful
+    -   My Maps Location
+    -   News Feed (blog?)
+    -   PWT ACL
+    -   SEO Glossary
+    -   Smart Search (built-in?)

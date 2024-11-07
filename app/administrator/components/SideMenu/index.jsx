@@ -129,7 +129,7 @@ const SideMenu = () => {
 					aria-label="Toggle Menu"
 				>
 					{expanded ? <ToggleRight /> : <ToggleLeft />}
-					{expanded && "Toggle Menu"}
+					<span>Toggle Menu</span>
 				</button>
 			</header>
 

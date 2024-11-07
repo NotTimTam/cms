@@ -146,14 +146,18 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 					'Request body "_id" parameter does not match request "_id" parameter.'
 				);
 
-		const article = await ArticleModel.findById(id);
+		const article = await ArticleModel.findById(id).select(
+			"+status +notes"
+		);
 
 		if (!article)
 			return res.status(404).send(`No article found with id "${id}"`);
 
 		try {
 			req.body = await validateArticle({
-				...(await ArticleModel.findById(id).lean()),
+				...(await ArticleModel.findById(id)
+					.select("+status +notes")
+					.lean()),
 				...req.body,
 			});
 		} catch (error) {

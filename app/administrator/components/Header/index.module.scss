@@ -1,9 +1,19 @@
+@use "@/app/administrator/vars.scss" as *;
+
 header.--cms-header {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
 	flex-wrap: wrap;
+
+	grid-column: 2 / 3;
+	grid-row: 1 / 2;
+
+	@media (max-width: $tablet) {
+		grid-row: 1 / 2;
+		grid-column: 1 / 2;
+	}
 
 	gap: var(--padding);
 

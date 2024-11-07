@@ -1,18 +1,22 @@
 "use client";
 
-import StorageInterface from "@/util/StorageInterface";
 import {
-	BadgeInfo,
 	Blocks,
+	CircleHelp,
 	FileCode2,
 	FileText,
 	FolderClosed,
 	Home,
+	Images,
 	Menu,
+	Parentheses,
+	Plus,
+	SquareStack,
+	TextCursorInput,
 	Users,
 	Wrench,
 } from "lucide-react";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 const menu = [
 	{
@@ -47,6 +51,66 @@ const menu = [
 					</>
 				),
 				href: "/administrator/dashboard/articles",
+				quickLink: {
+					icon: <Plus />,
+					href: "/administrator/dashboard/articles?view=edit",
+					ariaLabel: "Create New Article",
+				},
+			},
+			{
+				type: "a",
+				title: "Categories",
+				label: (
+					<>
+						<SquareStack />
+						<span>Categories</span>
+					</>
+				),
+				href: "/administrator/dashboard/categories",
+				quickLink: {
+					icon: <Plus />,
+					href: "/administrator/dashboard/categories?view=edit",
+					ariaLabel: "Create New Category",
+				},
+			},
+			{
+				type: "d",
+			},
+			{
+				type: "a",
+				title: "Fields",
+				label: (
+					<>
+						<TextCursorInput />
+						<span>Fields</span>
+					</>
+				),
+				href: "/administrator/dashboard/fields",
+			},
+			{
+				type: "a",
+				title: "Field Groups",
+				label: (
+					<>
+						<Parentheses />
+						<span>Field Groups</span>
+					</>
+				),
+				href: "/administrator/dashboard/fieldgroups",
+			},
+			{
+				type: "d",
+			},
+			{
+				type: "a",
+				title: "Media",
+				label: (
+					<>
+						<Images />
+						<span>Media</span>
+					</>
+				),
+				href: "/administrator/dashboard/media",
 			},
 			{
 				type: "a",
@@ -58,6 +122,11 @@ const menu = [
 					</>
 				),
 				href: "/administrator/dashboard/modules",
+				quickLink: {
+					icon: <Plus />,
+					href: "/administrator/dashboard/modules?view=edit",
+					ariaLabel: "Create New Module",
+				},
 			},
 		],
 	},
@@ -136,7 +205,7 @@ const menu = [
 		title: "Help",
 		label: (
 			<>
-				<BadgeInfo />
+				<CircleHelp />
 				<span>Help</span>
 			</>
 		),

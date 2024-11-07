@@ -10,8 +10,12 @@ aside.--cms-menu {
 
 	background-color: var(--background-color-1);
 
+	hr {
+		padding: 0;
+	}
+
 	&[aria-expanded] {
-		> header.--cms-menu-header {
+		header.--cms-menu-header {
 			h2 {
 				span {
 					display: block;
@@ -25,10 +29,12 @@ aside.--cms-menu {
 			}
 		}
 
-		> nav.--cms-menu-nav {
-			a {
-				span {
-					display: block;
+		nav.--cms-menu-nav {
+			div.--cms-button-group {
+				a {
+					span {
+						display: flex;
+					}
 				}
 			}
 			section.--cms-menu-section {
@@ -52,7 +58,7 @@ aside.--cms-menu {
 		flex-direction: column;
 		align-items: stretch;
 
-		background-color: var(--background-color-2);
+		background-color: var(--background-color-3);
 
 		h2 {
 			padding: var(--padding);
@@ -89,20 +95,35 @@ aside.--cms-menu {
 		flex-direction: column;
 		align-items: stretch;
 
-		a {
-			border-radius: 0;
-			border: none;
+		div.--cms-button-group {
+			display: flex;
+			flex-direction: row;
+			a {
+				border-radius: 0;
+				border: none;
 
-			justify-content: flex-start;
+				justify-content: flex-start;
 
-			&[aria-selected] {
-				&:not(:hover) {
-					background-color: var(--background-color-4);
+				&[aria-selected] {
+					&:not(:hover) {
+						background-color: var(--background-color-5);
+					}
 				}
-			}
 
-			span {
-				display: none;
+				span {
+					display: none;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+				}
+
+				&:not(.--cms-quick-link) {
+					flex-grow: 2;
+				}
+
+				&.--cms-quick-link {
+					// aspect-ratio: 1 / 1;
+				}
 			}
 		}
 
@@ -115,7 +136,7 @@ aside.--cms-menu {
 				header.--cms-menu-section-header {
 					button {
 						&:not(:hover) {
-							background-color: var(--background-color-3);
+							background-color: var(--background-color-4);
 						}
 
 						svg.--cms-menu-section-toggle-indicator {
@@ -156,7 +177,7 @@ aside.--cms-menu {
 			}
 
 			div.--cms-menu-section-content {
-				background-color: var(--background-color-2);
+				background-color: var(--background-color-3);
 				display: none;
 			}
 		}

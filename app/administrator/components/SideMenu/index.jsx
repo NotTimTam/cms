@@ -81,19 +81,29 @@ const SideMenu = () => {
 	}, [expanded]);
 
 	const menuMapper = (item, index) => {
-		const { type, title, label, href, content } = item;
+		const { type, title, label, href, content, quickLink } = item;
 
 		if (type === "a")
 			return (
-				<Link
-					className="--cms-button"
-					aria-selected={href === pathname ? "true" : undefined}
-					key={index}
-					aria-label={title}
-					href={href}
-				>
-					{label}
-				</Link>
+				<div key={index} className={styles["--cms-button-group"]}>
+					<Link
+						className="--cms-button"
+						aria-selected={href === pathname ? "true" : undefined}
+						aria-label={title}
+						href={href}
+					>
+						{label}
+					</Link>
+					{quickLink && (
+						<Link
+							className={`--cms-button ${styles["--cms-quick-link"]}`}
+							aria-label={quickLink.ariaLabel}
+							href={quickLink.href}
+						>
+							<span>{quickLink.icon}</span>
+						</Link>
+					)}
+				</div>
 			);
 		else if (type === "s")
 			return (
@@ -109,6 +119,7 @@ const SideMenu = () => {
 					{content && content.map(menuMapper)}
 				</SideMenuSection>
 			);
+		else if (type === "d") return <hr key={index} />;
 	};
 
 	return (

@@ -68,6 +68,8 @@ a.--cms-button {
 
 	font-size: 1rem;
 
+	user-select: none;
+
 	padding: var(--padding);
 
 	text-decoration: none;
@@ -190,6 +192,17 @@ select {
 
 svg {
 	color: var(--text-color);
+}
+
+hr {
+	padding-top: var(--padding);
+	padding-bottom: var(--padding);
+	&::after {
+		content: "";
+		border-bottom: 1px solid var(--border-color);
+		display: block;
+		width: 100%;
+	}
 }
 
 // html {

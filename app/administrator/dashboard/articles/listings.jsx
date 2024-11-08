@@ -292,9 +292,7 @@ const Listings = () => {
 			const searchParams = API.createQueryString(query);
 
 			// Batch through articles.
-			const {
-				data: { articles: updatedArticles },
-			} = await API.patch(
+			await API.patch(
 				`${API.createRouteURL(
 					API.articles,
 					"batch"
@@ -305,25 +303,7 @@ const Listings = () => {
 				API.createAuthorizationConfig(token)
 			);
 
-			let newArticles = [...articles];
-
-			for (const newArticle of updatedArticles) {
-				const indexInArticles = articles
-					.map(({ _id }) => _id)
-					.indexOf(newArticle._id);
-
-				if (indexInArticles !== -1) {
-					let combinedArticle = { ...articles[indexInArticles] };
-
-					for (const key of Object.keys(patch)) {
-						combinedArticle[key] = newArticle[key];
-					}
-
-					newArticles[indexInArticles] = combinedArticle;
-				}
-			}
-
-			setArticles(newArticles);
+			await executeQuery();
 		} catch (error) {
 			console.error(error);
 			setMessage(<Message type="error">{error.data}</Message>);

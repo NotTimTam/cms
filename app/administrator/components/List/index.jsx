@@ -22,16 +22,23 @@ import {
 } from "@dnd-kit/sortable";
 
 const SortableItem = (props) => {
-	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({
-			id: props.id,
-			disabled: !props.order || props.order.disabled,
-		});
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({
+		id: props.id,
+		disabled: !props.order || props.order.disabled,
+	});
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
 		gridColumn: props.gridColumn,
+		cursor: isDragging ? "grabbing" : "pointer",
 	};
 
 	return (
@@ -189,7 +196,7 @@ const List = ({
 							onDragEnd={handleDragEnd}
 						>
 							<SortableContext
-								items={items}
+								items={items.map(({ _id }) => _id)}
 								strategy={verticalListSortingStrategy}
 							>
 								{items.map(({ _id }, itemIndex) => (

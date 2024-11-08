@@ -1,3 +1,5 @@
+@use "@/app/administrator/vars.scss" as *;
+
 form.--cms-filter-form {
 	flex-direction: row;
 
@@ -87,12 +89,13 @@ div.--cms-filter-options-popup-content {
 	form.--cms-filter-options-form {
 		background-color: var(--border-color);
 		border-radius: var(--gap);
+		gap: var(--gap);
 
 		max-height: 100%;
 
 		overflow: auto;
 
-		max-width: var(--mobile-l);
+		max-width: $mobile-l;
 		width: 100%;
 
 		> section {
@@ -101,22 +104,68 @@ div.--cms-filter-options-popup-content {
 			flex-wrap: wrap;
 			gap: var(--gap);
 
-			span.--cms-filter-options-form-input-group {
+			div.--cms-filter-options-form-option {
 				display: flex;
-				flex-direction: row;
+				flex-direction: column;
 				align-items: stretch;
 
-				input {
-					margin: 0;
-					border: none;
-					border-top-right-radius: 0;
-					border-bottom-right-radius: 0;
+				flex-grow: 2;
+
+				&[aria-expanded] {
+					span.--cms-filter-options-form-input-group {
+						input {
+							border-bottom-left-radius: 0;
+						}
+
+						button {
+							border-bottom-right-radius: 0;
+							border-bottom: 1px solid var(--background-color);
+							svg {
+								transform: rotate(-180deg);
+							}
+						}
+					}
 				}
 
-				button {
-					border-top-left-radius: 0;
-					border-bottom-left-radius: 0;
+				span.--cms-filter-options-form-input-group {
+					display: flex;
+					flex-direction: row;
+					align-items: stretch;
+
+					width: 100%;
+
+					input {
+						flex-grow: 2;
+						margin: 0;
+						border: none;
+						border-top-right-radius: 0;
+						border-bottom-right-radius: 0;
+					}
+
+					button {
+						border-top-left-radius: 0;
+						border-bottom-left-radius: 0;
+
+						svg {
+							transition: transform 0.15s ease-in-out;
+						}
+					}
 				}
+
+				div.--cms-filter-option-results {
+					border: 1px solid var(--background-color);
+					border-top: none;
+					border-radius: 0;
+					border-bottom-left-radius: var(--gap);
+					border-bottom-right-radius: var(--gap);
+					margin-top: 0;
+
+					z-index: 2;
+				}
+			}
+
+			> button {
+				flex-grow: 2;
 			}
 		}
 	}

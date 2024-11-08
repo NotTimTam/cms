@@ -2,10 +2,14 @@ import { LoaderCircle } from "lucide-react";
 
 import styles from "./index.module.scss";
 
-const Loading = () => {
+const Loading = ({ color, size }) => {
 	return (
 		<div className={styles["--cms-loading-container"]}>
-			<LoaderCircle className={styles["--cms-loading-spinner"]} />
+			<LoaderCircle
+				color={color}
+				size={size}
+				className={styles["--cms-loading-spinner"]}
+			/>
 		</div>
 	);
 };

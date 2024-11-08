@@ -10,14 +10,25 @@ div.--cms-message {
 		--color: var(--success-color);
 	}
 
+	color: var(--color);
 	border: 1px solid var(--color);
 	border-radius: var(--padding);
 
-	svg {
-		color: var(--color);
+	padding: var(--padding);
+
+	&[fill] {
+		color: var(--text-color);
+		background-color: var(--color);
 	}
 
-	padding: var(--padding);
+	p.--cms-message-content {
+		max-width: 100%;
+		color: inherit;
+	}
+
+	svg {
+		color: inherit;
+	}
 
 	display: flex;
 	flex-direction: row;
@@ -29,9 +40,4 @@ div.--cms-message {
 	overflow: hidden;
 
 	max-width: 100%;
-
-	p.--cms-message-content {
-		max-width: 100%;
-		color: var(--color);
-	}
 }

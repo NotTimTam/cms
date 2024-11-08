@@ -11,7 +11,7 @@ import {
 	List,
 	Logs,
 	Menu,
-	Notebook,
+	Package,
 	Parentheses,
 	Plus,
 	SquareStack,
@@ -25,10 +25,10 @@ import { createContext, useState } from "react";
 /**
  * Create the administrator side menu.
  * @param {Array} siteMenus Array of the menus on the site.
- * @param {Array} siteExtensions Array of the extensions on the site.
+ * @param {Array} sitePlugins Array of the plugins on the site.
  * @returns {Array} A menu array to be rendered for administrator.
  */
-const menu = (siteMenus, siteExtensions) =>
+const menu = (siteMenus, sitePlugins) =>
 	[
 		{
 			type: "a",
@@ -123,7 +123,7 @@ const menu = (siteMenus, siteExtensions) =>
 							<span>Field Groups</span>
 						</>
 					),
-					href: "/administrator/dashboard/fieldgroups",
+					href: "/administrator/dashboard/fields?view=groups",
 				},
 				{
 					type: "d",
@@ -188,7 +188,7 @@ const menu = (siteMenus, siteExtensions) =>
 							<span>Menu Items</span>
 						</>
 					),
-					href: "/administrator/dashboard/menus/items",
+					href: "/administrator/dashboard/menus?view=items",
 				},
 				...(siteMenus && siteMenus.length > 0
 					? [{ type: "d" }, ...siteMenus]
@@ -196,17 +196,29 @@ const menu = (siteMenus, siteExtensions) =>
 			],
 		},
 
-		siteExtensions &&
-			siteExtensions.length > 0 && {
-				type: "s",
-				title: "Extensions",
-				label: (
-					<>
-						<Blocks />
-						<span>Extensions</span>
-					</>
-				),
-			},
+		{
+			type: "s",
+			title: "Plugins",
+			label: (
+				<>
+					<Blocks />
+					<span>Plugins</span>
+				</>
+			),
+			content: [
+				{
+					type: "a",
+					title: "Manage",
+					label: (
+						<>
+							<Package />
+							<span>Manage</span>
+						</>
+					),
+					href: "/administrator/dashboard/plugins",
+				},
+			],
+		},
 
 		{
 			type: "s",
@@ -243,7 +255,7 @@ const menu = (siteMenus, siteExtensions) =>
 							<span>Groups</span>
 						</>
 					),
-					href: "/administrator/dashboard/users/groups",
+					href: "/administrator/dashboard/users?view=groups",
 				},
 				{
 					type: "a",
@@ -254,7 +266,7 @@ const menu = (siteMenus, siteExtensions) =>
 							<span>Roles</span>
 						</>
 					),
-					href: "/administrator/dashboard/users/roles",
+					href: "/administrator/dashboard/users?view=roles",
 				},
 				{
 					type: "d",
@@ -268,7 +280,7 @@ const menu = (siteMenus, siteExtensions) =>
 							<span>Fields</span>
 						</>
 					),
-					href: "/administrator/dashboard/users/fields",
+					href: "/administrator/dashboard/users?view=fields",
 				},
 				{
 					type: "a",
@@ -279,7 +291,7 @@ const menu = (siteMenus, siteExtensions) =>
 							<span>Field Groups</span>
 						</>
 					),
-					href: "/administrator/dashboard/users/fieldgroups",
+					href: "/administrator/dashboard/users?view=fieldgroups",
 				},
 			],
 		},

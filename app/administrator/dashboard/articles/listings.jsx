@@ -22,6 +22,7 @@ import Link from "next/link";
 import { capitalizeWords } from "@/util/display";
 import Filter from "../../components/Filter";
 import { getToken } from "@/app/cookies";
+import { statusEnum } from "@/util/enum";
 
 let lastQuery;
 
@@ -298,25 +299,49 @@ const Listings = () => {
 		{
 			readOnly: true,
 			ariaLabel: "Featured",
+			getter: {
+				type: "static",
+				data: [
+					{
+						id: false,
+						label: "Unfeatured",
+					},
+					{
+						id: true,
+						label: "Featured",
+					},
+				],
+			},
 		},
 		{
 			ariaLabel: "Status",
+			getter: {
+				type: "static",
+				data: statusEnum.map((item) => ({
+					id: item,
+					label: capitalizeWords(item),
+				})),
+			},
 		},
 
 		{
 			ariaLabel: "Category",
+			getter: {},
 		},
 
 		{
 			ariaLabel: "Access",
+			getter: {},
 		},
 
 		{
 			ariaLabel: "Author",
+			getter: {},
 		},
 
 		{
 			ariaLabel: "Tag",
+			getter: {},
 		},
 
 		// {

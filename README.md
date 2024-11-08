@@ -12,7 +12,7 @@ To create an interface for content curation and elegant front-end GUI for users 
 -   Menu Item &mdash; A "place" on the site, generally a page. Can display an article, module, or some other predefined (user-customizable) content type, such as a blog layout. Menu Items can be found in a menu structure, or standalone.
 -   Article &mdash; A large piece of content, generally viewed within the context of a page or blog list, can be searched through, and can be unassociated with any page.
 -   Module &mdash; A piece of content found within a page. Can be in the body of an article, or at a **position** on the page. Various types of core/extended modules can be defined, and the user has input over them. A "custom" module or "article-like" module should exist that functions like an article for open-ended input.
--   Extension &mdash; An extension will extend the features of the site in some way. They can introduce new modules, menu item types, or overall features. They should be universally installable, and able to access and manipulate the API of the site with permission.
+-   Plugin &mdash; A plugin will extend the features of the site in some way. They can introduce new modules, menu item types, or overall features. They should be universally installable, and able to access and manipulate the API of the site with permission.
 -   Template &mdash; Templates determine how the content of each page should display, what the site's page positions should be, etc. Should follow a rigid structure.
 -   User &mdash; A user on the site. Can be a front-end or back-end user.
 -   Category
@@ -41,16 +41,16 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Automatic search archival.
 -   Analytics and Accessibility integration.
 -   Drag/Drop article editor, a cross between wordpress and SP Page Builder?
--   CMS-level update system as well as extension update system. CMS level update system may have to update database models automatically.
+-   CMS-level update system as well as Plugin update system. CMS level update system may have to update database models automatically.
 -   User creatable/exportable/uploadable templates.
 -   Global template and templates for specific menu items.
 -   User management as well as role and permission definitions.
--   Extension installer.
+-   Plugin installer.
 -   Front-end icon pack support?
 -   Global Configuration, can be used to define password validation regex, and user experience on the back-end/front-end.
 -   Favicon/Metadata control. Perhaps at template level.
 -   Bcrypt Salt Length in env.
--   Modules/Extensions
+-   Modules/Plugins
     -   User feedback module.
     -   Form module.
         -   Data should be trackable, and form should have some sort of event that occurs when it is filled out. Perhaps a JavaScript method will fire?
@@ -62,9 +62,9 @@ The designations front-end, and back-end, refer not to application architecture 
     -   Stop robots from mapping administrator routes.
     -   Create notices about not storing confidential data within CMS.
     -   Create notices about not pasting JavaScript from the web.
-    -   Can extensions add custom data to your database?
+    -   Can plugins add custom data to your database?
 -   Store admin menu toggle state (and potentially dropdowns) in SessionStorage.
--   (J) extension equivalents:
+-   (J) extension (plugin) equivalents:
     -   Contacts/Directory
     -   JSitemap PRO
     -   DOCman

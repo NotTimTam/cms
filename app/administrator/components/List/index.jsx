@@ -20,6 +20,7 @@ import {
 	verticalListSortingStrategy,
 	useSortable,
 } from "@dnd-kit/sortable";
+import Paginate from "../Paginate";
 
 const SortableItem = (props) => {
 	const {
@@ -273,6 +274,10 @@ const List = ({
 						</DndContext>
 					</main>
 				</div>
+			)}
+
+			{query.itemsPerPage !== "all" && (
+				<Paginate {...{ query, setQuery }} />
 			)}
 		</section>
 	);

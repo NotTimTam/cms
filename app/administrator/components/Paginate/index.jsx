@@ -5,12 +5,12 @@ const Paginate = ({ query, setQuery }) => {
 	const { page = 0, numPages = 1 } = query;
 
 	const span = [page - 1, page, page + 1, page + 2, page + 3].filter(
-		(f) => f > 0 && f <= numPages
+		(f) => f >= 0 && f <= numPages - 1
 	);
 
 	return (
 		<nav className={styles["--cms-paginate"]}>
-			{page > 0 && numPages > 1 && (
+			{page > 0 && numPages > 1 && !span.includes(0) && (
 				<button
 					onClick={() =>
 						setQuery((query) => ({
@@ -26,12 +26,12 @@ const Paginate = ({ query, setQuery }) => {
 				</button>
 			)}
 			{span.map((pageButton) =>
-				pageButton === page + 1 ? (
+				pageButton === page ? (
 					<div
 						key={pageButton}
 						className={styles["--cms-paginate-current-page"]}
 					>
-						{pageButton}
+						{pageButton + 1}
 					</div>
 				) : (
 					<button
@@ -39,31 +39,33 @@ const Paginate = ({ query, setQuery }) => {
 						onClick={() =>
 							setQuery((query) => ({
 								...query,
-								page: pageButton - 1,
+								page: pageButton,
 							}))
 						}
-						aria-label={`Page ${pageButton}`}
+						aria-label={`Page ${pageButton + 1}`}
 						className={`--cms-info ${styles["--cms-paginate-page"]}`}
 					>
-						{pageButton}
+						{pageButton + 1}
 					</button>
 				)
 			)}
-			{page < numPages - 1 && numPages > 1 && (
-				<button
-					onClick={() =>
-						setQuery((query) => ({
-							...query,
-							page: numPages - 1,
-						}))
-					}
-					aria-label="Last"
-					className="--cms-highlight"
-				>
-					Last
-					<ChevronRight />
-				</button>
-			)}
+			{page < numPages - 1 &&
+				numPages > 1 &&
+				!span.includes(numPages - 1) && (
+					<button
+						onClick={() =>
+							setQuery((query) => ({
+								...query,
+								page: numPages - 1,
+							}))
+						}
+						aria-label="Last"
+						className="--cms-highlight"
+					>
+						Last
+						<ChevronRight />
+					</button>
+				)}
 		</nav>
 	);
 };

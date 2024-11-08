@@ -22,7 +22,6 @@ import Link from "next/link";
 import { capitalizeWords } from "@/util/display";
 import Filter from "../../components/Filter";
 import { getToken } from "@/app/cookies";
-import Paginate from "../../components/Paginate";
 
 let lastQuery;
 
@@ -460,6 +459,25 @@ const Listings = () => {
 							setQuery,
 							executeQuery,
 							sortingOptions,
+							filterOptions: [
+								/**
+								 * Select Featured
+								 * Select Status
+								 * Select Category
+								 * Select Access
+								 * Select Author
+								 * Select Tag
+								 * Select Max Levels
+								 *
+								 * group of dropdowns with darker background
+								 * each dropdown is both a text input for filtration, and a selection list. In the case of authors, the dropdown shows the word "None" and the top 5 authors on the site.
+								 */
+								{
+									label: "",
+									ariaLabel: "",
+									callback: () => {},
+								},
+							],
 							defaultQuery,
 						}}
 					/>
@@ -510,8 +528,6 @@ const Listings = () => {
 							},
 						}}
 					/>
-
-					<Paginate {...{ query, setQuery }} />
 				</>
 			)}
 		</>

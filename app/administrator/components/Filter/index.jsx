@@ -12,6 +12,7 @@ const Filter = ({
 	executeQuery,
 	disabled,
 	sortingOptions,
+	filterOptions,
 	defaultQuery = {},
 }) => {
 	// Handlers
@@ -64,7 +65,11 @@ const Filter = ({
 				</span>
 				<span>
 					<button
-						disabled={disabled}
+						disabled={
+							disabled ||
+							!filterOptions ||
+							filterOptions.length === 0
+						}
 						type="button"
 						className={`--cms-info --cms-popup-trigger ${styles["--cms-filter-form-search-tools"]}`}
 						aria-label="Search Tools"
@@ -80,11 +85,29 @@ const Filter = ({
 										style={{ minWidth: rect.width }}
 									>
 										<nav className="--cms-popup-nav">
-											<ul>
-												<li>Category</li>
-												<li>Tag</li>
-												<li>Author</li>
-											</ul>
+											{sortingOptions.map(
+												(
+													{
+														label,
+														ariaLabel,
+														callback,
+													},
+													index
+												) => {
+													return (
+														<button
+															key={index}
+															type="button"
+															aria-label={
+																ariaLabel
+															}
+															onClick={callback}
+														>
+															{label}
+														</button>
+													);
+												}
+											)}
 										</nav>
 									</div>
 								);
@@ -112,7 +135,11 @@ const Filter = ({
 
 			<section>
 				<button
-					disabled={disabled}
+					disabled={
+						disabled ||
+						!sortingOptions ||
+						sortingOptions.length === 0
+					}
 					type="button"
 					aria-label="Sort By"
 					className="--cms-highlight --cms-popup-trigger"
@@ -197,12 +224,16 @@ const Filter = ({
 							const closePopup = useContext(PopupContext);
 
 							const potentialItemsPerPage = [
+								5,
+								10,
+								15,
 								20,
+								25,
+								30,
 								50,
 								100,
 								200,
 								500,
-								1000,
 								"all",
 							];
 

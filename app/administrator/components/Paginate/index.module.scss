@@ -5,7 +5,6 @@ nav.--cms-paginate {
 	flex-direction: row;
 	align-items: stretch;
 	gap: var(--padding);
-	padding: var(--padding);
 	flex-wrap: wrap;
 
 	div.--cms-paginate-current-page {
@@ -21,6 +20,8 @@ nav.--cms-paginate {
 
 		height: 100%;
 		aspect-ratio: 1 / 1;
+
+		min-height: 42px;
 	}
 
 	button.--cms-paginate-page {

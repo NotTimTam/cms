@@ -66,7 +66,7 @@ const Filter = ({
 					<button
 						disabled={disabled}
 						type="button"
-						className={`--cms-info ${styles["--cms-filter-form-search-tools"]}`}
+						className={`--cms-info --cms-popup-trigger ${styles["--cms-filter-form-search-tools"]}`}
 						aria-label="Search Tools"
 						onClick={async (e) => {
 							const rect = e.target.getBoundingClientRect();
@@ -79,11 +79,7 @@ const Filter = ({
 										className="--cms-popup-content"
 										style={{ minWidth: rect.width }}
 									>
-										<nav
-											className={
-												styles["--cms-popup-nav"]
-											}
-										>
+										<nav className="--cms-popup-nav">
 											<ul>
 												<li>Category</li>
 												<li>Tag</li>
@@ -119,7 +115,7 @@ const Filter = ({
 					disabled={disabled}
 					type="button"
 					aria-label="Sort By"
-					className="--cms-highlight"
+					className="--cms-highlight --cms-popup-trigger"
 					onClick={async (e) => {
 						const rect = e.target.getBoundingClientRect();
 
@@ -131,7 +127,7 @@ const Filter = ({
 									className="--cms-popup-content"
 									style={{ minWidth: rect.width }}
 								>
-									<nav className={styles["--cms-popup-nav"]}>
+									<nav className="--cms-popup-nav">
 										{Object.entries(sortingOptions).map(
 											([field, { label }], index) => {
 												return (
@@ -192,7 +188,7 @@ const Filter = ({
 				<button
 					disabled={disabled}
 					type="button"
-					className="--cms-highlight"
+					className="--cms-highlight --cms-popup-trigger"
 					aria-label="Items Per Page"
 					onClick={async (e) => {
 						const rect = e.target.getBoundingClientRect();
@@ -215,7 +211,7 @@ const Filter = ({
 									className="--cms-popup-content"
 									style={{ minWidth: rect.width }}
 								>
-									<nav className={styles["--cms-popup-nav"]}>
+									<nav className="--cms-popup-nav">
 										{potentialItemsPerPage.map(
 											(count, index) => (
 												<button

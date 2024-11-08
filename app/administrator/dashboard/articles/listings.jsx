@@ -34,6 +34,7 @@ const defaultQuery = {
 		field: "createdAt",
 		dir: -1,
 	},
+	status: "normal",
 };
 
 const Listings = () => {
@@ -112,7 +113,7 @@ const Listings = () => {
 						case "trashed":
 							return <Trash2 color="var(--background-color-6)" />;
 						case "archived":
-							return <Archive color="var(--info-color)" />;
+							return <Archive color="var(--warning-color)" />;
 						default:
 							return <CircleHelp />;
 					}
@@ -343,11 +344,66 @@ const Listings = () => {
 		lastQuery = JSON.stringify(query);
 	}, [query]);
 
+	// Clear the selection only when the results of the search differ.
+	useEffect(() => {
+		setSelection([]);
+	}, [query.search]);
+
 	return (
 		<>
 			<Curate
 				{...{
 					new: "/administrator/dashboard/articles?layout=edit",
+					actions: selection.length > 0 && [
+						{
+							label: (
+								<>
+									<CheckCircle2 color="var(--success-color)" />
+									Publish
+								</>
+							),
+							ariaLabel: "Publish",
+							action: () => {
+								console.log("PUBLISH");
+							},
+						},
+						{
+							label: (
+								<>
+									<XCircle color="var(--error-color)" />
+									Unpublish
+								</>
+							),
+							ariaLabel: "Unpublish",
+							action: () => {
+								console.log("UNPUBLISH");
+							},
+						},
+						{
+							label: (
+								<>
+									<Trash2 color="var(--background-color-6)" />
+									Trash
+								</>
+							),
+							ariaLabel: "Trash",
+							action: () => {
+								console.log("TRASH");
+							},
+						},
+						{
+							label: (
+								<>
+									<Archive color="var(--warning-color)" />
+									Archive
+								</>
+							),
+							ariaLabel: "Trash",
+							action: () => {
+								console.log("TRASH");
+							},
+						},
+					],
 				}}
 			/>
 			{message && (

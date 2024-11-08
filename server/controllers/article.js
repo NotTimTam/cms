@@ -1,6 +1,6 @@
 import ArticleModel from "../models/Article.js";
 import { handleUnexpectedError } from "../util/controller.js";
-import { sortEnum } from "../../util/enum.js";
+import { sortEnum, statusEnum } from "../../util/enum.js";
 import { validateArticle, ValidatorError } from "../util/validators.js";
 
 /**
@@ -47,8 +47,20 @@ export const createArticle = async (req, res) => {
  */
 export const findArticles = async (req, res) => {
 	try {
-		const { search, sortField = "createdAt", sortDir = "-1" } = req.query;
+		const {
+			search,
+			sortField = "createdAt",
+			sortDir = "-1",
+			status = "normal",
+		} = req.query;
 		let { page = "0", itemsPerPage = "20" } = req.query;
+
+		if (status !== "normal" && !statusEnum.includes(status))
+			return res
+				.status(400)
+				.send(
+					`Invalid "status" provided. Must be either "normal" or one of: ${statusEnum}`
+				);
 
 		if (!sortEnum.includes(sortField))
 			return res
@@ -82,7 +94,14 @@ export const findArticles = async (req, res) => {
 					`Request "itemsPerPage" parameter must be an integer greater than 0 or the string "all".`
 				);
 
-		const query = {};
+		const query = {
+			status: {
+				$in:
+					status === "normal"
+						? ["published", "unpublished"]
+						: [status],
+			},
+		};
 
 		if (search)
 			query["$or"] = [

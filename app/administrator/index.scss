@@ -76,6 +76,10 @@ a.--cms-button {
 
 	border: 1px solid transparent;
 
+	* {
+		pointer-events: none;
+	}
+
 	svg {
 		color: inherit;
 		font-size: inherit;
@@ -404,6 +408,29 @@ div.--cms-popup-content {
 		}
 		100% {
 			opacity: 1;
+		}
+	}
+
+	nav.--cms-popup-nav {
+		display: flex;
+		flex-direction: column;
+
+		overflow-y: auto;
+
+		a,
+		button {
+			justify-content: flex-start;
+			color: var(--background-color);
+
+			border-radius: 0;
+			border: none;
+
+			&:hover {
+				background-color: var(--background-color-6);
+				color: var(--text-color);
+			}
+
+			padding: var(--padding) var(--margin);
 		}
 	}
 }

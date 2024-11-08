@@ -1,5 +1,6 @@
 "use client";
 
+import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import {
 	ChevronDown,
 	CircleHelp,
@@ -8,6 +9,7 @@ import {
 	Settings,
 } from "lucide-react";
 import Link from "next/link";
+import { useContext } from "react";
 
 const Curate = ({ new: newHref = "", actions, options = "", help = "" }) => {
 	return (
@@ -24,7 +26,49 @@ const Curate = ({ new: newHref = "", actions, options = "", help = "" }) => {
 					<Plus /> New
 				</Link>
 
-				<button disabled={!actions || actions.length === 0}>
+				<button
+					className="--cms-popup-trigger"
+					disabled={!actions || actions.length === 0}
+					onClick={async (e) => {
+						const rect = e.target.getBoundingClientRect();
+
+						const PopupContent = () => {
+							const closePopup = useContext(PopupContext);
+							return (
+								<div
+									className="--cms-popup-content"
+									style={{ minWidth: rect.width }}
+								>
+									<nav className="--cms-popup-nav">
+										{actions.map(
+											(
+												{ label, ariaLabel, action },
+												index
+											) => (
+												<button
+													onClick={async () => {
+														action &&
+															(await action());
+														closePopup();
+													}}
+													aria-label={ariaLabel}
+													key={index}
+												>
+													{label}
+												</button>
+											)
+										)}
+									</nav>
+								</div>
+							);
+						};
+
+						const res = await createHeadlessPopup(
+							<PopupContent />,
+							[rect.x, rect.bottom]
+						);
+					}}
+				>
 					<Ellipsis /> Actions <ChevronDown />
 				</button>
 			</section>

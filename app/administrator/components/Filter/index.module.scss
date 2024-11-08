@@ -52,34 +52,5 @@ form.--cms-filter-form {
 				}
 			}
 		}
-
-		button {
-			* {
-				pointer-events: none;
-			}
-		}
-	}
-}
-
-nav.--cms-popup-nav {
-	display: flex;
-	flex-direction: column;
-
-	overflow-y: auto;
-
-	a,
-	button {
-		justify-content: flex-start;
-		color: var(--background-color);
-
-		border-radius: 0;
-		border: none;
-
-		&:hover {
-			background-color: var(--background-color-6);
-			color: var(--text-color);
-		}
-
-		padding: var(--padding) var(--margin);
 	}
 }

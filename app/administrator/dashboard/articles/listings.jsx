@@ -10,10 +10,8 @@ import Loading from "../../components/Loading";
 import {
 	Archive,
 	CheckCircle2,
-	ChevronDown,
-	ChevronsUpDown,
-	ChevronUp,
 	CircleHelp,
+	EllipsisVertical,
 	Sparkle,
 	Sparkles,
 	Trash2,
@@ -46,7 +44,10 @@ const Listings = () => {
 
 	// Data
 	const sortingOptions = {
-		// "order",
+		order: {
+			label: "Order",
+			hideFromList: true,
+		},
 		featured: {
 			label: "Featured",
 			listing: new List.Toggle(
@@ -158,24 +159,28 @@ const Listings = () => {
 				const { name, alias, category, _id } = articles[index];
 
 				return (
-					<div className={styles["--cms-article-listing-info"]}>
-						<h3>
+					<p className={styles["--cms-article-listing-info"]}>
+						<b
+							className={
+								styles["--cms-article-listing-info-title"]
+							}
+						>
 							<Link
 								aria-label="Open Article"
-								href={`/administrator/dashboard/articles?view=edit&id=${_id}`}
+								href={`/administrator/dashboard/articles?layout=edit&id=${_id}`}
 							>
 								{name}
 							</Link>
-						</h3>
-						<p>
+						</b>
+						<span>
 							<b>Alias:</b> {alias}
-						</p>
+						</span>
 						{category && (
-							<p>
+							<span>
 								<b>Category:</b> {category}
-							</p>
+							</span>
 						)}
-					</div>
+					</p>
 				);
 			}),
 		},
@@ -189,7 +194,7 @@ const Listings = () => {
 			label: "Author",
 			listing: new List.Element((index) => (
 				<Link
-					href={`/administrator/dashboard/users?view=edit&id=${articles[index].author._id}`}
+					href={`/administrator/dashboard/users?layout=edit&id=${articles[index].author._id}`}
 				>
 					{articles[index].author.name}
 				</Link>
@@ -239,6 +244,32 @@ const Listings = () => {
 			} = await API.get(`${API.articles}?${searchParams.toString()}`);
 
 			setArticles(articles);
+		} catch (error) {
+			console.error(error.data);
+			setMessage(<Message type="error">{error.data}</Message>);
+		}
+
+		setLoading(false);
+	};
+
+	const executeBatch = async (batch) => {
+		setLoading(true);
+
+		try {
+			const token = await getToken();
+
+			// Batch through articles.
+			for (const article of batch) {
+				// Run patch request.
+				await API.patch(
+					API.createRouteURL(API.articles, article._id),
+					article,
+					API.createAuthorizationConfig(token)
+				);
+			}
+
+			// Reload articles.
+			await executeQuery();
 		} catch (error) {
 			console.error(error.data);
 			setMessage(<Message type="error">{error.data}</Message>);
@@ -304,7 +335,7 @@ const Listings = () => {
 		<>
 			<Curate
 				{...{
-					new: "/administrator/dashboard/articles?view=edit",
+					new: "/administrator/dashboard/articles?layout=edit",
 				}}
 			/>
 			{message && (
@@ -330,57 +361,47 @@ const Listings = () => {
 						items={articles}
 						itemIdentifier="article"
 						fields={Object.entries(sortingOptions).map(
-							([field, { label, listing }]) => {
-								const active =
-									query.sort && query.sort.field === field;
-								const dir = query.sort && query.sort.dir;
-
-								return {
-									listing,
-									header: (
-										<button
-											aria-label={label}
-											onClick={() => {
-												if (active) {
-													if (dir === 1)
-														setQuery((query) => ({
-															...query,
-															sort: {
-																field,
-																dir: -1,
-															},
-														}));
-													else {
-														const newQuery = {
-															...query,
-														};
-														delete newQuery.sort;
-														setQuery(newQuery);
-													}
-												} else
-													setQuery((query) => ({
-														...query,
-														sort: { field, dir: 1 },
-													}));
-											}}
-										>
-											{label}{" "}
-											{active ? (
-												dir === -1 ? (
-													<ChevronUp />
-												) : (
-													<ChevronDown />
-												)
-											) : (
-												<ChevronsUpDown />
-											)}
-										</button>
+							([field, { label, listing, hideFromList }]) => ({
+								listing,
+								header:
+									!hideFromList &&
+									List.Header(
+										{
+											field,
+											label: label,
+										},
+										query,
+										setQuery
 									),
-								};
-							}
+							})
 						)}
 						{...{ selection, setSelection }}
 						{...{ query, setQuery, executeQuery }}
+						{...{
+							order: {
+								field: "order",
+								icon: <EllipsisVertical />,
+								ariaLabel: "Reorder",
+								disabled:
+									!query.sort || query.sort.field !== "order",
+							},
+							swapItems: (active, over) => {
+								executeBatch([
+									{
+										_id: active,
+										order: articles.find(
+											({ _id }) => _id === over
+										).order,
+									},
+									{
+										_id: over,
+										order: articles.find(
+											({ _id }) => _id === active
+										).order,
+									},
+								]);
+							},
+						}}
 					/>
 				</>
 			)}

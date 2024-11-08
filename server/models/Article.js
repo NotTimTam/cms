@@ -69,6 +69,14 @@ const ArticleSchema = new mongoose.Schema(
 			default: 0,
 			min: 0,
 		},
+		order: {
+			type: Number,
+			required: [
+				true,
+				"You must provide order placement for this Article.",
+			],
+			default: 0,
+		},
 	},
 	{ timestamps: true }
 );

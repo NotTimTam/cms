@@ -6,10 +6,10 @@ import Editor from "./editor";
 
 const Content = () => {
 	const searchParams = useSearchParams();
-	const view = searchParams.get("view");
+	const layout = searchParams.get("layout");
 	const id = searchParams.get("id");
 
-	switch (view) {
+	switch (layout) {
 		case "edit":
 			return <Editor />;
 		default:

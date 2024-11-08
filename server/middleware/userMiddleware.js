@@ -26,6 +26,9 @@ export const authenticationMiddleware = async (req, res, next) => {
 
 		const decoded = jwt.decode(token, process.env.JWT_SECRET);
 
+		if (!decoded)
+			throw new Error("Failed to decode JWT token. Could be malformed.");
+
 		if (!decoded.userId)
 			throw new Error(
 				'No "userId" parameter attached to JWT token. This could mean the JWT signed a malformed token.'

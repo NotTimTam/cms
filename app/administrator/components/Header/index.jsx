@@ -64,7 +64,7 @@ const Header = () => {
 										<Link
 											aria-label="My Profile"
 											className="--cms-button"
-											href="/administrator/dashboard/users?view=edit&id=me"
+											href="/administrator/dashboard/users?layout=edit&id=me"
 										>
 											<FileUser /> My Profile
 										</Link>

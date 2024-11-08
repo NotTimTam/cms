@@ -25,6 +25,7 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Deliver regular HTML/CSS/JS for client, deliver Next.js for administrator.
 -   SCSS/JS/HTML/SVG support.
 -   Custom internal back-end 404s, and clientside 404s.
+-   Fix article refresh editor. Basically if you refresh the article editor after saving a brand new article, since the url doesnt include the ID, refreshing does not open to that article.
 -   Include Lucide license in administrative portal.
 -   Articles built in markdown, html, maybe modes for the editor.
 -   Headless popups.
@@ -62,6 +63,7 @@ The designations front-end, and back-end, refer not to application architecture 
     -   Create notices about not storing confidential data within CMS.
     -   Create notices about not pasting JavaScript from the web.
     -   Can extensions add custom data to your database?
+-   Store admin menu toggle state (and potentially dropdowns) in SessionStorage.
 -   (J) extension equivalents:
     -   Contacts/Directory
     -   JSitemap PRO

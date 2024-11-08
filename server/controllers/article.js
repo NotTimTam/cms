@@ -16,6 +16,14 @@ export const createArticle = async (req, res) => {
 
 		req.body.author = author;
 
+		const articleWithHighestOrder = await ArticleModel.findOne({}).sort({
+			order: -1,
+		});
+
+		req.body.order = articleWithHighestOrder
+			? articleWithHighestOrder.order + 1
+			: 0;
+
 		try {
 			req.body = await validateArticle(req.body);
 		} catch (error) {

@@ -7,6 +7,7 @@ export const statusEnum = ["published", "unpublished", "trashed", "archived"];
  * Enum for sortField validation.
  */
 export const sortEnum = [
+	"order",
 	"featured",
 	"status",
 	"name",

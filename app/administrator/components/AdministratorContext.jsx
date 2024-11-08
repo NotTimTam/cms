@@ -64,7 +64,7 @@ const menu = (siteMenus, siteExtensions) =>
 					href: "/administrator/dashboard/articles",
 					quickLink: {
 						icon: <Plus />,
-						href: "/administrator/dashboard/articles?view=edit",
+						href: "/administrator/dashboard/articles?layout=edit",
 						ariaLabel: "Create New Article",
 					},
 				},
@@ -80,7 +80,7 @@ const menu = (siteMenus, siteExtensions) =>
 					href: "/administrator/dashboard/categories",
 					quickLink: {
 						icon: <Plus />,
-						href: "/administrator/dashboard/categories?view=edit",
+						href: "/administrator/dashboard/categories?layout=edit",
 						ariaLabel: "Create New Category",
 					},
 				},
@@ -96,7 +96,7 @@ const menu = (siteMenus, siteExtensions) =>
 					href: "/administrator/dashboard/tags",
 					quickLink: {
 						icon: <Plus />,
-						href: "/administrator/dashboard/tags?view=edit",
+						href: "/administrator/dashboard/tags?layout=edit",
 						ariaLabel: "Create New Tag",
 					},
 				},
@@ -151,7 +151,7 @@ const menu = (siteMenus, siteExtensions) =>
 					href: "/administrator/dashboard/modules",
 					quickLink: {
 						icon: <Plus />,
-						href: "/administrator/dashboard/modules?view=edit",
+						href: "/administrator/dashboard/modules?layout=edit",
 						ariaLabel: "Create New Module",
 					},
 				},
@@ -230,7 +230,7 @@ const menu = (siteMenus, siteExtensions) =>
 					href: "/administrator/dashboard/users",
 					quickLink: {
 						icon: <Plus />,
-						href: "/administrator/dashboard/users?view=edit",
+						href: "/administrator/dashboard/users?layout=edit",
 						ariaLabel: "Create New User",
 					},
 				},

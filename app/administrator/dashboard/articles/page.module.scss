@@ -1,13 +1,17 @@
 div.--cms-message-container {
-	padding: var(--padding) var(--padding) 0 var(--padding);
+	padding: var(--padding);
 }
 
-div.--cms-article-listing-info {
+p.--cms-article-listing-info {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 
 	text-align: left;
+
+	b.--cms-article-listing-info-title {
+		font-size: 1.25rem;
+	}
 }
 
 section.--cms-editor-content {

@@ -219,6 +219,111 @@ const Listings = () => {
 		},
 	};
 
+	const actions = [
+		{
+			label: (
+				<>
+					<Sparkles color="var(--warning-color)" />
+					Feature
+				</>
+			),
+			ariaLabel: "Feature",
+			action: async () => await executeBatch({ featured: true }),
+		},
+		{
+			label: (
+				<>
+					<Sparkle color="var(--background-color-6)" />
+					Unfeature
+				</>
+			),
+			ariaLabel: "Unfeature",
+			action: async () => await executeBatch({ featured: false }),
+		},
+		{
+			label: (
+				<>
+					<CheckCircle2 color="var(--success-color)" />
+					Publish
+				</>
+			),
+			ariaLabel: "Publish",
+			action: async () => await executeBatch({ status: "published" }),
+		},
+		{
+			label: (
+				<>
+					<XCircle color="var(--error-color)" />
+					Unpublish
+				</>
+			),
+			ariaLabel: "Unpublish",
+			action: async () => await executeBatch({ status: "unpublished" }),
+		},
+		{
+			label: (
+				<>
+					<Archive color="var(--warning-color)" />
+					Archive
+				</>
+			),
+			ariaLabel: "Trash",
+			action: async () => await executeBatch({ status: "archived" }),
+		},
+		{
+			label: (
+				<>
+					<Trash2 color="var(--error-color)" />
+					Trash
+				</>
+			),
+			ariaLabel: "Trash",
+			action: async () => await executeBatch({ status: "trashed" }),
+		},
+	];
+
+	const filterOptions = [
+		/**
+		 * Select Featured
+		 * Select Status
+		 * Select Category
+		 * Select Access
+		 * Select Author
+		 * Select Tag
+		 * Select Max Levels
+		 *
+		 * group of dropdowns with darker background
+		 * each dropdown is both a text input for filtration, and a selection list. In the case of authors, the dropdown shows the word "None" and the top 5 authors on the site.
+		 */
+		{
+			readOnly: true,
+			ariaLabel: "Featured",
+		},
+		{
+			ariaLabel: "Status",
+		},
+
+		{
+			ariaLabel: "Category",
+		},
+
+		{
+			ariaLabel: "Access",
+		},
+
+		{
+			ariaLabel: "Author",
+		},
+
+		{
+			ariaLabel: "Tag",
+		},
+
+		// {
+		// 	ariaLabel: "Max Levels", // For other dropdowns.
+		// },
+	];
+
 	// States
 	const [selection, setSelection] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -374,74 +479,7 @@ const Listings = () => {
 			<Curate
 				{...{
 					new: "/administrator/dashboard/articles?layout=edit",
-					actions: selection.length > 0 && [
-						{
-							label: (
-								<>
-									<Sparkles color="var(--warning-color)" />
-									Feature
-								</>
-							),
-							ariaLabel: "Feature",
-							action: async () =>
-								await executeBatch({ featured: true }),
-						},
-						{
-							label: (
-								<>
-									<Sparkle color="var(--background-color-6)" />
-									Unfeature
-								</>
-							),
-							ariaLabel: "Unfeature",
-							action: async () =>
-								await executeBatch({ featured: false }),
-						},
-						{
-							label: (
-								<>
-									<CheckCircle2 color="var(--success-color)" />
-									Publish
-								</>
-							),
-							ariaLabel: "Publish",
-							action: async () =>
-								await executeBatch({ status: "published" }),
-						},
-						{
-							label: (
-								<>
-									<XCircle color="var(--error-color)" />
-									Unpublish
-								</>
-							),
-							ariaLabel: "Unpublish",
-							action: async () =>
-								await executeBatch({ status: "unpublished" }),
-						},
-						{
-							label: (
-								<>
-									<Archive color="var(--warning-color)" />
-									Archive
-								</>
-							),
-							ariaLabel: "Trash",
-							action: async () =>
-								await executeBatch({ status: "archived" }),
-						},
-						{
-							label: (
-								<>
-									<Trash2 color="var(--error-color)" />
-									Trash
-								</>
-							),
-							ariaLabel: "Trash",
-							action: async () =>
-								await executeBatch({ status: "trashed" }),
-						},
-					],
+					actions: selection.length > 0 && actions,
 				}}
 			/>
 			{message && (
@@ -459,25 +497,7 @@ const Listings = () => {
 							setQuery,
 							executeQuery,
 							sortingOptions,
-							filterOptions: [
-								/**
-								 * Select Featured
-								 * Select Status
-								 * Select Category
-								 * Select Access
-								 * Select Author
-								 * Select Tag
-								 * Select Max Levels
-								 *
-								 * group of dropdowns with darker background
-								 * each dropdown is both a text input for filtration, and a selection list. In the case of authors, the dropdown shows the word "None" and the top 5 authors on the site.
-								 */
-								{
-									label: "",
-									ariaLabel: "",
-									callback: () => {},
-								},
-							],
+							filterOptions,
 							defaultQuery,
 						}}
 					/>

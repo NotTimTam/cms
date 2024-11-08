@@ -193,6 +193,12 @@ select {
 		pointer-events: none;
 		opacity: 0.5;
 	}
+
+	&[readonly] {
+		&:focus {
+			outline: none;
+		}
+	}
 }
 
 svg {

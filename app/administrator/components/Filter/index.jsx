@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, FilterIcon, Search, X } from "lucide-react";
 import styles from "./index.module.scss";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import { Fragment, useContext } from "react";
@@ -81,34 +81,80 @@ const Filter = ({
 
 								return (
 									<div
-										className="--cms-popup-content"
-										style={{ minWidth: rect.width }}
+										className={
+											styles[
+												"--cms-filter-options-popup-content"
+											]
+										}
+										onClick={closePopup}
 									>
-										<nav className="--cms-popup-nav">
-											{sortingOptions.map(
-												(
-													{
-														label,
-														ariaLabel,
-														callback,
-													},
-													index
-												) => {
-													return (
-														<button
-															key={index}
-															type="button"
-															aria-label={
-																ariaLabel
-															}
-															onClick={callback}
-														>
-															{label}
-														</button>
-													);
-												}
-											)}
-										</nav>
+										<form
+											onClick={(e) => e.stopPropagation()}
+											onSubmit={(e) => {
+												e.preventDefault();
+											}}
+											className={`--cms-form ${styles["--cms-filter-options-form"]}`}
+										>
+											<section>
+												{filterOptions.map(
+													(
+														{ ariaLabel, readOnly },
+														index
+													) => {
+														return (
+															<span
+																key={index}
+																className={
+																	styles[
+																		"--cms-filter-options-form-input-group"
+																	]
+																}
+															>
+																<input
+																	type="text"
+																	aria-label={
+																		ariaLabel
+																	}
+																	placeholder={
+																		ariaLabel
+																	}
+																	readOnly={
+																		readOnly
+																	}
+																/>
+																<button
+																	className="--cms-info"
+																	type="button"
+																	aria-label={
+																		ariaLabel
+																	}
+																>
+																	<ChevronDown />
+																</button>
+															</span>
+														);
+													}
+												)}
+											</section>
+
+											<section>
+												<button
+													type="reset"
+													aria-label="Cancel"
+													className="--cms-error"
+												>
+													<X /> Cancel
+												</button>
+
+												<button
+													type="submit"
+													aria-label="Filter"
+													className="--cms-success"
+												>
+													<FilterIcon /> Filter
+												</button>
+											</section>
+										</form>
 									</div>
 								);
 							};

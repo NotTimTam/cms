@@ -77,7 +77,10 @@ const Listings = () => {
 
 						let newArticleListings = [...articles];
 
-						newArticleListings[index] = newArticle;
+						newArticleListings[index] = {
+							...article,
+							featured: newArticle.featured,
+						};
 
 						setArticles(newArticleListings);
 					} catch (error) {
@@ -138,7 +141,10 @@ const Listings = () => {
 
 						let newArticleListings = [...articles];
 
-						newArticleListings[index] = newArticle;
+						newArticleListings[index] = {
+							...article,
+							status: newArticle.status,
+						};
 
 						setArticles(newArticleListings);
 					} catch (error) {

@@ -3,5 +3,5 @@ export const metadata = {
 };
 
 export default function Users() {
-	return <>USERS</>;
+	return "Users";
 }

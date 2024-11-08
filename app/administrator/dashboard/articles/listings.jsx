@@ -253,7 +253,7 @@ const Listings = () => {
 	};
 
 	const executeBatch = async (batch) => {
-		setLoading(true);
+		setLoading("silently");
 
 		try {
 			const token = await getToken();

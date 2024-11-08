@@ -1,0 +1,30 @@
+@use "@/app/administrator/vars.scss" as *;
+
+nav.--cms-paginate {
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	gap: var(--padding);
+	padding: var(--padding);
+	flex-wrap: wrap;
+
+	div.--cms-paginate-current-page {
+		border: 1px solid var(--info-color);
+		color: var(--info-color);
+		font-weight: bold;
+		border-radius: var(--gap);
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		height: 100%;
+		aspect-ratio: 1 / 1;
+	}
+
+	button.--cms-paginate-page {
+		height: 100%;
+		aspect-ratio: 1 / 1;
+	}
+}

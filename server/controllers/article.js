@@ -47,13 +47,8 @@ export const createArticle = async (req, res) => {
  */
 export const findArticles = async (req, res) => {
 	try {
-		const {
-			search,
-			page = 0,
-			itemsPerPage = 20,
-			sortField = "createdAt",
-			sortDir = "-1",
-		} = req.query;
+		const { search, sortField = "createdAt", sortDir = "-1" } = req.query;
+		let { page = "0", itemsPerPage = "20" } = req.query;
 
 		if (!sortEnum.includes(sortField))
 			return res
@@ -68,6 +63,25 @@ export const findArticles = async (req, res) => {
 					'Invalid "sortDir" provided. Expected either "-1" or "1".'
 				);
 
+		if (isNaN(page) || !Number.isInteger(+page) || +page < 0)
+			return res
+				.status(400)
+				.send(
+					`Request "page" parameter must be an integer greater than 0.`
+				);
+
+		if (
+			itemsPerPage !== "all" &&
+			(isNaN(itemsPerPage) ||
+				!Number.isInteger(+itemsPerPage) ||
+				+itemsPerPage < 0)
+		)
+			return res
+				.status(400)
+				.send(
+					`Request "itemsPerPage" parameter must be an integer greater than 0 or the string "all".`
+				);
+
 		const query = {};
 
 		if (search)
@@ -76,10 +90,20 @@ export const findArticles = async (req, res) => {
 				{ alias: { $regex: search, $options: "i" } },
 			];
 
+		const numArticles = await ArticleModel.countDocuments(query);
+
+		itemsPerPage = itemsPerPage === "all" ? numArticles : +itemsPerPage;
+
+		const numPages = Math.ceil(numArticles / itemsPerPage);
+
+		if (page > numPages - 1) page = numPages - 1;
+
 		const articles = await ArticleModel.find(query)
 			.sort({ [sortField]: +sortDir })
 			.select("+status")
 			.populate("author")
+			.limit(+itemsPerPage)
+			.skip(+page * +itemsPerPage)
 			.lean();
 
 		return res.status(200).json({
@@ -87,6 +111,8 @@ export const findArticles = async (req, res) => {
 				...article,
 				author: { name: article.author.name, _id: article.author._id },
 			})),
+			page: +page,
+			numPages,
 		});
 	} catch (error) {
 		return handleUnexpectedError(res, error);

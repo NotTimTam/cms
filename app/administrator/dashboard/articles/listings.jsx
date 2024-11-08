@@ -22,6 +22,7 @@ import Link from "next/link";
 import { capitalizeWords } from "@/util/display";
 import Filter from "../../components/Filter";
 import { getToken } from "@/app/cookies";
+import Paginate from "../../components/Paginate";
 
 let lastQuery;
 
@@ -246,10 +247,15 @@ const Listings = () => {
 
 			// Get articles.
 			const {
-				data: { articles },
+				data: { articles, page: newPage, numPages },
 			} = await API.get(`${API.articles}?${searchParams.toString()}`);
 
 			setArticles(articles);
+			setQuery((query) => ({
+				...query,
+				page: newPage,
+				numPages,
+			}));
 		} catch (error) {
 			console.error(error.data);
 			setMessage(<Message type="error">{error.data}</Message>);
@@ -409,6 +415,8 @@ const Listings = () => {
 							},
 						}}
 					/>
+
+					<Paginate {...{ query, setQuery }} />
 				</>
 			)}
 		</>

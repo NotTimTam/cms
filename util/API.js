@@ -7,6 +7,67 @@ export default class API {
 	static articles = `${API.route}/articles`;
 
 	/**
+	 * Create a query from a JS Object.
+	 * @param {Object} query The object to create a query from.
+	 *
+	 * Arrays of objects are unsupported, all other arrays will be converted to csvs.
+	 * Nested objects within this object will have their keys flattened. Example:
+	 * ```js
+	 * const input = {
+	 * 	topLevel: { bottomLevel: "fourteen" }
+	 * }
+	 * // becomes:
+	 * const output = {
+	 * 	topLevelBottomLevel: "fourteen"
+	 * }
+	 * ```
+	 */
+	static createQueryString = (query) => {
+		const mergeKeys = (key, subKey) =>
+			`${key}${subKey[0].toUpperCase()}${subKey.slice(
+				-1 * (subKey.length - 1)
+			)}`;
+		const flattenObject = (object, resolve = {}, keyOrigin) => {
+			for (let [key, value] of Object.entries(object)) {
+				if (keyOrigin) key = mergeKeys(keyOrigin, key);
+
+				if (value instanceof Array) {
+					const anyObjects = value.find(
+						(subValue) => typeof subValue === "object"
+					);
+
+					if (anyObjects && anyObjects.length > 0)
+						throw new TypeError(
+							"API.createQueryString does not support objects/arrays nested within arrays."
+						);
+
+					resolve[key] = value.join(",");
+				} else if (typeof value === "object") {
+					for (const [subKey, subValue] of Object.entries(value)) {
+						const newKey = mergeKeys(key, subKey);
+
+						if (typeof subValue === "object") {
+							resolve = flattenObject(subValue, resolve, key);
+						} else resolve[newKey] = subValue;
+					}
+				} else resolve[key] = value;
+			}
+
+			return resolve;
+		};
+
+		query = flattenObject(query);
+
+		const searchParams = new URLSearchParams();
+
+		for (const [key, value] of Object.entries(query)) {
+			searchParams.append(key, value);
+		}
+
+		return searchParams;
+	};
+
+	/**
 	 * Authenticate the user.
 	 * @param {string} token The token to authenticate with.
 	 * @returns {Object} The user object, or `undefined` if the user is not authorized.

@@ -1,7 +1,11 @@
 import ArticleModel from "../models/Article.js";
 import { handleUnexpectedError } from "../util/controller.js";
-import { sortEnum, statusEnum } from "../../util/enum.js";
-import { validateArticle, ValidatorError } from "../util/validators.js";
+import {
+	validateArticle,
+	validateArticleQuery,
+	ValidatorError,
+	validateArticlePatch,
+} from "../util/validators.js";
 
 /**
  * Create a new article.
@@ -47,6 +51,14 @@ export const createArticle = async (req, res) => {
  */
 export const findArticles = async (req, res) => {
 	try {
+		try {
+			req.query = await validateArticleQuery(req.query);
+		} catch (error) {
+			if (error instanceof ValidatorError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
 		const {
 			search,
 			sortField = "createdAt",
@@ -54,45 +66,6 @@ export const findArticles = async (req, res) => {
 			status = "normal",
 		} = req.query;
 		let { page = "0", itemsPerPage = "20" } = req.query;
-
-		if (status !== "normal" && !statusEnum.includes(status))
-			return res
-				.status(400)
-				.send(
-					`Invalid "status" provided. Must be either "normal" or one of: ${statusEnum}`
-				);
-
-		if (!sortEnum.includes(sortField))
-			return res
-				.status(400)
-				.send(
-					`Invalid "sortField" provided. Must be one of: ${sortEnum}`
-				);
-		if (sortDir !== "-1" && sortDir !== "1")
-			return res
-				.status(400)
-				.send(
-					'Invalid "sortDir" provided. Expected either "-1" or "1".'
-				);
-
-		if (isNaN(page) || !Number.isInteger(+page) || +page < 0)
-			return res
-				.status(400)
-				.send(
-					`Request "page" parameter must be an integer greater than 0.`
-				);
-
-		if (
-			itemsPerPage !== "all" &&
-			(isNaN(itemsPerPage) ||
-				!Number.isInteger(+itemsPerPage) ||
-				+itemsPerPage < 0)
-		)
-			return res
-				.status(400)
-				.send(
-					`Request "itemsPerPage" parameter must be an integer greater than 0 or the string "all".`
-				);
 
 		const query = {
 			status: {
@@ -133,6 +106,81 @@ export const findArticles = async (req, res) => {
 			page: +page,
 			numPages,
 		});
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Patch a selection of articles.
+ */
+export const batchArticles = async (req, res) => {
+	try {
+		try {
+			req.body = await validateArticlePatch(req.body);
+		} catch (error) {
+			if (error instanceof ValidatorError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
+		try {
+			req.query = await validateArticleQuery(req.query);
+		} catch (error) {
+			if (error instanceof ValidatorError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
+		const { search, status = "normal" } = req.query;
+		let { selection } = req.query;
+
+		if (!selection)
+			return res
+				.status(400)
+				.send('No "selection" parameter provided in query.');
+
+		const query = {
+			status: {
+				$in:
+					status === "normal"
+						? ["published", "unpublished"]
+						: [status],
+			},
+		};
+
+		if (search)
+			query["$or"] = [
+				{ name: { $regex: search, $options: "i" } },
+				{ alias: { $regex: search, $options: "i" } },
+			];
+
+		const articles = await ArticleModel.find(query)
+			.select("+status")
+			.lean();
+
+		if (selection === "all")
+			selection = articles.map(({ _id }) => _id.toString());
+		else selection = selection.split(",");
+
+		const updatedArticles = [];
+
+		for (const id of selection) {
+			const article = await ArticleModel.findById(id);
+
+			if (!article)
+				return res.status(404).send(`No article found with ID "${id}"`);
+
+			for (const [key, value] of Object.entries(req.body)) {
+				article[key] = value;
+			}
+
+			await article.save();
+
+			updatedArticles.push(article);
+		}
+
+		return res.status(200).json({ articles: updatedArticles });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

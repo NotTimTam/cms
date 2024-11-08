@@ -138,11 +138,14 @@ const List = ({
 								aria-label="Select All"
 								onClick={() =>
 									setSelection((selection) =>
-										selection === "all" ? [] : "all"
+										selection === "all" ||
+										selection.length > 0
+											? []
+											: "all"
 									)
 								}
 							>
-								{selection === "all" ? (
+								{selection === "all" || selection.length > 0 ? (
 									<SquareCheck />
 								) : (
 									<Square />

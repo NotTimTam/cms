@@ -234,17 +234,8 @@ const Listings = () => {
 		try {
 			SessionStorage.setItem("articleQuery", query); // Remember this query.
 
-			// Calculate search params.
-			const { search, page, itemsPerPage, sort } = query;
-			const searchParams = new URLSearchParams();
-
-			if (search) searchParams.append("search", search);
-			if (page) searchParams.append("page", page);
-			if (itemsPerPage) searchParams.append("itemsPerPage", itemsPerPage);
-			if (sort) {
-				searchParams.append("sortField", sort.field);
-				searchParams.append("sortDir", sort.dir);
-			}
+			// Create search params.
+			const searchParams = API.createQueryString(query);
 
 			// Get articles.
 			const {
@@ -258,14 +249,14 @@ const Listings = () => {
 				numPages,
 			}));
 		} catch (error) {
-			console.error(error.data);
+			console.error(error);
 			setMessage(<Message type="error">{error.data}</Message>);
 		}
 
 		setLoading(false);
 	};
 
-	const executeBatch = async (batch) => {
+	const reorderArticles = async (batch) => {
 		setLoading(true);
 
 		try {
@@ -284,7 +275,57 @@ const Listings = () => {
 			// Reload articles.
 			await executeQuery();
 		} catch (error) {
-			console.error(error.data);
+			console.error(error);
+			setMessage(<Message type="error">{error.data}</Message>);
+		}
+
+		setLoading(false);
+	};
+
+	const executeBatch = async (patch) => {
+		setLoading(true);
+
+		try {
+			const token = await getToken();
+
+			// Create search params.
+			const searchParams = API.createQueryString(query);
+
+			// Batch through articles.
+			const {
+				data: { articles: updatedArticles },
+			} = await API.patch(
+				`${API.createRouteURL(
+					API.articles,
+					"batch"
+				)}?${searchParams.toString()}&selection=${
+					selection === "all" ? selection : selection.join(",")
+				}`,
+				patch,
+				API.createAuthorizationConfig(token)
+			);
+
+			let newArticles = [...articles];
+
+			for (const newArticle of updatedArticles) {
+				const indexInArticles = articles
+					.map(({ _id }) => _id)
+					.indexOf(newArticle._id);
+
+				if (indexInArticles !== -1) {
+					let combinedArticle = { ...articles[indexInArticles] };
+
+					for (const key of Object.keys(patch)) {
+						combinedArticle[key] = newArticle[key];
+					}
+
+					newArticles[indexInArticles] = combinedArticle;
+				}
+			}
+
+			setArticles(newArticles);
+		} catch (error) {
+			console.error(error);
 			setMessage(<Message type="error">{error.data}</Message>);
 		}
 
@@ -358,14 +399,35 @@ const Listings = () => {
 						{
 							label: (
 								<>
+									<Sparkles color="var(--warning-color)" />
+									Feature
+								</>
+							),
+							ariaLabel: "Feature",
+							action: async () =>
+								await executeBatch({ featured: true }),
+						},
+						{
+							label: (
+								<>
+									<Sparkle color="var(--background-color-6)" />
+									Unfeature
+								</>
+							),
+							ariaLabel: "Unfeature",
+							action: async () =>
+								await executeBatch({ featured: false }),
+						},
+						{
+							label: (
+								<>
 									<CheckCircle2 color="var(--success-color)" />
 									Publish
 								</>
 							),
 							ariaLabel: "Publish",
-							action: () => {
-								console.log("PUBLISH");
-							},
+							action: async () =>
+								await executeBatch({ status: "published" }),
 						},
 						{
 							label: (
@@ -375,21 +437,8 @@ const Listings = () => {
 								</>
 							),
 							ariaLabel: "Unpublish",
-							action: () => {
-								console.log("UNPUBLISH");
-							},
-						},
-						{
-							label: (
-								<>
-									<Trash2 color="var(--background-color-6)" />
-									Trash
-								</>
-							),
-							ariaLabel: "Trash",
-							action: () => {
-								console.log("TRASH");
-							},
+							action: async () =>
+								await executeBatch({ status: "unpublished" }),
 						},
 						{
 							label: (
@@ -399,9 +448,19 @@ const Listings = () => {
 								</>
 							),
 							ariaLabel: "Trash",
-							action: () => {
-								console.log("TRASH");
-							},
+							action: async () =>
+								await executeBatch({ status: "archived" }),
+						},
+						{
+							label: (
+								<>
+									<Trash2 color="var(--error-color)" />
+									Trash
+								</>
+							),
+							ariaLabel: "Trash",
+							action: async () =>
+								await executeBatch({ status: "trashed" }),
 						},
 					],
 				}}
@@ -454,7 +513,7 @@ const Listings = () => {
 									!query.sort || query.sort.field !== "order",
 							},
 							swapItems: (active, over) => {
-								executeBatch([
+								reorderArticles([
 									{
 										_id: active,
 										order: articles.find(

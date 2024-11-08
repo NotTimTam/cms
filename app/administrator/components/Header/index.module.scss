@@ -60,24 +60,3 @@ header.--cms-header {
 		}
 	}
 }
-
-nav.--cms-user-menu {
-	display: flex;
-	flex-direction: column;
-
-	a,
-	button {
-		justify-content: flex-start;
-		color: var(--background-color);
-
-		border: none;
-		border-radius: 0;
-
-		&:hover {
-			background-color: var(--background-color-6);
-			color: var(--text-color);
-		}
-
-		padding: var(--padding) var(--margin);
-	}
-}

@@ -12,6 +12,7 @@ Core styles for administrator pages.
 	--background-color-4: hsl(252, 12%, 36%);
 	--background-color-5: hsl(252, 12%, 42%);
 	--background-color-6: hsl(252, 12%, 48%);
+	--background-color-7: hsl(252, 12%, 86%);
 
 	--error-color: hsl(0, 65%, 51%);
 	--error-color-2: hsl(0, 65%, 56%);
@@ -426,8 +427,7 @@ div.--cms-popup-content {
 			border: none;
 
 			&:hover {
-				background-color: var(--background-color-6);
-				color: var(--text-color);
+				background-color: var(--background-color-7);
 			}
 
 			padding: var(--padding) var(--margin);

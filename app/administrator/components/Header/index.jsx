@@ -59,7 +59,7 @@ const Header = () => {
 								<div className="--cms-popup-content">
 									<nav
 										style={{ minWidth: rect.width }}
-										className={styles["--cms-user-menu"]}
+										className="--cms-popup-nav"
 									>
 										<Link
 											aria-label="My Profile"

@@ -256,6 +256,11 @@ const menu = (siteMenus, sitePlugins) =>
 						</>
 					),
 					href: "/administrator/dashboard/users?view=groups",
+					quickLink: {
+						icon: <Plus />,
+						href: "/administrator/dashboard/users?view=groups&layout=edit",
+						ariaLabel: "Create New Group",
+					},
 				},
 				{
 					type: "a",
@@ -267,6 +272,11 @@ const menu = (siteMenus, sitePlugins) =>
 						</>
 					),
 					href: "/administrator/dashboard/users?view=roles",
+					quickLink: {
+						icon: <Plus />,
+						href: "/administrator/dashboard/users?view=roles&layout=edit",
+						ariaLabel: "Create New Role",
+					},
 				},
 				{
 					type: "d",

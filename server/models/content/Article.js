@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { aliasRegex, nameRegex } from "../../util/regex.js";
-import { statusEnum } from "../../util/enum.js";
+import { aliasRegex, nameRegex } from "../../../util/regex.js";
+import { statusEnum } from "../../../util/enum.js";
 
 const ArticleSchema = new mongoose.Schema(
 	{

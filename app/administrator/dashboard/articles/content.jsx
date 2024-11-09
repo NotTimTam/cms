@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Listings from "./listings";
-import Editor from "./editor";
+import ArticleEditor from "./editor";
 
 const Content = () => {
 	const searchParams = useSearchParams();
@@ -11,7 +11,7 @@ const Content = () => {
 
 	switch (layout) {
 		case "edit":
-			return <Editor />;
+			return <ArticleEditor id={id} />;
 		default:
 			return <Listings />;
 	}

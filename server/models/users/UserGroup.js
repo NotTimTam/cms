@@ -24,6 +24,14 @@ const UserGroupSchema = new mongoose.Schema(
 			ref: "UserGroup",
 			required: false,
 		},
+		order: {
+			type: Number,
+			required: [
+				true,
+				"You must provide order placement for this UserGroup.",
+			],
+			default: 0,
+		},
 	},
 	{ timestamps: true }
 );

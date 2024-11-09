@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { aliasRegex, nameRegex } from "../../util/regex.js";
+import { aliasRegex, nameRegex } from "../../../util/regex.js";
 
 const CategorySchema = new mongoose.Schema(
 	{

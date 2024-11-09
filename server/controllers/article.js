@@ -1,4 +1,4 @@
-import ArticleModel from "../models/Article.js";
+import ArticleModel from "../models/content/Article.js";
 import { handleUnexpectedError } from "../util/controller.js";
 import {
 	validateArticle,

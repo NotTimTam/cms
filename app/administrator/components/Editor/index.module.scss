@@ -1,0 +1,62 @@
+section.--cms-editor-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--padding);
+	padding: var(--margin);
+
+	background-color: var(--background-color-2);
+
+	flex-grow: 2;
+
+	div.--cms-editor-tabs {
+		width: 100%;
+		max-width: var(--desktop);
+
+		background-color: var(--background-color-1);
+		border-radius: var(--gap);
+
+		flex-grow: 2;
+		flex-basis: 75%;
+
+		min-width: 0;
+		overflow: hidden;
+		height: max-content;
+
+		aside.--cms-editor-side-menu {
+			justify-self: start;
+
+			display: flex;
+			flex-direction: column;
+
+			textarea {
+				resize: vertical;
+			}
+		}
+	}
+}
+
+form.--cms-editor-title-form {
+	flex-direction: row;
+	flex-wrap: wrap;
+
+	padding: 0;
+	gap: var(--margin);
+
+	width: 100%;
+	max-width: var(--desktop);
+
+	> section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--gap);
+
+		flex-grow: 2;
+
+		min-width: 0;
+
+		input {
+			max-width: 100%;
+		}
+	}
+}

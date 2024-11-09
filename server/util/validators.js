@@ -1,4 +1,4 @@
-import ArticleModel from "../models/Article.js";
+import ArticleModel from "../models/content/Article.js";
 import UserModel from "../models/users/User.js";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";

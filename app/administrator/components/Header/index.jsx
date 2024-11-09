@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 import { AdministratorContext } from "../AdministratorContext";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import styles from "./index.module.scss";
 import Link from "next/link";
 import {
@@ -14,27 +14,20 @@ import {
 } from "lucide-react";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import { deleteToken } from "@/app/cookies";
+import { getCurrentMenu } from "@/util/display";
 
 const Header = () => {
 	const pathname = usePathname();
+	const searchParams = useSearchParams();
 
 	const { menu } = useContext(AdministratorContext);
 
-	const findMenuMapper = (menu) => {
-		const { href, content } = menu;
-		if (href && href === pathname) return menu;
-		else if (content) return content.map(findMenuMapper);
-	};
-
-	const currentMenu = (menu
-		.map(findMenuMapper)
-		.flat()
-		.filter((menu) => menu) || [])[0];
+	const activeMenu = getCurrentMenu(menu, pathname, searchParams);
 
 	return (
 		<header className={styles["--cms-header"]}>
 			<h1 className={styles["--cms-header-title"]}>
-				{currentMenu && currentMenu.label}
+				{activeMenu && activeMenu.label}
 			</h1>
 
 			<nav className={styles["--cms-header-nav"]}>

@@ -105,7 +105,19 @@ const RoleEditor = ({ id }) => {
 				// saveData: saveRole,
 				closeEditor: () =>
 					router.push("/administrator/dashboard/users?view=roles"),
-				tabs: [Tabs.Item("Content", <>Content</>)],
+				tabs: [
+					Tabs.Item(
+						"Content",
+						<form
+							className="--cms-form"
+							onSubmit={(e) => e.preventDefault()}
+						>
+							<label htmlFor="name" required>
+								Name
+							</label>
+						</form>
+					),
+				],
 			}}
 		/>
 	);

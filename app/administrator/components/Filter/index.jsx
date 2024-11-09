@@ -17,7 +17,7 @@ const Option = ({
 }) => {
 	const { type } = getter;
 
-	const inputRef = useRef(null);
+	const inputRef = useRef();
 
 	const [data, setData] = useState(type === "static" && getter.data);
 

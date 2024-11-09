@@ -36,7 +36,7 @@ const menu = (siteMenus, sitePlugins) =>
 			label: (
 				<>
 					<Home />
-					<span>Home Dashboard</span>
+					Home Dashboard
 				</>
 			),
 			href: "/administrator/dashboard",
@@ -48,7 +48,7 @@ const menu = (siteMenus, sitePlugins) =>
 			label: (
 				<>
 					<FolderClosed />
-					<span>Content</span>
+					Content
 				</>
 			),
 			content: [
@@ -58,11 +58,12 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<FileText />
-							<span>Articles</span>
+							Articles
 						</>
 					),
 					href: "/administrator/dashboard/articles",
 					quickLink: {
+						title: "Create New Article",
 						icon: <Plus />,
 						href: "/administrator/dashboard/articles?layout=edit",
 						ariaLabel: "Create New Article",
@@ -74,11 +75,12 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<SquareStack />
-							<span>Categories</span>
+							Categories
 						</>
 					),
 					href: "/administrator/dashboard/categories",
 					quickLink: {
+						title: "Create New Category",
 						icon: <Plus />,
 						href: "/administrator/dashboard/categories?layout=edit",
 						ariaLabel: "Create New Category",
@@ -90,11 +92,12 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<Tags />
-							<span>Tags</span>
+							Tags
 						</>
 					),
 					href: "/administrator/dashboard/tags",
 					quickLink: {
+						title: "Create New Tag",
 						icon: <Plus />,
 						href: "/administrator/dashboard/tags?layout=edit",
 						ariaLabel: "Create New Tag",
@@ -109,7 +112,7 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<TextCursorInput />
-							<span>Fields</span>
+							Fields
 						</>
 					),
 					href: "/administrator/dashboard/fields",
@@ -120,7 +123,7 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<Parentheses />
-							<span>Field Groups</span>
+							Field Groups
 						</>
 					),
 					href: "/administrator/dashboard/fields?view=groups",
@@ -134,7 +137,7 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<Images />
-							<span>Media</span>
+							Media
 						</>
 					),
 					href: "/administrator/dashboard/media",
@@ -145,11 +148,12 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<FileCode2 />
-							<span>Modules</span>
+							Modules
 						</>
 					),
 					href: "/administrator/dashboard/modules",
 					quickLink: {
+						title: "Create New Module",
 						icon: <Plus />,
 						href: "/administrator/dashboard/modules?layout=edit",
 						ariaLabel: "Create New Module",
@@ -164,17 +168,17 @@ const menu = (siteMenus, sitePlugins) =>
 			label: (
 				<>
 					<Menu />
-					<span>Menus</span>
+					Menus
 				</>
 			),
 			content: [
 				{
 					type: "a",
-					title: "Menus",
+					title: "Manage",
 					label: (
 						<>
 							<Logs />
-							<span>Manage</span>
+							Manage Menus
 						</>
 					),
 					href: "/administrator/dashboard/menus",
@@ -185,7 +189,7 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<List />
-							<span>Menu Items</span>
+							Menu Items
 						</>
 					),
 					href: "/administrator/dashboard/menus?view=items",
@@ -202,7 +206,7 @@ const menu = (siteMenus, sitePlugins) =>
 			label: (
 				<>
 					<Blocks />
-					<span>Plugins</span>
+					Plugins
 				</>
 			),
 			content: [
@@ -212,7 +216,7 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<Package />
-							<span>Manage</span>
+							Manage Plugins
 						</>
 					),
 					href: "/administrator/dashboard/plugins",
@@ -226,7 +230,7 @@ const menu = (siteMenus, sitePlugins) =>
 			label: (
 				<>
 					<Users />
-					<span>Users</span>
+					Users
 				</>
 			),
 			content: [
@@ -236,11 +240,12 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<FileText />
-							<span>Manage</span>
+							Manage Users
 						</>
 					),
 					href: "/administrator/dashboard/users",
 					quickLink: {
+						title: "Create New User",
 						icon: <Plus />,
 						href: "/administrator/dashboard/users?layout=edit",
 						ariaLabel: "Create New User",
@@ -248,15 +253,16 @@ const menu = (siteMenus, sitePlugins) =>
 				},
 				{
 					type: "a",
-					title: "User Groups",
+					title: "Groups",
 					label: (
 						<>
 							<FileText />
-							<span>Groups</span>
+							User Groups
 						</>
 					),
 					href: "/administrator/dashboard/users?view=groups",
 					quickLink: {
+						title: "Create New Group",
 						icon: <Plus />,
 						href: "/administrator/dashboard/users?view=groups&layout=edit",
 						ariaLabel: "Create New Group",
@@ -264,15 +270,16 @@ const menu = (siteMenus, sitePlugins) =>
 				},
 				{
 					type: "a",
-					title: "User Roles",
+					title: "Roles",
 					label: (
 						<>
 							<FileText />
-							<span>Roles</span>
+							User Roles
 						</>
 					),
 					href: "/administrator/dashboard/users?view=roles",
 					quickLink: {
+						title: "Create New Role",
 						icon: <Plus />,
 						href: "/administrator/dashboard/users?view=roles&layout=edit",
 						ariaLabel: "Create New Role",
@@ -287,7 +294,7 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<TextCursorInput />
-							<span>Fields</span>
+							Fields
 						</>
 					),
 					href: "/administrator/dashboard/users?view=fields",
@@ -298,7 +305,7 @@ const menu = (siteMenus, sitePlugins) =>
 					label: (
 						<>
 							<Parentheses />
-							<span>Field Groups</span>
+							Field Groups
 						</>
 					),
 					href: "/administrator/dashboard/users?view=fieldgroups",
@@ -312,7 +319,7 @@ const menu = (siteMenus, sitePlugins) =>
 			label: (
 				<>
 					<Wrench />
-					<span>System</span>
+					System
 				</>
 			),
 			href: "/administrator/dashboard/system",
@@ -324,7 +331,7 @@ const menu = (siteMenus, sitePlugins) =>
 			label: (
 				<>
 					<CircleHelp />
-					<span>Help</span>
+					Help
 				</>
 			),
 			href: "/administrator/dashboard/help",

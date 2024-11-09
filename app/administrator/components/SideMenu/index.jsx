@@ -5,7 +5,8 @@ import { useContext, useEffect } from "react";
 import styles from "./index.module.scss";
 import { AdministratorContext } from "../AdministratorContext";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { getCurrentMenu } from "@/util/display";
 
 const SideMenuSection = ({
 	label,
@@ -52,6 +53,7 @@ const SideMenuSection = ({
 
 const SideMenu = () => {
 	const pathname = usePathname();
+	const searchParams = useSearchParams();
 
 	const {
 		state: [administrator, setAdministrator],
@@ -80,6 +82,8 @@ const SideMenu = () => {
 		if (!expanded) setSections({});
 	}, [expanded]);
 
+	const currentMenu = getCurrentMenu(menu, pathname, searchParams);
+
 	const menuMapper = (item, index) => {
 		const { type, title, label, href, content, quickLink } = item;
 
@@ -88,7 +92,14 @@ const SideMenu = () => {
 				<div key={index} className={styles["--cms-button-group"]}>
 					<Link
 						className="--cms-button"
-						aria-selected={href === pathname ? "true" : undefined}
+						aria-selected={
+							currentMenu.href === item.href ||
+							(quickLink &&
+								currentMenu.quickLink &&
+								quickLink.href === currentMenu.quickLink.href)
+								? "true"
+								: undefined
+						}
 						aria-label={title}
 						href={href}
 					>

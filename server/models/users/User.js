@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { emailRegex, nameRegex } from "../../util/regex.js";
+import { emailRegex, nameRegex } from "../../../util/regex.js";
 
 const UserSchema = new mongoose.Schema(
 	{

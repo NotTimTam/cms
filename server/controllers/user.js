@@ -1,4 +1,4 @@
-import UserModel from "../models/User.js";
+import UserModel from "../models/users/User.js";
 import { handleUnexpectedError } from "../util/controller.js";
 import { emailRegex, nameRegex } from "../../util/regex.js";
 import bcrypt from "bcryptjs";

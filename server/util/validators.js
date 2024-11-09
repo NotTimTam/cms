@@ -1,5 +1,5 @@
 import ArticleModel from "../models/Article.js";
-import UserModel from "../models/User.js";
+import UserModel from "../models/users/User.js";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
 import { sortEnum, statusEnum } from "../../util/enum.js";

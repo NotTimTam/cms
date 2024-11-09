@@ -64,6 +64,7 @@ The designations front-end, and back-end, refer not to application architecture 
     -   Create notices about not pasting JavaScript from the web.
     -   Can plugins add custom data to your database?
 -   Store admin menu toggle state (and potentially dropdowns) in SessionStorage.
+-   Tag hierarchy is inclusive, category hierarchy can be inclusive or exclusive depending on context. Ie, displaying articles with a tag, will also display articles with tag decendants of that tag. While with categories, sub-categories are displayed conditionally based on configuration.
 -   (J) extension (plugin) equivalents:
     -   Contacts/Directory
     -   JSitemap PRO
@@ -76,3 +77,8 @@ The designations front-end, and back-end, refer not to application architecture 
     -   PWT ACL
     -   SEO Glossary
     -   Smart Search (built-in?)
+-   Users are assigned to groups, users can be assigned to multiple groups. Groups can be nested.
+-   Access levels can be created, and certain groups can be given that access level.
+-   The access level is used to choose who can see what. Access levels should be simple, one user group can have several access levels.
+-   Article access for example, is set by selecting what user group can access the article.
+-   No default access level, if no user group is defined for a resource, it is accessible by everyone. Editing of/viewing of a resource should be set separately.

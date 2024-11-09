@@ -93,10 +93,12 @@ const SideMenu = () => {
 					<Link
 						className="--cms-button"
 						aria-selected={
-							currentMenu.href === item.href ||
-							(quickLink &&
-								currentMenu.quickLink &&
-								quickLink.href === currentMenu.quickLink.href)
+							currentMenu &&
+							(currentMenu.href === item.href ||
+								(quickLink &&
+									currentMenu.quickLink &&
+									quickLink.href ===
+										currentMenu.quickLink.href))
 								? "true"
 								: undefined
 						}

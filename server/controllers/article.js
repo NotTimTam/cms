@@ -88,14 +88,17 @@ export const findArticles = async (req, res) => {
 
 		const numPages = Math.ceil(numArticles / itemsPerPage);
 
+		page = +page;
+
 		if (page > numPages - 1) page = numPages - 1;
+		if (page < 0) page = 0;
 
 		const articles = await ArticleModel.find(query)
 			.sort({ [sortField]: +sortDir })
 			.select("+status")
 			.populate("author")
 			.limit(+itemsPerPage)
-			.skip(+page * +itemsPerPage)
+			.skip(page * +itemsPerPage)
 			.lean();
 
 		return res.status(200).json({
@@ -103,7 +106,7 @@ export const findArticles = async (req, res) => {
 				...article,
 				author: { name: article.author.name, _id: article.author._id },
 			})),
-			page: +page,
+			page,
 			numPages,
 		});
 	} catch (error) {

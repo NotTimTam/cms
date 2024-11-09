@@ -118,8 +118,6 @@ const ArticleEditor = ({ id }) => {
 
 			<Editor
 				{...{
-					data: article,
-					setData: setArticle,
 					saveData: saveArticle,
 					closeEditor: () =>
 						router.push("/administrator/dashboard/articles"),

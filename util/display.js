@@ -23,6 +23,7 @@ export const getCurrentMenu = (menu, pathname, searchParams) => {
 		paramString
 			.split("&")
 			.sort((a, b) => a.localeCompare(b))
+			.filter((item) => !item.includes("id=")) // Remove very specific data from search params.
 			.join("&");
 
 	const currentSearchParams = sortSearchParams(searchParams.toString());

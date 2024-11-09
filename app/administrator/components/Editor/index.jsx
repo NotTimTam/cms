@@ -14,9 +14,6 @@ import { aliasRegex, nameRegex } from "@/util/regex";
 import Link from "next/link";
 
 const Editor = ({
-	data,
-	setData,
-
 	saveData,
 	closeEditor,
 
@@ -46,6 +43,10 @@ const Editor = ({
 						<button
 							className="--cms-success"
 							aria-label="Save & Close"
+							onClick={async () => {
+								await saveData();
+								closeEditor();
+							}}
 						>
 							<Save /> Save & Close
 						</button>

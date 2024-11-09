@@ -100,8 +100,6 @@ const RoleEditor = ({ id }) => {
 	return (
 		<Editor
 			{...{
-				data: role,
-				setData: setRole,
 				// saveData: saveRole,
 				closeEditor: () =>
 					router.push("/administrator/dashboard/users?view=roles"),

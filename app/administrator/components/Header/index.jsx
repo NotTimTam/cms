@@ -27,7 +27,12 @@ const Header = () => {
 	return (
 		<header className={styles["--cms-header"]}>
 			<h1 className={styles["--cms-header-title"]}>
-				{activeMenu && activeMenu.label}
+				{activeMenu && (
+					<>
+						{activeMenu.icon}
+						{activeMenu.title}
+					</>
+				)}
 			</h1>
 
 			<nav className={styles["--cms-header-nav"]}>

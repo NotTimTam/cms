@@ -176,9 +176,15 @@ a.--cms-button {
 	}
 }
 
+textarea {
+	resize: vertical;
+}
+
 input,
 textarea,
 select {
+	font-family: inherit;
+
 	&[disabled] {
 		pointer-events: none;
 		opacity: 0.5;
@@ -245,11 +251,7 @@ main.--cms-administrator {
 		flex-grow: 2;
 
 		max-height: 100%;
-
-		header.--cms-header {
-			grid-row: 1 / 2;
-			grid-column: 2 / 3;
-		}
+		overflow: hidden;
 
 		article.--cms-content {
 			grid-row: 2 / 3;
@@ -259,20 +261,21 @@ main.--cms-administrator {
 			flex-direction: column;
 
 			overflow: auto;
+
+			max-height: 100%;
 		}
 
 		@media (max-width: $tablet) {
 			grid-template-columns: 1fr;
 			grid-template-rows: auto auto 1fr;
-
-			header.--cms-header {
-				grid-row: 2 / 3;
-				grid-column: 1 / 2;
-			}
+			overflow: auto;
 
 			article.--cms-content {
 				grid-row: 3 / 4;
 				grid-column: 1 / 2;
+
+				height: max-content;
+				max-height: max-content;
 			}
 		}
 	}

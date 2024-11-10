@@ -14,6 +14,8 @@ import { aliasRegex, nameRegex } from "@/util/regex";
 import Link from "next/link";
 
 const Editor = ({
+	message,
+
 	saveData,
 	closeEditor,
 
@@ -30,6 +32,11 @@ const Editor = ({
 
 	return (
 		<>
+			{message && (
+				<div className={styles["--cms-message-container"]}>
+					{message}
+				</div>
+			)}
 			<nav className="--cms-nav">
 				<section>
 					<button

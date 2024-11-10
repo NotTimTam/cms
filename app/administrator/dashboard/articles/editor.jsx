@@ -4,7 +4,6 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import styles from "./page.module.scss";
-import { aliasRegex, nameRegex } from "@/util/regex";
 import Tabs from "../../components/Tabs";
 import { capitalizeWords } from "@/util/display";
 import Message from "../../components/Message";
@@ -76,8 +75,6 @@ const ArticleEditor = ({ id }) => {
 		try {
 			const token = await getToken();
 
-			console.log(article._id);
-
 			const {
 				data: { article: newArticle },
 			} = article._id
@@ -110,14 +107,9 @@ const ArticleEditor = ({ id }) => {
 
 	return (
 		<>
-			{message && (
-				<div className={styles["--cms-message-container"]}>
-					{message}
-				</div>
-			)}
-
 			<Editor
 				{...{
+					message,
 					saveData: saveArticle,
 					closeEditor: () =>
 						router.push("/administrator/dashboard/articles"),

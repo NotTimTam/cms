@@ -7,6 +7,7 @@ const UserGroupSchema = new mongoose.Schema(
 			type: String,
 			required: [true, "No UserGroup name provided."],
 			match: [nameRegex, "Invalid name provided to UserGroup."],
+			unique: [true, "UserGroup name must be unique."],
 		},
 		description: {
 			type: String,

@@ -111,7 +111,7 @@ const List = ({
 
 	return (
 		<section className={styles["--cms-listings"]}>
-			{items.length === 0 ? (
+			{!items || items.length === 0 ? (
 				<Message type="info">
 					No {itemIdentifier}s found with that query.
 				</Message>
@@ -276,7 +276,7 @@ const List = ({
 				</div>
 			)}
 
-			{query.itemsPerPage !== "all" && (
+			{query.itemsPerPage !== "all" && query.numPages > 1 && (
 				<Paginate {...{ query, setQuery }} />
 			)}
 		</section>
@@ -290,6 +290,28 @@ const List = ({
 		if (active.id !== over.id) swapItems(active.id, over.id);
 	}
 };
+
+List.InfoBlock = ({ children }) => (
+	<div className={styles["--cms-listing-info"]}>
+		{/* <b className={styles["--cms-listing-info-title"]}>
+			<Link
+				aria-label="Open Role"
+				href={`/administrator/dashboard/roles?layout=edit&id=${_id}`}
+			>
+				{name}
+			</Link>
+		</b>
+		<span>
+			<b>Alias:</b> {alias}
+		</span>
+		{category && (
+			<span>
+				<b>Category:</b> {category}
+			</span>
+		)} */}
+		{children}
+	</div>
+);
 
 /**
  * Create a List header element.

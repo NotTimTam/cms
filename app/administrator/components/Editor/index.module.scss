@@ -1,3 +1,8 @@
+div.--cms-message-container {
+	padding: var(--padding);
+	padding-bottom: 0;
+}
+
 section.--cms-editor-content {
 	display: flex;
 	flex-direction: column;

@@ -167,7 +167,7 @@ const Listings = () => {
 				const { name, alias, category, _id } = articles[index];
 
 				return (
-					<p className={styles["--cms-article-listing-info"]}>
+					<List.InfoBlock>
 						<b
 							className={
 								styles["--cms-article-listing-info-title"]
@@ -188,7 +188,7 @@ const Listings = () => {
 								<b>Category:</b> {category}
 							</span>
 						)}
-					</p>
+					</List.InfoBlock>
 				);
 			}),
 		},

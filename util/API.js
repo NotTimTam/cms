@@ -2,9 +2,18 @@
  * An interface that simplifies the process of using JavaScript's `Fetch` api.
  */
 export default class API {
+	/**
+	 * Create a valid API route url from a series of strings.
+	 * @param  {...string} branches The branch strings to use.
+	 * @returns {string} A valid API route url.
+	 */
+	static createRouteURL = (...branches) =>
+		branches.map((branch) => branch.trim()).join("/");
+
 	static route = "/api";
 	static users = `${API.route}/users`;
 	static articles = `${API.route}/articles`;
+	static userRoles = API.createRouteURL(API.users, "roles");
 
 	/**
 	 * Create a query from a JS Object.
@@ -95,14 +104,6 @@ export default class API {
 			authorization: `Bearer ${token}`,
 		},
 	});
-
-	/**
-	 * Create a valid API route url from a series of strings.
-	 * @param  {...string} branches The branch strings to use.
-	 * @returns {string} A valid API route url.
-	 */
-	static createRouteURL = (...branches) =>
-		branches.map((branch) => branch.trim()).join("/");
 
 	static __getData = async (response) => {
 		// Read the body of the response based on its content type

@@ -59,6 +59,7 @@ aside.--cms-menu {
 		align-items: stretch;
 
 		background-color: var(--background-color-3);
+		border-bottom: 1px solid var(--background-color-6);
 
 		h2 {
 			padding: var(--padding);
@@ -94,6 +95,8 @@ aside.--cms-menu {
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
+
+		overflow-y: auto;
 
 		div.--cms-button-group {
 			display: flex;
@@ -183,10 +186,24 @@ aside.--cms-menu {
 		grid-row: 2 / 3;
 		grid-column: 1 / 2;
 
+		position: sticky;
+		top: 0;
+		left: 0;
+
+		z-index: 3;
+
 		header.--cms-menu-header {
 			h2 {
 				display: none;
 			}
+		}
+
+		&[aria-expanded] {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100vh;
+			width: 100vw;
 		}
 
 		&:not([aria-expanded]) {

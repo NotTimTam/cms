@@ -33,32 +33,26 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "a",
 			title: "Home Dashboard",
-			label: (
-				<>
-					<Home />
-					Home Dashboard
-				</>
-			),
+			icon: <Home />,
+			label: "Home Dashboard",
 			href: "/administrator/dashboard",
 		},
 
 		{
 			type: "s",
 			title: "Content",
-			label: (
+			icon: (
 				<>
 					<FolderClosed />
-					Content
 				</>
 			),
 			content: [
 				{
 					type: "a",
 					title: "Articles",
-					label: (
+					icon: (
 						<>
 							<FileText />
-							Articles
 						</>
 					),
 					href: "/administrator/dashboard/articles",
@@ -72,10 +66,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Categories",
-					label: (
+					icon: (
 						<>
 							<SquareStack />
-							Categories
 						</>
 					),
 					href: "/administrator/dashboard/categories",
@@ -89,10 +82,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Tags",
-					label: (
+					icon: (
 						<>
 							<Tags />
-							Tags
 						</>
 					),
 					href: "/administrator/dashboard/tags",
@@ -109,10 +101,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Fields",
-					label: (
+					icon: (
 						<>
 							<TextCursorInput />
-							Fields
 						</>
 					),
 					href: "/administrator/dashboard/fields",
@@ -120,10 +111,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Field Groups",
-					label: (
+					icon: (
 						<>
 							<Parentheses />
-							Field Groups
 						</>
 					),
 					href: "/administrator/dashboard/fields?view=groups",
@@ -134,10 +124,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Media",
-					label: (
+					icon: (
 						<>
 							<Images />
-							Media
 						</>
 					),
 					href: "/administrator/dashboard/media",
@@ -145,10 +134,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Modules",
-					label: (
+					icon: (
 						<>
 							<FileCode2 />
-							Modules
 						</>
 					),
 					href: "/administrator/dashboard/modules",
@@ -165,20 +153,18 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "s",
 			title: "Menus",
-			label: (
+			icon: (
 				<>
 					<Menu />
-					Menus
 				</>
 			),
 			content: [
 				{
 					type: "a",
 					title: "Manage",
-					label: (
+					icon: (
 						<>
 							<Logs />
-							Manage Menus
 						</>
 					),
 					href: "/administrator/dashboard/menus",
@@ -186,10 +172,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Menu Items",
-					label: (
+					icon: (
 						<>
 							<List />
-							Menu Items
 						</>
 					),
 					href: "/administrator/dashboard/menus?view=items",
@@ -203,20 +188,18 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "s",
 			title: "Plugins",
-			label: (
+			icon: (
 				<>
 					<Blocks />
-					Plugins
 				</>
 			),
 			content: [
 				{
 					type: "a",
 					title: "Manage",
-					label: (
+					icon: (
 						<>
 							<Package />
-							Manage Plugins
 						</>
 					),
 					href: "/administrator/dashboard/plugins",
@@ -227,20 +210,18 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "s",
 			title: "Users",
-			label: (
+			icon: (
 				<>
 					<Users />
-					Users
 				</>
 			),
 			content: [
 				{
 					type: "a",
 					title: "Manage",
-					label: (
+					icon: (
 						<>
 							<FileText />
-							Manage Users
 						</>
 					),
 					href: "/administrator/dashboard/users",
@@ -254,10 +235,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Groups",
-					label: (
+					icon: (
 						<>
 							<FileText />
-							User Groups
 						</>
 					),
 					href: "/administrator/dashboard/users?view=groups",
@@ -271,10 +251,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Roles",
-					label: (
+					icon: (
 						<>
 							<FileText />
-							User Roles
 						</>
 					),
 					href: "/administrator/dashboard/users?view=roles",
@@ -291,10 +270,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Fields",
-					label: (
+					icon: (
 						<>
 							<TextCursorInput />
-							Fields
 						</>
 					),
 					href: "/administrator/dashboard/users?view=fields",
@@ -302,10 +280,9 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Field Groups",
-					label: (
+					icon: (
 						<>
 							<Parentheses />
-							Field Groups
 						</>
 					),
 					href: "/administrator/dashboard/users?view=fieldgroups",
@@ -316,10 +293,9 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "a",
 			title: "System",
-			label: (
+			icon: (
 				<>
 					<Wrench />
-					System
 				</>
 			),
 			href: "/administrator/dashboard/system",
@@ -328,10 +304,9 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "a",
 			title: "Help",
-			label: (
+			icon: (
 				<>
 					<CircleHelp />
-					Help
 				</>
 			),
 			href: "/administrator/dashboard/help",

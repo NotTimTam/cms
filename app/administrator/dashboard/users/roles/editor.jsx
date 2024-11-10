@@ -22,13 +22,6 @@ const RoleEditor = ({ id }) => {
 
 	const [role, setRole] = useState(id ? { _id: id } : defaultRole);
 
-	/**
-	 * Unpublished
-	 * Published
-	 * Trashed
-	 * Archived
-	 */
-
 	// Functions
 	const getRole = async () => {
 		setMessage(null);
@@ -36,14 +29,14 @@ const RoleEditor = ({ id }) => {
 		setLoading(true);
 
 		try {
-			if (!article._id) return;
+			if (!role._id) return;
 
 			const token = await getToken();
 
 			const {
 				data: { role: newRole },
 			} = await API.get(
-				API.createRouteURL(API.users, "roles", id),
+				API.createRouteURL(API.roles, id),
 				API.createAuthorizationConfig(token)
 			);
 
@@ -57,67 +50,89 @@ const RoleEditor = ({ id }) => {
 		setLoading(false);
 	};
 
-	// const saveRole = async () => {
-	// 	setMessage(null);
+	const saveRole = async () => {
+		setMessage(null);
 
-	// 	setLoading(true);
+		setLoading(true);
 
-	// 	try {
-	// 		const token = await getToken();
+		try {
+			const token = await getToken();
 
-	// 		console.log(article._id);
+			const {
+				data: { role: newRole },
+			} = role._id
+				? await API.patch(
+						API.createRouteURL(API.roles, role._id),
+						role,
+						API.createAuthorizationConfig(token)
+				  )
+				: await API.post(
+						API.createRouteURL(API.roles),
+						role,
+						API.createAuthorizationConfig(token)
+				  );
 
-	// 		const {
-	// 			data: { article: newArticle },
-	// 		} = article._id
-	// 			? await API.patch(
-	// 					API.createRouteURL(API.articles, article._id),
-	// 					article,
-	// 					API.createAuthorizationConfig(token)
-	// 			  )
-	// 			: await API.post(
-	// 					API.articles,
-	// 					article,
-	// 					API.createAuthorizationConfig(token)
-	// 			  );
+			setRole(newRole);
+		} catch (error) {
+			console.error(error);
 
-	// 		setArticle(newArticle);
-	// 	} catch (error) {
-	// 		console.error(error);
+			setMessage(<Message type="error">{error.data}</Message>);
+		}
 
-	// 		setMessage(<Message type="error">{error.data}</Message>);
-	// 	}
+		setLoading(false);
+	};
 
-	// 	setLoading(false);
-	// };
-
-	// useEffect(() => {
-	// 	if (id) getRole();
-	// }, [id]);
+	useEffect(() => {
+		if (id) getRole();
+	}, [id]);
 
 	if (loading) return <Loading />;
 
 	return (
-		<Editor
-			{...{
-				// saveData: saveRole,
-				closeEditor: () =>
-					router.push("/administrator/dashboard/users?view=roles"),
-				tabs: [
-					Tabs.Item(
-						"Content",
-						<form
-							className="--cms-form"
-							onSubmit={(e) => e.preventDefault()}
-						>
-							<label htmlFor="name" required>
-								Name
-							</label>
-						</form>
-					),
-				],
-			}}
-		/>
+		<>
+			<Editor
+				{...{
+					message,
+					saveData: saveRole,
+					closeEditor: () =>
+						router.push(
+							"/administrator/dashboard/users?view=roles"
+						),
+					tabs: [
+						Tabs.Item(
+							"Content",
+							<form
+								className="--cms-form"
+								onSubmit={(e) => e.preventDefault()}
+							>
+								<label htmlFor="name" required>
+									Name
+								</label>
+								<input
+									value={role.name || ""}
+									onChange={({ target: { value } }) =>
+										setRole({ ...role, name: value })
+									}
+									type="text"
+									id="name"
+									placeholder="Article Editor, Website Manager, Etc."
+								/>
+
+								<label htmlFor="description">Description</label>
+								<textarea
+									value={role.description || ""}
+									onChange={({ target: { value } }) =>
+										setRole({ ...role, description: value })
+									}
+									id="description"
+									placeholder="What is the purpose of this role?"
+								></textarea>
+							</form>
+						),
+					],
+				}}
+			/>
+		</>
 	);
 };
 

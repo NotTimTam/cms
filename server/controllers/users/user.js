@@ -82,23 +82,22 @@ export const createUser = async (req, res) => {
 	try {
 		let { name, username, password, email } = req.body;
 
-		if (!name) return res.status(400).send('No "name" property provided.');
+		if (!name) return res.status(400).send("No name provided.");
 
 		if (typeof name !== "string" || !nameRegex.test(name))
 			return res
 				.status(400)
 				.send(
-					`Invalid "name" property provided. Expected a string between 1 and 1024 characters in length.`
+					`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
 				);
 
-		if (!username)
-			return res.status(400).send('No "username" property provided.');
+		if (!username) return res.status(400).send("No username provided.");
 
 		if (typeof username !== "string" || !nameRegex.test(username))
 			return res
 				.status(400)
 				.send(
-					`Invalid "username" property provided. Expected a string between 1 and 1024 characters in length.`
+					`Invalid username provided. Expected a string between 1 and 1024 characters in length.`
 				);
 
 		if (await UserModel.findOne({ username }))
@@ -107,16 +106,14 @@ export const createUser = async (req, res) => {
 				.send(`A user already exists with that username.`);
 
 		if (!password || typeof password !== "string")
-			return res
-				.status(400)
-				.send('Expected a "password" string property.');
+			return res.status(400).send("No/invalid password provided.");
 
 		if (email) {
 			if (typeof email !== "string" || !emailRegex.test(email))
 				return res
 					.status(400)
 					.send(
-						`Invalid "email" property provided. Expected a valid email address.`
+						`Invalid email provided. Expected a valid email address.`
 					);
 
 			if (await UserModel.findOne({ email }))
@@ -136,7 +133,7 @@ export const createUser = async (req, res) => {
 
 		await user.save();
 
-		return res.status(200).send({ user });
+		return res.status(200).json({ user });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

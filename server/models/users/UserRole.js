@@ -7,6 +7,7 @@ const UserRoleSchema = new mongoose.Schema(
 			type: String,
 			required: [true, "No UserRole name provided."],
 			match: [nameRegex, "Invalid name provided to UserRole."],
+			unique: [true, "UserRole name must be unique."],
 		},
 		description: {
 			type: String,

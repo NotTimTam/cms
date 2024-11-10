@@ -9,10 +9,10 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { getCurrentMenu } from "@/util/display";
 
 const SideMenuSection = ({
-	label,
 	title,
 	children,
 	index,
+	icon,
 	sections,
 	setSections,
 	expandMenu,
@@ -36,7 +36,8 @@ const SideMenuSection = ({
 						expandMenu();
 					}}
 				>
-					{label}
+					{icon}
+					<span>{title}</span>
 					<ChevronRight
 						className={
 							styles["--cms-menu-section-toggle-indicator"]
@@ -85,7 +86,7 @@ const SideMenu = () => {
 	const currentMenu = getCurrentMenu(menu, pathname, searchParams);
 
 	const menuMapper = (item, index) => {
-		const { type, title, label, href, content, quickLink } = item;
+		const { type, title, icon, href, content, quickLink } = item;
 
 		if (type === "a")
 			return (
@@ -105,7 +106,8 @@ const SideMenu = () => {
 						aria-label={title}
 						href={href}
 					>
-						{label}
+						{icon}
+						<span>{title}</span>
 					</Link>
 					{quickLink && (
 						<Link
@@ -126,7 +128,7 @@ const SideMenu = () => {
 					setSections={setSections}
 					expandMenu={() => setExpanded(true)}
 					index={index}
-					label={label}
+					icon={icon}
 					title={title}
 				>
 					{content && content.map(menuMapper)}

@@ -155,17 +155,16 @@ export const validateArticlePatch = async (article) => {
 };
 
 /**
- * Validate an Article filtration query object.
+ * Validate a filtration query object.
  * @param {Object} query The query data to validate.
  * @throws {Error} An error is thrown if the query data is not valid.
  * @returns {Object} The query data, reformatted, if necessary.
  */
-export const validateArticleQuery = async (query) => {
+export const validateGenericQuery = async (query) => {
 	const {
 		search = "",
 		sortField = "createdAt",
 		sortDir = "-1",
-		status = "normal",
 		page = "0",
 		itemsPerPage = "20",
 	} = query;
@@ -174,13 +173,6 @@ export const validateArticleQuery = async (query) => {
 		throw new ValidatorError(
 			400,
 			`Invalid "search" provided. Must be a string.`
-		);
-
-	if (status !== "normal" && !statusEnum.includes(status))
-		throw new ValidatorError(
-			400,
-
-			`Invalid "status" provided. Must be either "normal" or one of: ${statusEnum}`
 		);
 
 	if (!sortEnum.includes(sortField))
@@ -211,6 +203,27 @@ export const validateArticleQuery = async (query) => {
 			400,
 
 			`Request "itemsPerPage" parameter must be an integer greater than 0 or the string "all"`
+		);
+
+	return query;
+};
+
+/**
+ * Validate an Article filtration query object.
+ * @param {Object} query The query data to validate.
+ * @throws {Error} An error is thrown if the query data is not valid.
+ * @returns {Object} The query data, reformatted, if necessary.
+ */
+export const validateArticleQuery = async (query) => {
+	query = await validateGenericQuery(query);
+
+	const { status = "normal" } = query;
+
+	if (status !== "normal" && !statusEnum.includes(status))
+		throw new ValidatorError(
+			400,
+
+			`Invalid "status" provided. Must be either "normal" or one of: ${statusEnum}`
 		);
 
 	return query;

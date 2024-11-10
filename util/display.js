@@ -62,9 +62,9 @@ export const getCurrentMenu = (menu, pathname, searchParams) => {
 			) {
 				return {
 					...menu,
-					label: (
+					title: (
 						<>
-							{menu.label}: {menu.quickLink.title}
+							{menu.title}: {menu.quickLink.title}
 						</>
 					),
 				};

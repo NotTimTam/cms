@@ -2,9 +2,9 @@
 
 import { useSearchParams } from "next/navigation";
 import RoleEditor from "./roles/editor";
+import RoleListings from "./roles/listings";
 
 const Groups = () => "Groups";
-const Roles = () => "Role";
 const Fields = () => "Fields";
 const FieldGroups = () => "FieldGroups";
 const Manage = () => "Manage";
@@ -23,7 +23,7 @@ const Content = () => {
 				case "edit":
 					return <RoleEditor id={id} />;
 				default:
-					return <Roles />;
+					return <RoleListings />;
 			}
 		case "fields":
 			return <Fields />;

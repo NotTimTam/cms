@@ -7,6 +7,7 @@ import { AdministratorContext } from "../AdministratorContext";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getCurrentMenu } from "@/util/display";
+import scssVars from "../../scssVars";
 
 const SideMenuSection = ({
 	title,
@@ -56,6 +57,8 @@ const SideMenu = () => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
+	const closeMenuOnClick = window && window.innerWidth <= scssVars.tablet;
+
 	const {
 		state: [administrator, setAdministrator],
 		menu,
@@ -104,6 +107,11 @@ const SideMenu = () => {
 								: undefined
 						}
 						aria-label={title}
+						onClick={
+							closeMenuOnClick
+								? () => setExpanded(false)
+								: undefined
+						}
 						href={href}
 					>
 						{icon}
@@ -114,6 +122,11 @@ const SideMenu = () => {
 							className={`--cms-button ${styles["--cms-quick-link"]}`}
 							aria-label={quickLink.ariaLabel}
 							href={quickLink.href}
+							onClick={
+								closeMenuOnClick
+									? () => setExpanded(false)
+									: undefined
+							}
 						>
 							<span>{quickLink.icon}</span>
 						</Link>

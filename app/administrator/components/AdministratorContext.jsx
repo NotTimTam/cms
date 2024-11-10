@@ -60,7 +60,10 @@ const menu = (siteMenus, sitePlugins) =>
 					),
 					href: "/administrator/dashboard/articles",
 					quickLink: {
-						title: "Create New Article",
+						title: {
+							new: "Create New Article",
+							existing: "Edit Article",
+						},
 						icon: <Plus />,
 						href: "/administrator/dashboard/articles?layout=edit",
 						ariaLabel: "Create New Article",
@@ -76,7 +79,10 @@ const menu = (siteMenus, sitePlugins) =>
 					),
 					href: "/administrator/dashboard/categories",
 					quickLink: {
-						title: "Create New Category",
+						title: {
+							new: "Create New Category",
+							existing: "Edit Category",
+						},
 						icon: <Plus />,
 						href: "/administrator/dashboard/categories?layout=edit",
 						ariaLabel: "Create New Category",
@@ -92,7 +98,10 @@ const menu = (siteMenus, sitePlugins) =>
 					),
 					href: "/administrator/dashboard/tags",
 					quickLink: {
-						title: "Create New Tag",
+						title: {
+							new: "Create New Tag",
+							existing: "Edit Tag",
+						},
 						icon: <Plus />,
 						href: "/administrator/dashboard/tags?layout=edit",
 						ariaLabel: "Create New Tag",
@@ -144,7 +153,10 @@ const menu = (siteMenus, sitePlugins) =>
 					),
 					href: "/administrator/dashboard/modules",
 					quickLink: {
-						title: "Create New Module",
+						title: {
+							new: "Create New Module",
+							existing: "Edit Module",
+						},
 						icon: <Plus />,
 						href: "/administrator/dashboard/modules?layout=edit",
 						ariaLabel: "Create New Module",
@@ -232,7 +244,10 @@ const menu = (siteMenus, sitePlugins) =>
 					),
 					href: "/administrator/dashboard/users",
 					quickLink: {
-						title: "Create New User",
+						title: {
+							new: "Create New User",
+							existing: "Edit User",
+						},
 						icon: <Plus />,
 						href: "/administrator/dashboard/users?layout=edit",
 						ariaLabel: "Create New User",
@@ -249,7 +264,10 @@ const menu = (siteMenus, sitePlugins) =>
 					),
 					href: "/administrator/dashboard/users?view=groups",
 					quickLink: {
-						title: "Create New Group",
+						title: {
+							new: "Create New Group",
+							existing: "Edit Group",
+						},
 						icon: <Plus />,
 						href: "/administrator/dashboard/users?view=groups&layout=edit",
 						ariaLabel: "Create New Group",
@@ -266,7 +284,10 @@ const menu = (siteMenus, sitePlugins) =>
 					),
 					href: "/administrator/dashboard/users?view=roles",
 					quickLink: {
-						title: "Create New Role",
+						title: {
+							new: "Create New Role",
+							existing: "Edit Role",
+						},
 						icon: <Plus />,
 						href: "/administrator/dashboard/users?view=roles&layout=edit",
 						ariaLabel: "Create New Role",

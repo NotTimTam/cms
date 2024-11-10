@@ -64,7 +64,12 @@ export const getCurrentMenu = (menu, pathname, searchParams) => {
 					...menu,
 					alt: (
 						<>
-							{menu.alt || menu.title}: {menu.quickLink.title}
+							{menu.alt || menu.title}:{" "}
+							{
+								menu.quickLink.title[
+									searchParams.has("id") ? "existing" : "new"
+								]
+							}
 						</>
 					),
 				};

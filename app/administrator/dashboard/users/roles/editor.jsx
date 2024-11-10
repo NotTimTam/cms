@@ -20,7 +20,7 @@ const RoleEditor = ({ id }) => {
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState(null);
 
-	const [role, setRole] = useState(id ? { _id: id } : defaultRole);
+	const [userRole, setUserRole] = useState(id ? { _id: id } : defaultRole);
 
 	// Functions
 	const getRole = async () => {
@@ -29,18 +29,18 @@ const RoleEditor = ({ id }) => {
 		setLoading(true);
 
 		try {
-			if (!role._id) return;
+			if (!userRole._id) return;
 
 			const token = await getToken();
 
 			const {
-				data: { role: newRole },
+				data: { userRole: newUserRole },
 			} = await API.get(
-				API.createRouteURL(API.roles, id),
+				API.createRouteURL(API.userRoles, id),
 				API.createAuthorizationConfig(token)
 			);
 
-			setRole(newRole);
+			setUserRole(newUserRole);
 		} catch (error) {
 			console.error(error);
 
@@ -59,20 +59,20 @@ const RoleEditor = ({ id }) => {
 			const token = await getToken();
 
 			const {
-				data: { role: newRole },
-			} = role._id
+				data: { userRole: newUserRole },
+			} = userRole._id
 				? await API.patch(
-						API.createRouteURL(API.roles, role._id),
-						role,
+						API.createRouteURL(API.userRoles, userRole._id),
+						userRole,
 						API.createAuthorizationConfig(token)
 				  )
 				: await API.post(
-						API.createRouteURL(API.roles),
-						role,
+						API.createRouteURL(API.userRoles),
+						userRole,
 						API.createAuthorizationConfig(token)
 				  );
 
-			setRole(newRole);
+			setUserRole(newUserRole);
 		} catch (error) {
 			console.error(error);
 
@@ -109,9 +109,12 @@ const RoleEditor = ({ id }) => {
 									Name
 								</label>
 								<input
-									value={role.name || ""}
+									value={userRole.name || ""}
 									onChange={({ target: { value } }) =>
-										setRole({ ...role, name: value })
+										setUserRole({
+											...userRole,
+											name: value,
+										})
 									}
 									type="text"
 									id="name"
@@ -120,9 +123,12 @@ const RoleEditor = ({ id }) => {
 
 								<label htmlFor="description">Description</label>
 								<textarea
-									value={role.description || ""}
+									value={userRole.description || ""}
 									onChange={({ target: { value } }) =>
-										setRole({ ...role, description: value })
+										setUserRole({
+											...userRole,
+											description: value,
+										})
 									}
 									id="description"
 									placeholder="What is the purpose of this role?"

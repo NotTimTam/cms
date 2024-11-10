@@ -4,8 +4,10 @@ import {
 	Blocks,
 	CircleHelp,
 	FileCode2,
+	FileLock2,
 	FileText,
 	FolderClosed,
+	Group,
 	Home,
 	Images,
 	List,
@@ -17,6 +19,7 @@ import {
 	SquareStack,
 	Tags,
 	TextCursorInput,
+	User,
 	Users,
 	Wrench,
 } from "lucide-react";
@@ -162,6 +165,7 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Manage",
+					alt: "Manage Menus",
 					icon: (
 						<>
 							<Logs />
@@ -197,6 +201,7 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Manage",
+					alt: "Manage Plugins",
 					icon: (
 						<>
 							<Package />
@@ -219,9 +224,10 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Manage",
+					alt: "Manage Users",
 					icon: (
 						<>
-							<FileText />
+							<User />
 						</>
 					),
 					href: "/administrator/dashboard/users",
@@ -235,9 +241,10 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Groups",
+					alt: "User Groups",
 					icon: (
 						<>
-							<FileText />
+							<Group />
 						</>
 					),
 					href: "/administrator/dashboard/users?view=groups",
@@ -251,9 +258,10 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Roles",
+					alt: "User Roles",
 					icon: (
 						<>
-							<FileText />
+							<FileLock2 />
 						</>
 					),
 					href: "/administrator/dashboard/users?view=roles",
@@ -270,6 +278,7 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Fields",
+					alt: "User Fields",
 					icon: (
 						<>
 							<TextCursorInput />
@@ -280,6 +289,7 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Field Groups",
+					alt: "User Field Groups",
 					icon: (
 						<>
 							<Parentheses />

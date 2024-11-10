@@ -30,7 +30,7 @@ const Header = () => {
 				{activeMenu && (
 					<>
 						{activeMenu.icon}
-						{activeMenu.title}
+						{activeMenu.alt || activeMenu.title}
 					</>
 				)}
 			</h1>

@@ -1,5 +1,6 @@
 import ArticleModel from "../models/content/Article.js";
 import UserModel from "../models/users/User.js";
+import UserRoleModel from "../models/users/UserRole.js";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
 import { sortEnum, statusEnum } from "../../util/enum.js";
@@ -151,7 +152,63 @@ export const validateArticlePatch = async (article) => {
 			"Invalid article hits count provided. Expected an integer above 0."
 		);
 
+	if (
+		article.order &&
+		(typeof article.order !== "number" ||
+			!Number.isInteger(article.order) ||
+			article.order < 0)
+	)
+		throw new ValidatorError(
+			400,
+			"Invalid order value provided. Expected an integer >= 0."
+		);
+
 	return article;
+};
+
+export const validateUserRole = async (userRole) => {
+	userRole = await validateUserRolePatch(userRole);
+
+	if (!userRole.name) throw new ValidatorError(400, "No role name provided.");
+
+	return userRole;
+};
+
+export const validateUserRolePatch = async (userRole) => {
+	if (userRole.name) {
+		if (typeof userRole.name !== "string" || !nameRegex.test(userRole.name))
+			throw new ValidatorError(
+				400`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
+			);
+
+		const existing = await UserRoleModel.findOne({ name: userRole.name });
+
+		if (
+			existing &&
+			(!userRole._id ||
+				existing._id.toString() !== userRole._id.toString())
+		)
+			throw new ValidatorError(
+				400,
+				"A role already exists with that name."
+			);
+	}
+
+	if (userRole.description && typeof userRole.description !== "string")
+		throw new ValidatorError(400, "Invalid description provided.");
+
+	if (
+		userRole.order &&
+		(typeof userRole.order !== "number" ||
+			!Number.isInteger(userRole.order) ||
+			userRole.order < 0)
+	)
+		throw new ValidatorError(
+			400,
+			"Invalid order value provided. Expected an integer >= 0."
+		);
+
+	return userRole;
 };
 
 /**

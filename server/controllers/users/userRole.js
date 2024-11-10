@@ -1,7 +1,11 @@
 import UserRoleModel from "../../models/users/UserRole.js";
-import { nameRegex } from "../../../util/regex.js";
 import { handleUnexpectedError } from "../../util/controller.js";
-import { validateGenericQuery } from "../../util/validators.js";
+import {
+	validateGenericQuery,
+	validateUserRole,
+	validateUserRolePatch,
+	ValidatorError,
+} from "../../util/validators.js";
 
 /**
  * Create a new UserRole document.
@@ -10,32 +14,23 @@ import { validateGenericQuery } from "../../util/validators.js";
  */
 export const createUserRole = async (req, res) => {
 	try {
-		const { name, description } = req.body;
-
-		if (!name) return res.status(400).send("No role name provided.");
-		if (typeof name !== "string" || !nameRegex.test(name))
-			return res
-				.status(400)
-				.send(
-					`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
-				);
-		if (await UserRoleModel.findOne({ name }))
-			return res
-				.status(400)
-				.send("A role already exists with that name.");
-
-		if (description && typeof description !== "string")
-			return res.status(400).send("Invalid description provided.");
-
 		const roleWithHighestOrder = await UserRoleModel.findOne({}).sort({
 			order: -1,
 		});
 
-		const role = new UserRoleModel({
-			name,
-			description,
-			order: roleWithHighestOrder ? roleWithHighestOrder.order + 1 : 0,
-		});
+		req.body.order = roleWithHighestOrder
+			? roleWithHighestOrder.order + 1
+			: 0;
+
+		try {
+			req.body = await validateUserRole(req.body);
+		} catch (error) {
+			if (error instanceof ValidatorError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
+		const role = new UserRoleModel(req.body);
 
 		await role.save();
 
@@ -113,8 +108,6 @@ export const findUserRoleById = async (req, res) => {
 	}
 };
 
-export const findUserRoleByIdAndUpdate = async (req, res) => {};
-
 /**
  * Patch a selection of user roles.
  */
@@ -176,4 +169,65 @@ export const batchUserRoles = async (req, res) => {
 	}
 };
 
-export const findUserRoleByIdAndDelete = async (req, res) => {};
+/**
+ * Find a specific user role by its ID and update it.
+ * @param {Express.Request} req The API request object.
+ * @param {string} req.params.id The ID of the user role to find.
+ * @param {Object} req.body The user role update object.
+ */
+export const findUserRoleByIdAndUpdate = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		if (req.body._id && id.toString() !== req.body._id.toString())
+			return res
+				.status(400)
+				.send(
+					'Request body "_id" parameter does not match request "_id" parameter.'
+				);
+
+		const userRole = await UserRoleModel.findById(id);
+
+		if (!userRole)
+			return res.status(404).send(`No user role found with id "${id}"`);
+
+		try {
+			req.body = await validateUserRolePatch({
+				...(await UserRoleModel.findById(id).lean()),
+				...req.body,
+			});
+		} catch (error) {
+			if (error instanceof ValidatorError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
+		// Store new values.
+		for (const [key, value] of Object.entries(req.body)) {
+			userRole[key] = value;
+		}
+
+		await userRole.save();
+
+		return res.status(200).json({ userRole });
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Find a specific user role by its ID and delete it.
+ * @param {Express.Request} req The API request object.
+ * @param {string} req.params.id The ID of the user role to find.
+ */
+export const findUserRoleByIdAndDelete = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		await UserRoleModel.findByIdAndDelete(id);
+
+		return res.status(200).send("User role deleted successfully.");
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};

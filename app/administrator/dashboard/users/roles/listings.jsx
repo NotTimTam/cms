@@ -42,15 +42,13 @@ const RoleListings = () => {
 		name: {
 			label: "Name",
 			listing: new List.Element((index) => {
-				const { name, _id, locked } = userRoles[index];
+				const { name, _id } = userRoles[index];
 
 				return (
 					<List.InfoBlock>
 						<h3>
-							{locked && <Lock />}
 							<Link
 								aria-label="Open Role"
-								disabled={locked}
 								href={`/administrator/dashboard/users?view=roles&layout=edit&id=${_id}`}
 							>
 								{name}
@@ -141,7 +139,7 @@ const RoleListings = () => {
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserRoles(userRoles);
+			setUserRoles(userRoles.filter(({ locked }) => !locked));
 			setQuery((query) => ({
 				...query,
 				page: newPage,

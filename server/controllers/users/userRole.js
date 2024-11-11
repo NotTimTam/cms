@@ -1,6 +1,5 @@
 import { orderDocuments } from "../../util/database.js";
 import UserRoleModel from "../../models/users/UserRole.js";
-import UserGroupModel from "../../models/users/UserGroup.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
 	validateGenericQuery,
@@ -57,13 +56,11 @@ export const findUserRoles = async (req, res) => {
 		const { search, sortField = "createdAt", sortDir = "-1" } = req.query;
 		let { page = "0", itemsPerPage = "20" } = req.query;
 
-		const query = {};
+		const query = {
+			$or: [{ locked: { $exists: false } }, { locked: false }],
+		};
 
-		if (search)
-			query["$or"] = [
-				{ name: { $regex: search, $options: "i" } },
-				{ alias: { $regex: search, $options: "i" } },
-			];
+		if (search) query.name = { $regex: search, $options: "i" };
 
 		const numRoles = await UserRoleModel.countDocuments(query);
 
@@ -116,12 +113,6 @@ export const deleteUserRoles = async (req, res) => {
 			$or: [{ locked: { $exists: false } }, { locked: false }], // Locked roles cannot be deleted.
 			_id: { $in: selection },
 		});
-
-		// Remove references to this role from all groups.
-		await UserGroupModel.updateMany(
-			{ roles: { $in: selection } },
-			{ $pull: { roles: { $in: selection } } }
-		);
 
 		return res.status(200).send("User roles deleted successfully.");
 	} catch (error) {

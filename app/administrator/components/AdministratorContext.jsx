@@ -23,7 +23,7 @@ import {
 	Users,
 	Wrench,
 } from "lucide-react";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 /**
  * Create the administrator side menu.
@@ -251,26 +251,6 @@ const menu = (siteMenus, sitePlugins) =>
 						icon: <Plus />,
 						href: "/administrator/dashboard/users?layout=edit",
 						ariaLabel: "Create New User",
-					},
-				},
-				{
-					type: "a",
-					title: "Groups",
-					alt: "User Groups",
-					icon: (
-						<>
-							<Group />
-						</>
-					),
-					href: "/administrator/dashboard/users?view=groups",
-					quickLink: {
-						title: {
-							new: "Create New Group",
-							existing: "Edit Group",
-						},
-						icon: <Plus />,
-						href: "/administrator/dashboard/users?view=groups&layout=edit",
-						ariaLabel: "Create New Group",
 					},
 				},
 				{

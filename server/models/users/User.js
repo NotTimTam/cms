@@ -25,10 +25,10 @@ const UserSchema = new mongoose.Schema(
 			match: [emailRegex, "Invalid email address provided to User."],
 			unique: [true, 'User "email" field must be unique.'],
 		},
-		groups: [
+		roles: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
-				ref: "UserGroup",
+				ref: "UserRole",
 				required: false,
 			},
 		],

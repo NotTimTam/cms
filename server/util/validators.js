@@ -1,7 +1,6 @@
 import ArticleModel from "../models/content/Article.js";
 import UserModel from "../models/users/User.js";
 import UserRoleModel from "../models/users/UserRole.js";
-import UserGroupModel from "../models/users/UserGroup.js";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
 import { sortEnum, statusEnum } from "../../util/enum.js";
@@ -178,88 +177,6 @@ export const validateUserRole = async (userRole) => {
 		);
 
 	return userRole;
-};
-
-/**
- * Validate a UserGroup document.
- * @param {Object} userGroup The user group data to validate.
- * @throws {Error} An error is thrown if the user group is not valid.
- * @returns {Object} The user group data, reformatted, if necessary.
- */
-export const validateUserGroup = async (userGroup) => {
-	if (!userGroup.name)
-		throw new ValidatorError(400, "No group name provided.");
-	else {
-		if (
-			typeof userGroup.name !== "string" ||
-			!nameRegex.test(userGroup.name)
-		)
-			throw new ValidatorError(
-				400,
-				`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
-			);
-
-		const existing = await UserGroupModel.findOne({ name: userGroup.name });
-
-		if (
-			existing &&
-			(!userGroup._id ||
-				existing._id.toString() !== userGroup._id.toString())
-		)
-			throw new ValidatorError(
-				400,
-				"A user role already exists with that name."
-			);
-	}
-
-	if (userGroup.description && typeof userGroup.description !== "string")
-		throw new ValidatorError(400, "Invalid description provided.");
-
-	if (
-		userGroup.order &&
-		(typeof userGroup.order !== "number" ||
-			!Number.isInteger(userGroup.order))
-	)
-		throw new ValidatorError(
-			400,
-			"Invalid order value provided. Expected an integer."
-		);
-
-	if (userGroup.locked && typeof userGroup.locked !== "boolean")
-		throw new ValidatorError(
-			400,
-			'Invalid "locked" state provided. Expected a boolean.'
-		);
-
-	if (userGroup.parent) {
-		const parent = await UserGroupModel.findById(userGroup.parent);
-
-		if (!parent)
-			throw new ValidatorError(
-				400,
-				`No user group found with id "${userGroup.parent}"`
-			);
-	}
-
-	if (userGroup.roles) {
-		if (!(userGroup.roles instanceof Array))
-			throw new ValidatorError(
-				400,
-				"Invalid roles provided. Expected an array of ids."
-			);
-
-		for (const id of userGroup.roles) {
-			const role = await UserRoleModel.findById(id);
-
-			if (!role)
-				throw new ValidatorError(
-					400,
-					`No user role found with id "${id}"`
-				);
-		}
-	}
-
-	return userGroup;
 };
 
 /**

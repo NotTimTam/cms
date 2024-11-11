@@ -26,11 +26,11 @@ const defaultQuery = {
 	},
 };
 
-const GroupListings = () => {
+const UserListings = () => {
 	// Hooks
 	const SessionStorage = new StorageInterface(window.sessionStorage);
 	const {
-		data: { groupQuery },
+		data: { userQuery },
 	} = SessionStorage;
 
 	// Data
@@ -42,18 +42,23 @@ const GroupListings = () => {
 		name: {
 			label: "Name",
 			listing: new List.Element((index) => {
-				const { name, _id } = userGroups[index];
+				const { name, email, _id } = users[index];
 
 				return (
 					<List.InfoBlock>
 						<h3>
 							<Link
-								aria-label="Open Group"
-								href={`/administrator/dashboard/users?view=groups&layout=edit&id=${_id}`}
+								aria-label="Open User"
+								href={`/administrator/dashboard/users?layout=edit&id=${_id}`}
 							>
 								{name}
 							</Link>
 						</h3>
+						{email && (
+							<p>
+								<b>Email:</b> {email}
+							</p>
+						)}
 					</List.InfoBlock>
 				);
 			}),
@@ -61,7 +66,7 @@ const GroupListings = () => {
 		createdAt: {
 			label: "Date Created",
 			listing: new List.Element((index) =>
-				new Date(userGroups[index].createdAt).toLocaleString()
+				new Date(users[index].createdAt).toLocaleString()
 			),
 		},
 	};
@@ -115,8 +120,8 @@ const GroupListings = () => {
 	// States
 	const [selection, setSelection] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [userGroups, setUserGroups] = useState([]);
-	const [query, setQuery] = useState(groupQuery || defaultQuery);
+	const [users, setUsers] = useState([]);
+	const [query, setQuery] = useState(userQuery || defaultQuery);
 	const [message, setMessage] = useState(null);
 
 	// Functions
@@ -125,21 +130,21 @@ const GroupListings = () => {
 		setMessage(null);
 
 		try {
-			SessionStorage.setItem("groupQuery", query); // Remember this query.
+			SessionStorage.setItem("userQuery", query); // Remember this query.
 
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Get userGroups.
+			// Get users.
 			const token = await getToken();
 			const {
-				data: { userGroups, page: newPage, numPages },
+				data: { users, page: newPage, numPages },
 			} = await API.get(
-				`${API.userGroups}?${searchParams.toString()}`,
+				`${API.users}?${searchParams.toString()}`,
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserGroups(userGroups.filter(({ locked }) => !locked));
+			setUsers(users.filter(({ locked }) => !locked));
 			setQuery((query) => ({
 				...query,
 				page: newPage,
@@ -153,7 +158,7 @@ const GroupListings = () => {
 		setLoading(false);
 	};
 
-	const reorderUserGroup = async (active, over, dir) => {
+	const reorderUser = async (active, over, dir) => {
 		setLoading(true);
 		setMessage(null);
 
@@ -164,14 +169,14 @@ const GroupListings = () => {
 
 			await API.patch(
 				`${API.createRouteURL(
-					API.userGroups,
+					API.users,
 					"order"
 				)}?active=${active}&over=${over}&dir=${dir}`,
 				undefined,
 				API.createAuthorizationConfig(token)
 			);
 
-			// Reload user groups.
+			// Reload users.
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
@@ -191,9 +196,9 @@ const GroupListings = () => {
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Batch through userGroups.
+			// Batch through users.
 			await API.delete(
-				`${API.userGroups}?${searchParams.toString()}&selection=${
+				`${API.users}?${searchParams.toString()}&selection=${
 					selection === "all" ? selection : selection.join(",")
 				}`,
 				API.createAuthorizationConfig(token)
@@ -272,7 +277,7 @@ const GroupListings = () => {
 		<>
 			<Curate
 				{...{
-					new: "/administrator/dashboard/users?view=groups&layout=edit",
+					new: "/administrator/dashboard/users?layout=edit",
 					actions: selection.length > 0 && actions,
 				}}
 			/>
@@ -294,8 +299,8 @@ const GroupListings = () => {
 					/>
 
 					<List
-						items={userGroups}
-						itemIdentifier="user group"
+						items={users}
+						itemIdentifier="user"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing, hideFromList }]) => ({
 								listing,
@@ -322,7 +327,7 @@ const GroupListings = () => {
 									!query.sort || query.sort.field !== "order",
 							},
 							swapItems: (active, over, dir) => {
-								reorderUserGroup(active, over, dir);
+								reorderUser(active, over, dir);
 							},
 						}}
 					/>
@@ -332,4 +337,4 @@ const GroupListings = () => {
 	);
 };
 
-export default GroupListings;
+export default UserListings;

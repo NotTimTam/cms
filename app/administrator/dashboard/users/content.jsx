@@ -3,12 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import RoleEditor from "./roles/editor";
 import RoleListings from "./roles/listings";
-import GroupEditor from "./groups/editor";
-import GroupListings from "./groups/listings";
+import UserEditor from "./editor";
+import UserListings from "./listings";
 
 const Fields = () => "Fields";
 const FieldGroups = () => "FieldGroups";
-const Manage = () => "Manage";
 
 const Content = () => {
 	const searchParams = useSearchParams();
@@ -17,13 +16,6 @@ const Content = () => {
 	const id = searchParams.get("id");
 
 	switch (view) {
-		case "groups":
-			switch (layout) {
-				case "edit":
-					return <GroupEditor id={id} />;
-				default:
-					return <GroupListings />;
-			}
 		case "roles":
 			switch (layout) {
 				case "edit":
@@ -36,7 +28,12 @@ const Content = () => {
 		case "fieldgroups":
 			return <FieldGroups />;
 		default:
-			return <Manage />;
+			switch (layout) {
+				case "edit":
+					return <UserEditor id={id} />;
+				default:
+					return <UserListings />;
+			}
 	}
 };
 

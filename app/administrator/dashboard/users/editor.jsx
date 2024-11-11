@@ -11,19 +11,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const defaultGroup = {
+const defaultUser = {
 	name: "",
-	description: "",
+	username: "",
+	password: "",
+	email: "",
+	roles: [],
 };
 
-const GroupEditor = ({ id }) => {
+const UserEditor = ({ id }) => {
 	const router = useRouter();
 
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState(null);
 
 	const [userRoles, setUserRoles] = useState(null);
-	const [userGroup, setUserGroup] = useState(id ? { _id: id } : defaultGroup);
+	const [user, setUser] = useState(id ? { _id: id } : defaultUser);
 	const [tab, setTab] = useState(0);
 
 	// Functions
@@ -53,24 +56,24 @@ const GroupEditor = ({ id }) => {
 		setLoading(false);
 	};
 
-	const getGroup = async () => {
+	const getRole = async () => {
 		setMessage(null);
 
 		setLoading(true);
 
 		try {
-			if (!userGroup._id) return;
+			if (!user._id) return;
 
 			const token = await getToken();
 
 			const {
-				data: { userGroup: newUserGroup },
+				data: { user: newUser },
 			} = await API.get(
-				API.createRouteURL(API.userGroups, id),
+				API.createRouteURL(API.users, id),
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserGroup(newUserGroup);
+			setUser(newUser);
 		} catch (error) {
 			console.error(error);
 
@@ -80,7 +83,7 @@ const GroupEditor = ({ id }) => {
 		setLoading(false);
 	};
 
-	const saveGroup = async () => {
+	const saveRole = async () => {
 		setMessage(null);
 
 		setLoading(true);
@@ -91,20 +94,20 @@ const GroupEditor = ({ id }) => {
 			const token = await getToken();
 
 			const {
-				data: { userGroup: newUserGroup },
-			} = userGroup._id
+				data: { user: newUser },
+			} = user._id
 				? await API.patch(
-						API.createRouteURL(API.userGroups, userGroup._id),
-						userGroup,
+						API.createRouteURL(API.users, user._id),
+						user,
 						API.createAuthorizationConfig(token)
 				  )
 				: await API.post(
-						API.userGroups,
-						userGroup,
+						API.users,
+						user,
 						API.createAuthorizationConfig(token)
 				  );
 
-			setUserGroup(newUserGroup);
+			setUser(newUser);
 
 			ret = true;
 		} catch (error) {
@@ -121,8 +124,8 @@ const GroupEditor = ({ id }) => {
 	};
 
 	useEffect(() => {
-		if (!id) setUserGroup(defaultGroup);
-		else getGroup();
+		if (!id) setUser(defaultRole);
+		else getRole();
 	}, [id]);
 
 	useEffect(() => {
@@ -138,7 +141,7 @@ const GroupEditor = ({ id }) => {
 					tab,
 					setTab,
 					message,
-					saveData: saveGroup,
+					saveData: saveRole,
 					saveOptions: [
 						{
 							label: (
@@ -148,11 +151,11 @@ const GroupEditor = ({ id }) => {
 							),
 							ariaLabel: "Save & New",
 							callback: async () => {
-								const savedSuccessfully = await saveGroup();
+								const savedSuccessfully = await saveRole();
 
 								if (savedSuccessfully)
 									router.push(
-										"/administrator/dashboard/users?view=groups&layout=edit"
+										"/administrator/dashboard/users?layout=edit"
 									);
 							},
 						},
@@ -164,7 +167,7 @@ const GroupEditor = ({ id }) => {
 							),
 							ariaLabel: "Save & Copy",
 							callback: async () => {
-								const savedSuccessfully = await saveGroup();
+								const savedSuccessfully = await saveRole();
 
 								if (savedSuccessfully) {
 									setLoading(true);
@@ -174,21 +177,20 @@ const GroupEditor = ({ id }) => {
 										const token = await getToken();
 
 										const {
-											data: { userGroup: newUserGroup },
+											data: { user: newUser },
 										} = await API.post(
-											API.userGroups,
+											API.users,
 											{
 												name: `Copy of ${
-													userGroup.name
+													user.name
 												} - ${new Date().toISOString()}`,
-												description:
-													userGroup.description,
+												description: user.description,
 											},
 											API.createAuthorizationConfig(token)
 										);
 
 										router.push(
-											`/administrator/dashboard/users?view=groups&layout=edit&id=${newUserGroup._id}`
+											`/administrator/dashboard/users?layout=edit&id=${newUser._id}`
 										);
 									} catch (error) {
 										setMessage(
@@ -204,12 +206,10 @@ const GroupEditor = ({ id }) => {
 						},
 					],
 					closeEditor: () =>
-						router.push(
-							"/administrator/dashboard/users?view=groups"
-						),
+						router.push("/administrator/dashboard/users"),
 					tabs: [
 						Tabs.Item(
-							"Content",
+							"Info",
 							<form
 								className="--cms-form"
 								onSubmit={(e) => e.preventDefault()}
@@ -218,10 +218,10 @@ const GroupEditor = ({ id }) => {
 									Name
 								</label>
 								<input
-									value={userGroup.name || ""}
+									value={user.name || ""}
 									onChange={({ target: { value } }) =>
-										setUserGroup({
-											...userGroup,
+										setUser({
+											...user,
 											name: value,
 										})
 									}
@@ -229,37 +229,19 @@ const GroupEditor = ({ id }) => {
 									id="name"
 									placeholder="Editors, Administrators, Etc."
 								/>
-
-								<label htmlFor="description">Description</label>
-								<textarea
-									value={userGroup.description || ""}
-									onChange={({ target: { value } }) =>
-										setUserGroup({
-											...userGroup,
-											description: value,
-										})
-									}
-									id="description"
-									placeholder="What is the purpose of this group?"
-								></textarea>
 							</form>
 						),
 						Tabs.Item(
 							<>
 								User Roles
-								{userGroup.roles &&
-									userGroup.roles.length > 0 &&
-									` (${userGroup.roles.length})`}
+								{user.roles &&
+									user.roles.length > 0 &&
+									` (${user.roles.length})`}
 							</>,
 							<div className="--cms-padding">
 								{userRoles &&
 									(userRoles.length > 0 ? (
 										<ul className="--cms-no-decor">
-											{/* <Message type="info">
-									The user roles assigned to a group determine
-									the access level this user group will have
-									around the site.
-								</Message> */}
 											{userRoles.map(
 												({
 													name,
@@ -267,8 +249,8 @@ const GroupEditor = ({ id }) => {
 													_id,
 												}) => {
 													const selected =
-														userGroup.roles &&
-														userGroup.roles.includes(
+														user.roles &&
+														user.roles.includes(
 															_id
 														);
 
@@ -280,12 +262,12 @@ const GroupEditor = ({ id }) => {
 																	if (
 																		selected
 																	)
-																		setUserGroup(
+																		setUser(
 																			(
-																				userGroup
+																				user
 																			) => ({
-																				...userGroup,
-																				roles: userGroup.roles.filter(
+																				...user,
+																				roles: user.roles.filter(
 																					(
 																						roleId
 																					) =>
@@ -295,13 +277,13 @@ const GroupEditor = ({ id }) => {
 																			})
 																		);
 																	else
-																		setUserGroup(
+																		setUser(
 																			(
-																				userGroup
+																				user
 																			) => ({
-																				...userGroup,
+																				...user,
 																				roles: [
-																					...userGroup.roles,
+																					...user.roles,
 																					_id,
 																				],
 																			})
@@ -337,4 +319,4 @@ const GroupEditor = ({ id }) => {
 	);
 };
 
-export default GroupEditor;
+export default UserEditor;

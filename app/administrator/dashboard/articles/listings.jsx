@@ -386,24 +386,25 @@ const Listings = () => {
 		setLoading(false);
 	};
 
-	const reorderArticles = async (batch) => {
+	const reorderArticles = async (active, over, dir) => {
 		setLoading(true);
 		setMessage(null);
 
 		try {
 			const token = await getToken();
 
-			// Batch through articles.
-			for (const article of batch) {
-				// Run patch request.
-				await API.patch(
-					API.createRouteURL(API.articles, article._id),
-					article,
-					API.createAuthorizationConfig(token)
-				);
-			}
+			if (query.sort.dir === -1) dir *= -1;
 
-			// Reload articles.
+			await API.patch(
+				`${API.createRouteURL(
+					API.articles,
+					"order"
+				)}?active=${active}&over=${over}&dir=${dir}`,
+				undefined,
+				API.createAuthorizationConfig(token)
+			);
+
+			// Reload user roles.
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
@@ -558,21 +559,8 @@ const Listings = () => {
 								disabled:
 									!query.sort || query.sort.field !== "order",
 							},
-							swapItems: (active, over) => {
-								reorderArticles([
-									{
-										_id: active,
-										order: articles.find(
-											({ _id }) => _id === over
-										).order,
-									},
-									{
-										_id: over,
-										order: articles.find(
-											({ _id }) => _id === active
-										).order,
-									},
-								]);
+							swapItems: (active, over, dir) => {
+								reorderArticles(active, over, dir);
 							},
 						}}
 					/>

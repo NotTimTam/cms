@@ -7,6 +7,7 @@ import {
 	findArticleByIdAndUpdate,
 	findArticleByAlias,
 	batchArticles,
+	orderArticles,
 } from "../controllers/article.js";
 
 import { authenticationMiddleware } from "../middleware/userMiddleware.js";
@@ -18,6 +19,7 @@ articleRouter
 	.get(findArticles)
 	.post(authenticationMiddleware, createArticle);
 articleRouter.patch("/batch", authenticationMiddleware, batchArticles);
+articleRouter.patch("/order", authenticationMiddleware, orderArticles);
 articleRouter.get("/alias/:alias", findArticleByAlias);
 articleRouter
 	.route("/:id")

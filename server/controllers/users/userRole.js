@@ -1,3 +1,4 @@
+import { orderDocuments } from "../../util/database.js";
 import UserRoleModel from "../../models/users/UserRole.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
@@ -171,56 +172,18 @@ export const batchUserRoles = async (req, res) => {
 /**
  * Find a specific user role by its ID and position it before another one in the order system.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.active The ID of the user role to move.
- * @param {string} req.params.over The ID of the user role to move before.
+ * @param {string} req.query.active The ID of the user role to move.
+ * @param {string} req.query.over The ID of the user role to move before.
+ * @param {1|-1} req.query.dir The direction to move in.
  */
 export const orderUserRoles = async (req, res) => {
 	try {
 		const { active, over } = req.query;
 		const dir = +req.query.dir || 1;
 
-		if (dir !== 1 && dir !== -1)
-			return res
-				.status(400)
-				.send('Invalid "dir" provided to query. Expected 1 or -1.');
+		await orderDocuments(active, over, dir, UserRoleModel, "user role");
 
-		const activeUserRole = await UserRoleModel.findById(active);
-		if (!activeUserRole)
-			return res
-				.status(404)
-				.send(`No user role found with id "${active}"`);
-
-		const overUserRole = await UserRoleModel.findById(over);
-		if (!overUserRole)
-			return res.status(404).send(`No user role found with id "${over}"`);
-
-		const nearestUserRole = await UserRoleModel.findOne({
-			order:
-				dir === 1
-					? { $gt: overUserRole.order }
-					: { $lt: overUserRole.order },
-		}).sort({ order: dir });
-
-		// Find a halfway point (or if none, the position before/after) the "over" item.
-		activeUserRole.order = nearestUserRole
-			? (nearestUserRole.order + overUserRole.order) / 2
-			: overUserRole.order + dir;
-		await activeUserRole.save();
-
-		// Normalize the order across all items.
-		const allItems = await UserRoleModel.find({}).sort({ order: 1 });
-		await UserRoleModel.bulkWrite(
-			allItems.map((item, index) => ({
-				updateOne: {
-					filter: { _id: item._id },
-					update: { $set: { order: index } },
-				},
-			}))
-		);
-
-		return res
-			.status(200)
-			.json({ active: activeUserRole, over: overUserRole });
+		return res.status(200).send("User role order change successful.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

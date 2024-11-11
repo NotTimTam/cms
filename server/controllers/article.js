@@ -1,5 +1,6 @@
 import ArticleModel from "../models/content/Article.js";
 import { handleUnexpectedError } from "../util/controller.js";
+import { orderDocuments } from "../util/database.js";
 import {
 	validateArticle,
 	validateArticleQuery,
@@ -187,6 +188,26 @@ export const batchArticles = async (req, res) => {
 		}
 
 		return res.status(200).json({ articles: updatedArticles });
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Find a specific article by its ID and position it before another one in the order system.
+ * @param {Express.Request} req The API request object.
+ * @param {string} req.query.active The ID of the article to move.
+ * @param {string} req.query.over The ID of the article to move before.
+ * @param {1|-1} req.query.dir The direction to move in.
+ */
+export const orderArticles = async (req, res) => {
+	try {
+		const { active, over } = req.query;
+		const dir = +req.query.dir || 1;
+
+		await orderDocuments(active, over, dir, ArticleModel, "article");
+
+		return res.status(200).send("Article order change successful.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

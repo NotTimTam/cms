@@ -38,7 +38,7 @@ form.--cms-filter-form {
 			justify-content: center;
 			flex-wrap: nowrap;
 
-			:first-child {
+			:first-child:not(:only-child) {
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 				&:not(input) {
@@ -46,7 +46,7 @@ form.--cms-filter-form {
 				}
 			}
 
-			:last-child {
+			:last-child:not(:only-child) {
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
 				&:not(button) {

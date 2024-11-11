@@ -141,79 +141,82 @@ const Filter = ({
 					</button>
 				</span>
 				<span>
-					<button
-						disabled={
-							disabled ||
-							!filterOptions ||
-							filterOptions.length === 0
-						}
-						type="button"
-						className={`--cms-info --cms-popup-trigger ${styles["--cms-filter-form-search-tools"]}`}
-						aria-label="Search Tools"
-						onClick={async (e) => {
-							const rect = e.target.getBoundingClientRect();
+					{filterOptions && filterOptions.length > 0 && (
+						<button
+							type="button"
+							className={`--cms-info --cms-popup-trigger ${styles["--cms-filter-form-search-tools"]}`}
+							aria-label="Search Tools"
+							onClick={async (e) => {
+								const rect = e.target.getBoundingClientRect();
 
-							const PopupContent = () => {
-								const closePopup = useContext(PopupContext);
+								const PopupContent = () => {
+									const closePopup = useContext(PopupContext);
 
-								return (
-									<Modal>
-										<form
-											onClick={(e) => e.stopPropagation()}
-											onSubmit={(e) => {
-												e.preventDefault();
-											}}
-											className={`--cms-form ${styles["--cms-filter-options-form"]}`}
-										>
-											<section>
-												{filterOptions.map(
-													(option, index) => {
-														return (
-															<Option
-																key={index}
-																index={index}
-																{...option}
-																{...{
-																	openFilterOption,
-																	setOpenFilterOption,
-																}}
-															/>
-														);
-													}
-												)}
-											</section>
+									return (
+										<Modal>
+											<form
+												onClick={(e) =>
+													e.stopPropagation()
+												}
+												onSubmit={(e) => {
+													e.preventDefault();
+												}}
+												className={`--cms-form ${styles["--cms-filter-options-form"]}`}
+											>
+												<section>
+													{filterOptions.map(
+														(option, index) => {
+															return (
+																<Option
+																	key={index}
+																	index={
+																		index
+																	}
+																	{...option}
+																	{...{
+																		openFilterOption,
+																		setOpenFilterOption,
+																	}}
+																/>
+															);
+														}
+													)}
+												</section>
 
-											<section>
-												<button
-													type="reset"
-													aria-label="Cancel"
-													className="--cms-error"
-													onClick={() => closePopup()}
-												>
-													<X /> Cancel
-												</button>
+												<section>
+													<button
+														type="reset"
+														aria-label="Cancel"
+														className="--cms-error"
+														onClick={() =>
+															closePopup()
+														}
+													>
+														<X /> Cancel
+													</button>
 
-												<button
-													type="submit"
-													aria-label="Filter"
-													className="--cms-success"
-												>
-													<FilterIcon /> Filter
-												</button>
-											</section>
-										</form>
-									</Modal>
+													<button
+														type="submit"
+														aria-label="Filter"
+														className="--cms-success"
+													>
+														<FilterIcon /> Filter
+													</button>
+												</section>
+											</form>
+										</Modal>
+									);
+								};
+
+								const res = await createHeadlessPopup(
+									<PopupContent />,
+									[rect.x, rect.bottom]
 								);
-							};
-
-							const res = await createHeadlessPopup(
-								<PopupContent />,
-								[rect.x, rect.bottom]
-							);
-						}}
-					>
-						Filter Options <ChevronDown />
-					</button>
+							}}
+						>
+							Filter Options <ChevronDown />
+						</button>
+					)}
 					<button
 						disabled={disabled}
 						onClick={handleClear}

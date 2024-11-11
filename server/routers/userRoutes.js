@@ -16,6 +16,14 @@ import {
 	findUserRoleById,
 	findUserRoleByIdAndUpdate,
 } from "../controllers/users/userRole.js";
+import {
+	createUserGroup,
+	deleteUserGroups,
+	orderUserGroups,
+	findUserGroups,
+	findUserGroupById,
+	findUserGroupByIdAndUpdate,
+} from "../controllers/users/userGroup.js";
 import { authenticationMiddleware } from "../middleware/userMiddleware.js";
 
 const userRouter = Router();
@@ -38,6 +46,18 @@ userRouter
 	.route("/roles/:id")
 	.get(authenticationMiddleware, findUserRoleById)
 	.patch(authenticationMiddleware, findUserRoleByIdAndUpdate);
+
+// Roles
+userRouter
+	.route("/groups")
+	.get(authenticationMiddleware, findUserGroups)
+	.post(authenticationMiddleware, createUserGroup)
+	.delete(authenticationMiddleware, deleteUserGroups);
+userRouter.patch("/groups/order", authenticationMiddleware, orderUserGroups);
+userRouter
+	.route("/groups/:id")
+	.get(authenticationMiddleware, findUserGroupById)
+	.patch(authenticationMiddleware, findUserGroupByIdAndUpdate);
 
 // User-Specific Routes
 userRouter

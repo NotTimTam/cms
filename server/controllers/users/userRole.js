@@ -1,5 +1,6 @@
 import { orderDocuments } from "../../util/database.js";
 import UserRoleModel from "../../models/users/UserRole.js";
+import UserGroupModel from "../../models/users/UserGroup.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
 	validateGenericQuery,
@@ -115,6 +116,12 @@ export const deleteUserRoles = async (req, res) => {
 			$or: [{ locked: { $exists: false } }, { locked: false }], // Locked roles cannot be deleted.
 			_id: { $in: selection },
 		});
+
+		// Remove references to this role from all groups.
+		await UserGroupModel.updateMany(
+			{ roles: { $in: selection } },
+			{ $pull: { roles: { $in: selection } } }
+		);
 
 		return res.status(200).send("User roles deleted successfully.");
 	} catch (error) {

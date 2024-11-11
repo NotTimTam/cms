@@ -26,11 +26,11 @@ const defaultQuery = {
 	},
 };
 
-const RoleListings = () => {
+const GroupListings = () => {
 	// Hooks
 	const SessionStorage = new StorageInterface(window.sessionStorage);
 	const {
-		data: { roleQuery },
+		data: { groupQuery },
 	} = SessionStorage;
 
 	// Data
@@ -42,14 +42,14 @@ const RoleListings = () => {
 		name: {
 			label: "Name",
 			listing: new List.Element((index) => {
-				const { name, _id } = userRoles[index];
+				const { name, _id } = userGroups[index];
 
 				return (
 					<List.InfoBlock>
 						<h3>
 							<Link
-								aria-label="Open Role"
-								href={`/administrator/dashboard/users?view=roles&layout=edit&id=${_id}`}
+								aria-label="Open Group"
+								href={`/administrator/dashboard/users?view=groups&layout=edit&id=${_id}`}
 							>
 								{name}
 							</Link>
@@ -61,7 +61,7 @@ const RoleListings = () => {
 		createdAt: {
 			label: "Date Created",
 			listing: new List.Element((index) =>
-				new Date(userRoles[index].createdAt).toLocaleString()
+				new Date(userGroups[index].createdAt).toLocaleString()
 			),
 		},
 	};
@@ -81,7 +81,7 @@ const RoleListings = () => {
 
 					return (
 						<Modal>
-							<h3>Delete selected roles permanently?</h3>
+							<h3>Delete selected groups permanently?</h3>
 							<p>This action cannot be undone.</p>
 							<Modal.Options>
 								<button
@@ -107,7 +107,7 @@ const RoleListings = () => {
 
 				const res = await createHeadlessPopup(<PopupContent />);
 
-				if (res === true) await massDeleteRoles();
+				if (res === true) await massDeleteGroups();
 			},
 		},
 	];
@@ -115,8 +115,8 @@ const RoleListings = () => {
 	// States
 	const [selection, setSelection] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [userRoles, setUserRoles] = useState([]);
-	const [query, setQuery] = useState(roleQuery || defaultQuery);
+	const [userGroups, setUserGroups] = useState([]);
+	const [query, setQuery] = useState(groupQuery || defaultQuery);
 	const [message, setMessage] = useState(null);
 
 	// Functions
@@ -125,21 +125,21 @@ const RoleListings = () => {
 		setMessage(null);
 
 		try {
-			SessionStorage.setItem("roleQuery", query); // Remember this query.
+			SessionStorage.setItem("groupQuery", query); // Remember this query.
 
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Get userRoles.
+			// Get userGroups.
 			const token = await getToken();
 			const {
-				data: { userRoles, page: newPage, numPages },
+				data: { userGroups, page: newPage, numPages },
 			} = await API.get(
-				`${API.userRoles}?${searchParams.toString()}`,
+				`${API.userGroups}?${searchParams.toString()}`,
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserRoles(userRoles.filter(({ locked }) => !locked));
+			setUserGroups(userGroups.filter(({ locked }) => !locked));
 			setQuery((query) => ({
 				...query,
 				page: newPage,
@@ -153,7 +153,7 @@ const RoleListings = () => {
 		setLoading(false);
 	};
 
-	const reorderUserRole = async (active, over, dir) => {
+	const reorderUserGroup = async (active, over, dir) => {
 		setLoading(true);
 		setMessage(null);
 
@@ -164,14 +164,14 @@ const RoleListings = () => {
 
 			await API.patch(
 				`${API.createRouteURL(
-					API.userRoles,
+					API.userGroups,
 					"order"
 				)}?active=${active}&over=${over}&dir=${dir}`,
 				undefined,
 				API.createAuthorizationConfig(token)
 			);
 
-			// Reload user roles.
+			// Reload user groups.
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
@@ -181,7 +181,7 @@ const RoleListings = () => {
 		setLoading(false);
 	};
 
-	const massDeleteRoles = async () => {
+	const massDeleteGroups = async () => {
 		setLoading(true);
 		setMessage(null);
 
@@ -191,9 +191,9 @@ const RoleListings = () => {
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Batch through userRoles.
+			// Batch through userGroups.
 			await API.delete(
-				`${API.userRoles}?${searchParams.toString()}&selection=${
+				`${API.userGroups}?${searchParams.toString()}&selection=${
 					selection === "all" ? selection : selection.join(",")
 				}`,
 				API.createAuthorizationConfig(token)
@@ -272,7 +272,7 @@ const RoleListings = () => {
 		<>
 			<Curate
 				{...{
-					new: "/administrator/dashboard/users?view=roles&layout=edit",
+					new: "/administrator/dashboard/users?view=groups&layout=edit",
 					actions: selection.length > 0 && actions,
 				}}
 			/>
@@ -294,8 +294,8 @@ const RoleListings = () => {
 					/>
 
 					<List
-						items={userRoles}
-						itemIdentifier="user role"
+						items={userGroups}
+						itemIdentifier="user group"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing, hideFromList }]) => ({
 								listing,
@@ -322,7 +322,7 @@ const RoleListings = () => {
 									!query.sort || query.sort.field !== "order",
 							},
 							swapItems: (active, over, dir) => {
-								reorderUserRole(active, over, dir);
+								reorderUserGroup(active, over, dir);
 							},
 						}}
 					/>
@@ -332,4 +332,4 @@ const RoleListings = () => {
 	);
 };
 
-export default RoleListings;
+export default GroupListings;

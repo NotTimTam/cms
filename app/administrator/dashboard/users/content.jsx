@@ -3,8 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import RoleEditor from "./roles/editor";
 import RoleListings from "./roles/listings";
+import GroupEditor from "./groups/editor";
+import GroupListings from "./groups/listings";
 
-const Groups = () => "Groups";
 const Fields = () => "Fields";
 const FieldGroups = () => "FieldGroups";
 const Manage = () => "Manage";
@@ -17,7 +18,12 @@ const Content = () => {
 
 	switch (view) {
 		case "groups":
-			return <Groups />;
+			switch (layout) {
+				case "edit":
+					return <GroupEditor id={id} />;
+				default:
+					return <GroupListings />;
+			}
 		case "roles":
 			switch (layout) {
 				case "edit":

@@ -1,5 +1,6 @@
 import { log, success, warn } from "@nottimtam/console.js";
 import UserRoleModel from "../models/users/UserRole.js";
+import UserGroupModel from "../models/users/UserGroup.js";
 
 /**
  * Reorder a database Model's documents.
@@ -58,6 +59,7 @@ export const ensureWebmaster = async () => {
 	try {
 		log("Checking for Webmaster...");
 
+		// Role
 		let webmasterRole = await UserRoleModel.findOne({ name: "Webmaster" });
 
 		if (!webmasterRole) {
@@ -77,6 +79,32 @@ export const ensureWebmaster = async () => {
 
 			warn(
 				"Webmaster role was left unlocked, (editable) but has been relocked. While this is generally not a concern, the Webmaster role can only be unlocked through direct database manipulation. If you did not make this change, please verify your system is secure or contact your deployment's webmaster."
+			);
+		}
+
+		// Group
+		let webmasterGroup = await UserGroupModel.findOne({
+			name: "Webmaster",
+		});
+
+		if (!webmasterGroup) {
+			webmasterGroup = new UserGroupModel({
+				name: "Webmaster",
+				description:
+					"System-generated user group, reserved to webmaster users.",
+				roles: [webmasterRole._id],
+				locked: true,
+			});
+
+			await webmasterGroup.save();
+
+			success("Created Webmaster user group.");
+		} else if (!webmasterGroup.locked) {
+			webmasterGroup.locked = true;
+			await webmasterGroup.save();
+
+			warn(
+				"Webmaster group was left unlocked, (editable) but has been relocked. While this is generally not a concern, the Webmaster group can only be unlocked through direct database manipulation. If you did not make this change, please verify your system is secure or contact your deployment's webmaster."
 			);
 		}
 

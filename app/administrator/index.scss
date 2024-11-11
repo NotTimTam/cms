@@ -438,4 +438,10 @@ div.--cms-popup-content {
 
 a {
 	color: var(--info-color);
+
+	&[disabled] {
+		color: var(--background-color-6);
+		pointer-events: none;
+		text-decoration: none;
+	}
 }

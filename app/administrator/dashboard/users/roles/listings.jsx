@@ -10,7 +10,7 @@ import { getToken } from "@/app/cookies";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import API from "@/util/API";
 import StorageInterface from "@/util/StorageInterface";
-import { EllipsisVertical, Trash2, X } from "lucide-react";
+import { EllipsisVertical, Lock, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
@@ -42,13 +42,15 @@ const RoleListings = () => {
 		name: {
 			label: "Name",
 			listing: new List.Element((index) => {
-				const { name, _id } = userRoles[index];
+				const { name, _id, locked } = userRoles[index];
 
 				return (
 					<List.InfoBlock>
 						<h3>
+							{locked && <Lock />}
 							<Link
 								aria-label="Open Role"
+								disabled={locked}
 								href={`/administrator/dashboard/users?view=roles&layout=edit&id=${_id}`}
 							>
 								{name}

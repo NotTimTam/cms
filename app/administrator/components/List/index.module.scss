@@ -90,6 +90,13 @@ section.--cms-listings {
 						width: 100%;
 
 						text-align: left;
+
+						h3 {
+							display: flex;
+							flex-direction: row;
+							align-items: center;
+							gap: var(--gap);
+						}
 					}
 				}
 			}

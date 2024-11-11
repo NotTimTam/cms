@@ -1,5 +1,6 @@
 "use client";
 
+import StorageInterface from "@/util/StorageInterface";
 import {
 	Blocks,
 	CircleHelp,
@@ -23,7 +24,7 @@ import {
 	Users,
 	Wrench,
 } from "lucide-react";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 /**
  * Create the administrator side menu.
@@ -354,12 +355,24 @@ const menu = (siteMenus, sitePlugins) =>
 export const AdministratorContext = createContext(null);
 
 export default function AdministratorContextProvider({ children }) {
+	// Hooks
+	const SessionStorage = new StorageInterface(window.sessionStorage);
+	const {
+		data: { sideMenu },
+	} = SessionStorage;
+
 	const [administrator, setAdministrator] = useState({
 		sideMenu: {
-			expanded: true,
+			expanded: sideMenu ? sideMenu.expanded : true,
 			sections: {},
 		},
 	});
+
+	useEffect(() => {
+		SessionStorage.setItem("sideMenu", {
+			expanded: administrator.sideMenu.expanded,
+		});
+	}, [administrator.sideMenu]);
 
 	return (
 		<AdministratorContext.Provider

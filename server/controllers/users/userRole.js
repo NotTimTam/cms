@@ -3,7 +3,6 @@ import { handleUnexpectedError } from "../../util/controller.js";
 import {
 	validateGenericQuery,
 	validateUserRole,
-	validateUserRolePatch,
 	ValidatorError,
 } from "../../util/validators.js";
 
@@ -30,11 +29,11 @@ export const createUserRole = async (req, res) => {
 			else throw error;
 		}
 
-		const role = new UserRoleModel(req.body);
+		const userRole = new UserRoleModel(req.body);
 
-		await role.save();
+		await userRole.save();
 
-		return res.status(200).json({ role });
+		return res.status(200).json({ userRole });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
@@ -192,7 +191,7 @@ export const findUserRoleByIdAndUpdate = async (req, res) => {
 			return res.status(404).send(`No user role found with id "${id}"`);
 
 		try {
-			req.body = await validateUserRolePatch({
+			req.body = await validateUserRole({
 				...(await UserRoleModel.findById(id).lean()),
 				...req.body,
 			});

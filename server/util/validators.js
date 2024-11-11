@@ -37,19 +37,29 @@ export class ValidatorError {
 export const validateArticle = async (article) => {
 	if (!article.name)
 		throw new ValidatorError(400, "No article name provided.");
+	else if (typeof article.name !== "string" || !nameRegex.test(article.name))
+		throw new ValidatorError(400, "Invalid article name provided.");
+
 	if (!article.author)
 		throw new ValidatorError(400, "No author ID provided to article.");
+	else {
+		const author = await UserModel.findById(article.author);
+
+		if (!author)
+			throw new ValidatorError(404, "No author user found with that ID.");
+	}
 
 	if (!article.alias) article.alias = nameToAlias(article.name);
-	if (!article.content) article.content = "";
-	if (!article.notes) article.notes = "";
-	if (!article.featured) article.featured = false;
-	if (!article.status) article.status = "unpublished";
-	if (!article.hits) article.hits = 0;
-
-	// Access
-	// Category
-	// Tags
+	else {
+		if (
+			typeof article.alias !== "string" ||
+			!aliasRegex.test(article.alias)
+		)
+			throw new ValidatorError(
+				400,
+				`Invalid article alias provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+			);
+	}
 
 	const existsWithAlias = await ArticleModel.findOne({
 		alias: article.alias,
@@ -64,88 +74,39 @@ export const validateArticle = async (article) => {
 			"An article already exists with that alias."
 		);
 
-	article = await validateArticlePatch(article);
-
-	return article;
-};
-
-/**
- * Validate an Article document patch. Unlike `validateArticle` this method simply validates each provided field, ignoring if a required field is unprovided.
- * @param {Object} article The article data to validate.
- * @throws {Error} An error is thrown if the data is not valid.
- * @returns {Object} The article data, reformatted if necessary.
- */
-export const validateArticlePatch = async (article) => {
-	if (
-		article.name &&
-		(typeof article.name !== "string" || !nameRegex.test(article.name))
-	)
-		throw new ValidatorError(400, "Invalid article name provided.");
-
-	if (article.alias) {
-		if (
-			typeof article.alias !== "string" ||
-			!aliasRegex.test(article.alias)
-		)
-			throw new ValidatorError(
-				400,
-				`Invalid article alias provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
-			);
-
-		const existsWithAlias = await ArticleModel.findOne({
-			alias: article.alias,
-		});
-		if (
-			existsWithAlias &&
-			(!article._id ||
-				existsWithAlias._id.toString() !== article._id.toString())
-		)
-			throw new ValidatorError(
-				404,
-				"An article already exists with that alias."
-			);
-	}
-
-	if (article.author) {
-		const author = await UserModel.findById(article.author);
-
-		if (!author)
-			throw new ValidatorError(404, "No author user found with that ID.");
-	}
-
-	if (article.content && typeof article.content !== "string")
+	if (!article.content) article.content = "";
+	else if (typeof article.content !== "string")
 		throw new ValidatorError(
 			400,
 			"Invalid article content provided. Expected a string."
 		);
 
-	if (article.notes && typeof article.notes !== "string")
+	if (!article.notes) article.notes = "";
+	else if (typeof article.notes !== "string")
 		throw new ValidatorError(
 			400,
 			"Invalid article notes provided. Expected a string."
 		);
 
-	if (article.featured && typeof article.featured !== "boolean")
+	if (!article.featured) article.featured = false;
+	else if (typeof article.featured !== "boolean")
 		throw new ValidatorError(
 			400,
 			'Invalid article "featured" status provided. Expected a boolean.'
 		);
 
-	// Access
-	// Category
-	// Tags
-
-	if (article.status && !statusEnum.includes(article.status))
+	if (!article.status) article.status = "unpublished";
+	else if (!statusEnum.includes(article.status))
 		throw new ValidatorError(
 			400,
 			`Invalid article status provided. Expected one of: ${statusEnum}`
 		);
 
-	if (
-		article.hits &&
-		(typeof article.hits !== "number" ||
-			article.hits < 0 ||
-			!Number.isInteger(article.hits))
+	if (!article.hits) article.hits = 0;
+	else if (
+		typeof article.hits !== "number" ||
+		article.hits < 0 ||
+		!Number.isInteger(article.hits)
 	)
 		throw new ValidatorError(
 			400,
@@ -163,19 +124,22 @@ export const validateArticlePatch = async (article) => {
 			"Invalid order value provided. Expected an integer >= 0."
 		);
 
+	// Access
+	// Category
+	// Tags
+
 	return article;
 };
 
+/**
+ * Validate a UserRole document.
+ * @param {Object} article The user role data to validate.
+ * @throws {Error} An error is thrown if the user role is not valid.
+ * @returns {Object} The user role data, reformatted, if necessary.
+ */
 export const validateUserRole = async (userRole) => {
-	userRole = await validateUserRolePatch(userRole);
-
 	if (!userRole.name) throw new ValidatorError(400, "No role name provided.");
-
-	return userRole;
-};
-
-export const validateUserRolePatch = async (userRole) => {
-	if (userRole.name) {
+	else {
 		if (typeof userRole.name !== "string" || !nameRegex.test(userRole.name))
 			throw new ValidatorError(
 				400`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
@@ -190,7 +154,7 @@ export const validateUserRolePatch = async (userRole) => {
 		)
 			throw new ValidatorError(
 				400,
-				"A role already exists with that name."
+				"A user role already exists with that name."
 			);
 	}
 

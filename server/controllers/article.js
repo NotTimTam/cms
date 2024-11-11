@@ -4,7 +4,6 @@ import {
 	validateArticle,
 	validateArticleQuery,
 	ValidatorError,
-	validateArticlePatch,
 } from "../util/validators.js";
 
 /**
@@ -120,14 +119,6 @@ export const findArticles = async (req, res) => {
 export const batchArticles = async (req, res) => {
 	try {
 		try {
-			req.body = await validateArticlePatch(req.body);
-		} catch (error) {
-			if (error instanceof ValidatorError)
-				return res.status(error.code).send(error.message);
-			else throw error;
-		}
-
-		try {
 			req.query = await validateArticleQuery(req.query);
 		} catch (error) {
 			if (error instanceof ValidatorError)
@@ -174,7 +165,19 @@ export const batchArticles = async (req, res) => {
 			if (!article)
 				return res.status(404).send(`No article found with ID "${id}"`);
 
-			for (const [key, value] of Object.entries(req.body)) {
+			let articlePatch;
+			try {
+				articlePatch = await validateArticle({
+					...(await ArticleModel.findById(id).lean()),
+					...req.body,
+				});
+			} catch (error) {
+				if (error instanceof ValidatorError)
+					return res.status(error.code).send(error.message);
+				else throw error;
+			}
+
+			for (const [key, value] of Object.entries(articlePatch)) {
 				article[key] = value;
 			}
 

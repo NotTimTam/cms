@@ -123,23 +123,23 @@ const RoleListings = () => {
 		setLoading(false);
 	};
 
-	const reorderRoles = async (batch) => {
+	const reorderUserRoles = async (batch) => {
 		setLoading(true);
 
 		try {
 			const token = await getToken();
 
-			// Batch through userRoles.
-			for (const role of batch) {
+			// Batch through user roles.
+			for (const userRole of batch) {
 				// Run patch request.
 				await API.patch(
-					API.createRouteURL(API.userRoles, role._id),
-					role,
+					API.createRouteURL(API.userRoles, userRole._id),
+					userRole,
 					API.createAuthorizationConfig(token)
 				);
 			}
 
-			// Reload userRoles.
+			// Reload user roles.
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
@@ -291,7 +291,7 @@ const RoleListings = () => {
 									!query.sort || query.sort.field !== "order",
 							},
 							swapItems: (active, over) => {
-								reorderRoles([
+								reorderUserRoles([
 									{
 										_id: active,
 										order: userRoles.find(

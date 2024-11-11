@@ -107,7 +107,7 @@ const Editor = ({
 										);
 									};
 
-									const res = await createHeadlessPopup(
+									await createHeadlessPopup(
 										<PopupContent />,
 										[rect.x, rect.bottom]
 									);

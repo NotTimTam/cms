@@ -70,7 +70,7 @@ const RoleEditor = ({ id }) => {
 						API.createAuthorizationConfig(token)
 				  )
 				: await API.post(
-						API.createRouteURL(API.userRoles),
+						API.userRoles,
 						userRole,
 						API.createAuthorizationConfig(token)
 				  );
@@ -128,6 +128,44 @@ const RoleEditor = ({ id }) => {
 								</>
 							),
 							ariaLabel: "Save & Copy",
+							callback: async () => {
+								const savedSuccessfully = await saveRole();
+
+								if (savedSuccessfully) {
+									setLoading(true);
+									setMessage(null);
+
+									try {
+										const token = await getToken();
+
+										const {
+											data: { userRole: newUserRole },
+										} = await API.post(
+											API.userRoles,
+											{
+												name: `Copy of ${
+													userRole.name
+												} - ${new Date().toISOString()}`,
+												description:
+													userRole.description,
+											},
+											API.createAuthorizationConfig(token)
+										);
+
+										router.push(
+											`/administrator/dashboard/users?view=roles&layout=edit&id=${newUserRole._id}`
+										);
+									} catch (error) {
+										setMessage(
+											<Message type="error">
+												{error.data}
+											</Message>
+										);
+									}
+								}
+
+								setLoading(false);
+							},
 						},
 					],
 					closeEditor: () =>

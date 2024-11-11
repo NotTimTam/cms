@@ -3,7 +3,7 @@
 import { ChevronDown, FilterIcon, Search, X } from "lucide-react";
 import styles from "./index.module.scss";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import Message from "../Message";
 import Loading from "../Loading";
 import Modal from "../Modal";
@@ -18,21 +18,7 @@ const Option = ({
 }) => {
 	const { type } = getter;
 
-	const inputRef = useRef();
-
 	const [data, setData] = useState(type === "static" && getter.data);
-
-	useEffect(() => {
-		if (!inputRef.current) return;
-
-		const handleFocus = () => openFilterOption !== index && setOpen(true);
-
-		inputRef.current.addEventListener("focus", handleFocus);
-
-		return () => {
-			inputRef.current.removeEventListener("focus", handleFocus);
-		};
-	}, [inputRef]);
 
 	return (
 		<div
@@ -41,11 +27,11 @@ const Option = ({
 		>
 			<span className={styles["--cms-filter-options-form-input-group"]}>
 				<input
-					ref={inputRef}
 					type="text"
 					aria-label={ariaLabel}
 					placeholder={ariaLabel}
 					readOnly={readOnly}
+					onFocus={() => openFilterOption !== index && setOpen(true)}
 				/>
 				<button
 					className="--cms-info"

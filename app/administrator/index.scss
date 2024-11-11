@@ -47,6 +47,11 @@ Core styles for administrator pages.
 ul,
 ol {
 	margin-left: var(--margin);
+
+	&.--cms-no-decor {
+		list-style: none;
+		margin-left: 0;
+	}
 }
 
 button,
@@ -170,6 +175,28 @@ a.--cms-button {
 		@include button-color(var(--text-color), var(--background-color-6));
 	}
 
+	&.--cms-inline {
+		display: inline-flex;
+	}
+
+	&.--cms-text-like {
+		padding: 0;
+		border: none;
+		border-radius: 0;
+
+		@include button-color(
+			var(--text-color),
+			transparent,
+			transparent,
+			var(--info-color),
+			transparent,
+			transparent,
+			var(--info-color-2),
+			transparent,
+			transparent
+		);
+	}
+
 	&[disabled] {
 		pointer-events: none;
 		opacity: 0.5;
@@ -223,6 +250,10 @@ html {
 	top: 0;
 	left: 0;
 	z-index: 2;
+}
+
+.--cms-padding {
+	padding: var(--padding);
 }
 
 main.--cms-administrator {

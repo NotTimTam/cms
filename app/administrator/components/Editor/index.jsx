@@ -17,6 +17,9 @@ import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 const Editor = ({
 	message,
 
+	tab: tabOverride,
+	setTab: setTabOverride,
+
 	saveData,
 	saveOptions,
 	closeEditor,
@@ -30,7 +33,9 @@ const Editor = ({
 
 	children,
 }) => {
-	const [tab, setTab] = useState(0);
+	const [tab, setTab] = setTabOverride
+		? [tabOverride, setTabOverride]
+		: useState(0);
 
 	return (
 		<>

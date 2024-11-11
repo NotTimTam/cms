@@ -241,14 +241,14 @@ export const validateUserGroup = async (userGroup) => {
 			);
 	}
 
-	if (roles) {
-		if (!(roles instanceof Array))
+	if (userGroup.roles) {
+		if (!(userGroup.roles instanceof Array))
 			throw new ValidatorError(
 				400,
 				"Invalid roles provided. Expected an array of ids."
 			);
 
-		for (const id of roles) {
+		for (const id of userGroup.roles) {
 			const role = await UserRoleModel.findById(id);
 
 			if (!role)

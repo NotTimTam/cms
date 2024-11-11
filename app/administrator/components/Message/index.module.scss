@@ -24,6 +24,10 @@ div.--cms-message {
 	p.--cms-message-content {
 		max-width: 100%;
 		color: inherit;
+
+		a {
+			color: inherit;
+		}
 	}
 
 	svg {

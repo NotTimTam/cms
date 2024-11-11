@@ -6,7 +6,8 @@ import Message from "@/app/administrator/components/Message";
 import Tabs from "@/app/administrator/components/Tabs";
 import { getToken } from "@/app/cookies";
 import API from "@/util/API";
-import { FileInput, FilePlus2 } from "lucide-react";
+import { FileInput, FilePlus2, Square, SquareCheck } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -21,9 +22,37 @@ const GroupEditor = ({ id }) => {
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState(null);
 
+	const [userRoles, setUserRoles] = useState(null);
 	const [userGroup, setUserGroup] = useState(id ? { _id: id } : defaultGroup);
+	const [tab, setTab] = useState(0);
 
 	// Functions
+	const getUserRoles = async () => {
+		setMessage(null);
+		setLoading(true);
+
+		try {
+			const token = await getToken();
+
+			const {
+				data: { userRoles },
+			} = await API.get(
+				`${API.createRouteURL(
+					API.userRoles
+				)}?itemsPerPage=all&sortDir=1&sortField=order`,
+				API.createAuthorizationConfig(token)
+			);
+
+			setUserRoles(userRoles);
+		} catch (error) {
+			console.error(error);
+
+			setMessage(<Message type="error">{error.data}</Message>);
+		}
+
+		setLoading(false);
+	};
+
 	const getGroup = async () => {
 		setMessage(null);
 
@@ -96,12 +125,18 @@ const GroupEditor = ({ id }) => {
 		else getGroup();
 	}, [id]);
 
+	useEffect(() => {
+		getUserRoles();
+	}, []);
+
 	if (loading) return <Loading />;
 
 	return (
 		<>
 			<Editor
 				{...{
+					tab,
+					setTab,
 					message,
 					saveData: saveGroup,
 					saveOptions: [
@@ -210,14 +245,90 @@ const GroupEditor = ({ id }) => {
 							</form>
 						),
 						Tabs.Item(
-							<>User Roles</>,
 							<>
-								<Message type="info">
+								User Roles
+								{userGroup.roles &&
+									userGroup.roles.length > 0 &&
+									` (${userGroup.roles.length})`}
+							</>,
+							<div className="--cms-padding">
+								{userRoles &&
+									(userRoles.length > 0 ? (
+										<ul className="--cms-no-decor">
+											{/* <Message type="info">
 									The user roles assigned to a group determine
 									the access level this user group will have
 									around the site.
-								</Message>
-							</>
+								</Message> */}
+											{userRoles.map(
+												({
+													name,
+													description,
+													_id,
+												}) => {
+													const selected =
+														userGroup.roles &&
+														userGroup.roles.includes(
+															_id
+														);
+
+													return (
+														<li key={_id}>
+															<button
+																className="--cms-text-like"
+																onClick={() => {
+																	if (
+																		selected
+																	)
+																		setUserGroup(
+																			(
+																				userGroup
+																			) => ({
+																				...userGroup,
+																				roles: userGroup.roles.filter(
+																					(
+																						roleId
+																					) =>
+																						roleId !==
+																						_id
+																				),
+																			})
+																		);
+																	else
+																		setUserGroup(
+																			(
+																				userGroup
+																			) => ({
+																				...userGroup,
+																				roles: [
+																					...userGroup.roles,
+																					_id,
+																				],
+																			})
+																		);
+																}}
+															>
+																{selected ? (
+																	<SquareCheck />
+																) : (
+																	<Square />
+																)}{" "}
+																{name}
+															</button>
+														</li>
+													);
+												}
+											)}
+										</ul>
+									) : (
+										<Message type="info" fill>
+											No user roles have been defined.{" "}
+											<Link href="/administrator/dashboard/users?view=roles">
+												Create a user role.
+											</Link>
+										</Message>
+									))}
+							</div>
 						),
 					],
 				}}

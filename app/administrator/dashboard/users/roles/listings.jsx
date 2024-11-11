@@ -42,7 +42,7 @@ const RoleListings = () => {
 		name: {
 			label: "Name",
 			listing: new List.Element((index) => {
-				const { name, alias, category, _id } = userRoles[index];
+				const { name, _id } = userRoles[index];
 
 				return (
 					<List.InfoBlock>
@@ -54,14 +54,6 @@ const RoleListings = () => {
 								{name}
 							</Link>
 						</h3>
-						<span>
-							<b>Alias:</b> {alias}
-						</span>
-						{category && (
-							<span>
-								<b>Category:</b> {category}
-							</span>
-						)}
 					</List.InfoBlock>
 				);
 			}),

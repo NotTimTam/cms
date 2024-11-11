@@ -14,7 +14,6 @@ import {
 	orderUserRoles,
 	findUserRoles,
 	findUserRoleById,
-	findUserRoleByIdAndDelete,
 	findUserRoleByIdAndUpdate,
 } from "../controllers/users/userRole.js";
 import { authenticationMiddleware } from "../middleware/userMiddleware.js";
@@ -38,8 +37,7 @@ userRouter.patch("/roles/order", authenticationMiddleware, orderUserRoles);
 userRouter
 	.route("/roles/:id")
 	.get(authenticationMiddleware, findUserRoleById)
-	.patch(authenticationMiddleware, findUserRoleByIdAndUpdate)
-	.delete(authenticationMiddleware, findUserRoleByIdAndDelete);
+	.patch(authenticationMiddleware, findUserRoleByIdAndUpdate);
 
 // User-Specific Routes
 userRouter

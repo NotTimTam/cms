@@ -55,6 +55,8 @@ const RoleEditor = ({ id }) => {
 
 		setLoading(true);
 
+		let ret;
+
 		try {
 			const token = await getToken();
 
@@ -73,13 +75,19 @@ const RoleEditor = ({ id }) => {
 				  );
 
 			setUserRole(newUserRole);
+
+			ret = true;
 		} catch (error) {
 			console.error(error);
 
 			setMessage(<Message type="error">{error.data}</Message>);
+
+			ret = false;
 		}
 
 		setLoading(false);
+
+		return ret;
 	};
 
 	useEffect(() => {

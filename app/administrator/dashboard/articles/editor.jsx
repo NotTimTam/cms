@@ -68,9 +68,10 @@ const ArticleEditor = ({ id }) => {
 	};
 
 	const saveArticle = async () => {
+		setLoading(true);
 		setMessage(null);
 
-		setLoading(true);
+		let ret;
 
 		try {
 			const token = await getToken();
@@ -90,13 +91,19 @@ const ArticleEditor = ({ id }) => {
 				  );
 
 			setArticle(newArticle);
+
+			ret = true;
 		} catch (error) {
 			console.error(error);
 
 			setMessage(<Message type="error">{error.data}</Message>);
+
+			ret = false;
 		}
 
 		setLoading(false);
+
+		return ret;
 	};
 
 	useEffect(() => {

@@ -21,6 +21,11 @@ const UserRoleSchema = new mongoose.Schema(
 			],
 			default: 0,
 		},
+		locked: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	},
 	{ timestamps: true }
 );

@@ -106,10 +106,15 @@ export const deleteUserRoles = async (req, res) => {
 		const userRoles = await UserRoleModel.find({}).lean();
 
 		if (selection === "all")
-			selection = userRoles.map(({ _id }) => _id.toString());
+			selection = userRoles
+				.map(({ _id }) => _id.toString())
+				.filter(({ locked }) => !locked);
 		else selection = selection.split(",");
 
-		await UserRoleModel.deleteMany({ _id: { $in: selection } });
+		await UserRoleModel.deleteMany({
+			$or: [{ locked: { $exists: false } }, { locked: false }], // Locked roles cannot be deleted.
+			_id: { $in: selection },
+		});
 
 		return res.status(200).send("User roles deleted successfully.");
 	} catch (error) {
@@ -179,6 +184,11 @@ export const findUserRoleByIdAndUpdate = async (req, res) => {
 		if (!userRole)
 			return res.status(404).send(`No user role found with id "${id}"`);
 
+		if (userRole.locked)
+			return res
+				.status(401)
+				.send("You are not authorized to edit locked user roles.");
+
 		try {
 			req.body = await validateUserRole({
 				...(await UserRoleModel.findById(id).lean()),
@@ -198,23 +208,6 @@ export const findUserRoleByIdAndUpdate = async (req, res) => {
 		await userRole.save();
 
 		return res.status(200).json({ userRole });
-	} catch (error) {
-		return handleUnexpectedError(res, error);
-	}
-};
-
-/**
- * Find a specific user role by its ID and delete it.
- * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the user role to find.
- */
-export const findUserRoleByIdAndDelete = async (req, res) => {
-	try {
-		const { id } = req.params;
-
-		await UserRoleModel.findByIdAndDelete(id);
-
-		return res.status(200).send("User role deleted successfully.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

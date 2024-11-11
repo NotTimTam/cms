@@ -9,6 +9,7 @@ import connectMongoDB from "./server/util/connectMongoDB.js";
 import articleRouter from "./server/routers/articleRoutes.js";
 import userRouter from "./server/routers/userRoutes.js";
 import API from "./util/API.js";
+import { ensureWebmaster } from "./server/util/database.js";
 
 // Import configuration.
 const { version, name } = nodePackage;
@@ -62,6 +63,7 @@ nextJS.prepare().then(async () => {
 	log(`Staring ${name} version ${version}`);
 
 	await connectMongoDB();
+	await ensureWebmaster();
 
 	app.all("*", (req, res) => nextJSRequestHandler(req, res));
 

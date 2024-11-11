@@ -63,7 +63,6 @@ The designations front-end, and back-end, refer not to application architecture 
     -   Create notices about not storing confidential data within CMS.
     -   Create notices about not pasting JavaScript from the web.
     -   Can plugins add custom data to your database?
--   Store admin menu toggle state (and potentially dropdowns) in SessionStorage.
 -   Tag hierarchy is inclusive, category hierarchy can be inclusive or exclusive depending on context. Ie, displaying articles with a tag, will also display articles with tag decendants of that tag. While with categories, sub-categories are displayed conditionally based on configuration.
 -   (J) extension (plugin) equivalents:
     -   Contacts/Directory

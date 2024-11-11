@@ -1,13 +1,14 @@
 "use client";
 
 import { ChevronRight, Library, ToggleLeft, ToggleRight } from "lucide-react";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import { AdministratorContext } from "../AdministratorContext";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getCurrentMenu } from "@/util/display";
 import scssVars from "../../scssVars";
+import StorageInterface from "@/util/StorageInterface";
 
 const SideMenuSection = ({
 	title,
@@ -54,6 +55,9 @@ const SideMenuSection = ({
 };
 
 const SideMenu = () => {
+	const SessionStorage = new StorageInterface(window.sessionStorage);
+	const storedSideMenu = SessionStorage.getItem("sideMenu");
+
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
@@ -64,14 +68,9 @@ const SideMenu = () => {
 		menu,
 	} = useContext(AdministratorContext);
 
-	const [expanded, setExpanded] = [
-		administrator.sideMenu.expanded,
-		(expanded) =>
-			setAdministrator((administrator) => ({
-				...administrator,
-				sideMenu: { ...administrator.sideMenu, expanded },
-			})),
-	];
+	const [expanded, setExpanded] = useState(
+		storedSideMenu && storedSideMenu.expanded
+	);
 
 	const [sections, setSections] = [
 		administrator.sideMenu.sections,
@@ -84,6 +83,8 @@ const SideMenu = () => {
 
 	useEffect(() => {
 		if (!expanded) setSections({});
+
+		SessionStorage.setItem("sideMenu", { expanded });
 	}, [expanded]);
 
 	const currentMenu = getCurrentMenu(menu, pathname, searchParams);

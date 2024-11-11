@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./index.module.scss";
 import {
 	Accessibility,
@@ -12,11 +12,13 @@ import {
 import Tabs from "../Tabs";
 import { aliasRegex, nameRegex } from "@/util/regex";
 import Link from "next/link";
+import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 
 const Editor = ({
 	message,
 
 	saveData,
+	saveOptions,
 	closeEditor,
 
 	versionsHref,
@@ -58,12 +60,62 @@ const Editor = ({
 						>
 							<Save /> Save & Close
 						</button>
-						<button
-							className="--cms-success"
-							aria-label="More Save Options"
-						>
-							<ChevronDown />
-						</button>
+						{saveOptions && saveOptions.length > 0 && (
+							<button
+								className="--cms-success"
+								aria-label="More Save Options"
+								onClick={async (e) => {
+									const rect =
+										e.target.getBoundingClientRect();
+
+									const PopupContent = () => {
+										const closePopup =
+											useContext(PopupContext);
+
+										return (
+											<div
+												className="--cms-popup-content"
+												style={{ minWidth: rect.width }}
+											>
+												<nav className="--cms-popup-nav">
+													{saveOptions.map(
+														(
+															{
+																label,
+																ariaLabel,
+																callback,
+															},
+															index
+														) => (
+															<button
+																key={index}
+																type="button"
+																aria-label={
+																	ariaLabel
+																}
+																onClick={async () => {
+																	await callback();
+																	closePopup();
+																}}
+															>
+																{label}
+															</button>
+														)
+													)}
+												</nav>
+											</div>
+										);
+									};
+
+									const res = await createHeadlessPopup(
+										<PopupContent />,
+										[rect.x, rect.bottom]
+									);
+								}}
+							>
+								<ChevronDown />
+							</button>
+						)}
 					</span>
 
 					<button

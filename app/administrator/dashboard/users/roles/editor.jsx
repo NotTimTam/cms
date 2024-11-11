@@ -6,6 +6,7 @@ import Message from "@/app/administrator/components/Message";
 import Tabs from "@/app/administrator/components/Tabs";
 import { getToken } from "@/app/cookies";
 import API from "@/util/API";
+import { FileInput, FilePlus2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -91,7 +92,8 @@ const RoleEditor = ({ id }) => {
 	};
 
 	useEffect(() => {
-		if (id) getRole();
+		if (!id) setUserRole(defaultRole);
+		else getRole();
 	}, [id]);
 
 	if (loading) return <Loading />;
@@ -102,6 +104,32 @@ const RoleEditor = ({ id }) => {
 				{...{
 					message,
 					saveData: saveRole,
+					saveOptions: [
+						{
+							label: (
+								<>
+									<FilePlus2 /> Save & New
+								</>
+							),
+							ariaLabel: "Save & New",
+							callback: async () => {
+								const savedSuccessfully = await saveRole();
+
+								if (savedSuccessfully)
+									router.push(
+										"/administrator/dashboard/users?view=roles&layout=edit"
+									);
+							},
+						},
+						{
+							label: (
+								<>
+									<FileInput /> Save & Copy
+								</>
+							),
+							ariaLabel: "Save & Copy",
+						},
+					],
 					closeEditor: () =>
 						router.push(
 							"/administrator/dashboard/users?view=roles"

@@ -313,14 +313,14 @@ nav.--cms-nav {
 			flex-direction: row;
 			flex-wrap: nowrap;
 
-			> :first-child {
+			> :first-child:not(:only-child) {
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 
 				border-right: 1px solid var(--background-color) !important;
 			}
 
-			> :last-child {
+			> :last-child:not(:only-child) {
 				border-left: none;
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;

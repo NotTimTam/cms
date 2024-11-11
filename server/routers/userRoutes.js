@@ -10,11 +10,12 @@ import {
 } from "../controllers/users/user.js";
 import {
 	createUserRole,
+	deleteUserRoles,
+	orderUserRoles,
+	findUserRoles,
 	findUserRoleById,
 	findUserRoleByIdAndDelete,
 	findUserRoleByIdAndUpdate,
-	findUserRoles,
-	orderUserRoles,
 } from "../controllers/users/userRole.js";
 import { authenticationMiddleware } from "../middleware/userMiddleware.js";
 
@@ -31,7 +32,8 @@ userRouter
 userRouter
 	.route("/roles")
 	.get(authenticationMiddleware, findUserRoles)
-	.post(authenticationMiddleware, createUserRole);
+	.post(authenticationMiddleware, createUserRole)
+	.delete(authenticationMiddleware, deleteUserRoles);
 userRouter.patch("/roles/order", authenticationMiddleware, orderUserRoles);
 userRouter
 	.route("/roles/:id")

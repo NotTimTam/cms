@@ -7,12 +7,12 @@ import Loading from "@/app/administrator/components/Loading";
 import Message from "@/app/administrator/components/Message";
 import Modal from "@/app/administrator/components/Modal";
 import { getToken } from "@/app/cookies";
-import createHeadlessPopup from "@/components/HeadlessPopup";
+import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import API from "@/util/API";
 import StorageInterface from "@/util/StorageInterface";
 import { EllipsisVertical, Trash2, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 let lastQuery;
 
@@ -79,34 +79,43 @@ const RoleListings = () => {
 			label: (
 				<>
 					<Trash2 color="var(--error-color)" />
-					Trash
+					Delete Permanently
 				</>
 			),
 			ariaLabel: "Trash",
 			action: async () => {
-				const res = await createHeadlessPopup(
-					<Modal>
-						<h3>Delete selected roles permanently?</h3>
-						<p>This action cannot be undone.</p>
-						<Modal.Options>
-							<button
-								type="reset"
-								aria-label="Cancel"
-								className="--cms-success"
-							>
-								<X /> Cancel
-							</button>
-							<button
-								type="submit"
-								aria-label="Delete"
-								className="--cms-error"
-							>
-								<Trash2 /> Delete Permanently
-							</button>
-						</Modal.Options>
-					</Modal>
-				);
-				// await executeBatch({ status: "trashed" })
+				const PopupContent = () => {
+					const closePopup = useContext(PopupContext);
+
+					return (
+						<Modal>
+							<h3>Delete selected roles permanently?</h3>
+							<p>This action cannot be undone.</p>
+							<Modal.Options>
+								<button
+									type="reset"
+									aria-label="Cancel"
+									className="--cms-success"
+									onClick={() => closePopup(false)}
+								>
+									<X /> Cancel
+								</button>
+								<button
+									type="submit"
+									aria-label="Delete"
+									className="--cms-error"
+									onClick={() => closePopup(true)}
+								>
+									<Trash2 /> Delete Permanently
+								</button>
+							</Modal.Options>
+						</Modal>
+					);
+				};
+
+				const res = await createHeadlessPopup(<PopupContent />);
+
+				if (res === true) await massDeleteRoles();
 			},
 		},
 	];
@@ -180,7 +189,7 @@ const RoleListings = () => {
 		setLoading(false);
 	};
 
-	const executeBatch = async (patch) => {
+	const massDeleteRoles = async () => {
 		setLoading(true);
 		setMessage(null);
 
@@ -191,18 +200,16 @@ const RoleListings = () => {
 			const searchParams = API.createQueryString(query);
 
 			// Batch through userRoles.
-			await API.patch(
-				`${API.createRouteURL(
-					API.userRoles,
-					"batch"
-				)}?${searchParams.toString()}&selection=${
+			await API.delete(
+				`${API.userRoles}?${searchParams.toString()}&selection=${
 					selection === "all" ? selection : selection.join(",")
 				}`,
-				patch,
 				API.createAuthorizationConfig(token)
 			);
 
 			await executeQuery();
+
+			setSelection([]);
 		} catch (error) {
 			console.error(error);
 			setMessage(<Message type="error">{error.data}</Message>);
@@ -296,7 +303,7 @@ const RoleListings = () => {
 
 					<List
 						items={userRoles}
-						itemIdentifier="role"
+						itemIdentifier="user role"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing, hideFromList }]) => ({
 								listing,

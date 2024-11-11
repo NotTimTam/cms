@@ -40,6 +40,9 @@ export const createUserRole = async (req, res) => {
 	}
 };
 
+/**
+ * Query user roles.
+ */
 export const findUserRoles = async (req, res) => {
 	try {
 		try {
@@ -83,6 +86,32 @@ export const findUserRoles = async (req, res) => {
 			page,
 			numPages,
 		});
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Delete a selection of user roles.
+ */
+export const deleteUserRoles = async (req, res) => {
+	try {
+		let { selection } = req.query;
+
+		if (!selection)
+			return res
+				.status(400)
+				.send('No "selection" parameter provided in query.');
+
+		const userRoles = await UserRoleModel.find({}).lean();
+
+		if (selection === "all")
+			selection = userRoles.map(({ _id }) => _id.toString());
+		else selection = selection.split(",");
+
+		await UserRoleModel.deleteMany({ _id: { $in: selection } });
+
+		return res.status(200).send("User roles deleted successfully.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

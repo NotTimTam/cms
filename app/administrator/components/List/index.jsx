@@ -113,9 +113,7 @@ const List = ({
 	return (
 		<section className={styles["--cms-listings"]}>
 			{!items || items.length === 0 ? (
-				<Message type="info">
-					No {itemIdentifier}s found with that query.
-				</Message>
+				<Message type="info">No {itemIdentifier}s found.</Message>
 			) : (
 				<div className={styles["--cms-listings-table"]}>
 					<header

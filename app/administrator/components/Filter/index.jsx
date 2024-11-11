@@ -6,6 +6,7 @@ import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import Message from "../Message";
 import Loading from "../Loading";
+import Modal from "../Modal";
 
 const Option = ({
 	ariaLabel,
@@ -156,14 +157,7 @@ const Filter = ({
 								const closePopup = useContext(PopupContext);
 
 								return (
-									<div
-										className={
-											styles[
-												"--cms-filter-options-popup-content"
-											]
-										}
-										onClick={closePopup}
-									>
+									<Modal>
 										<form
 											onClick={(e) => e.stopPropagation()}
 											onSubmit={(e) => {
@@ -208,7 +202,7 @@ const Filter = ({
 												</button>
 											</section>
 										</form>
-									</div>
+									</Modal>
 								);
 							};
 

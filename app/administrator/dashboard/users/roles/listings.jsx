@@ -5,10 +5,12 @@ import Filter from "@/app/administrator/components/Filter";
 import List from "@/app/administrator/components/List";
 import Loading from "@/app/administrator/components/Loading";
 import Message from "@/app/administrator/components/Message";
+import Modal from "@/app/administrator/components/Modal";
 import { getToken } from "@/app/cookies";
+import createHeadlessPopup from "@/components/HeadlessPopup";
 import API from "@/util/API";
 import StorageInterface from "@/util/StorageInterface";
-import { EllipsisVertical, Trash2 } from "lucide-react";
+import { EllipsisVertical, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -81,7 +83,31 @@ const RoleListings = () => {
 				</>
 			),
 			ariaLabel: "Trash",
-			action: async () => await executeBatch({ status: "trashed" }),
+			action: async () => {
+				const res = await createHeadlessPopup(
+					<Modal>
+						<h3>Delete selected roles permanently?</h3>
+						<p>This action cannot be undone.</p>
+						<Modal.Options>
+							<button
+								type="reset"
+								aria-label="Cancel"
+								className="--cms-success"
+							>
+								<X /> Cancel
+							</button>
+							<button
+								type="submit"
+								aria-label="Delete"
+								className="--cms-error"
+							>
+								<Trash2 /> Delete Permanently
+							</button>
+						</Modal.Options>
+					</Modal>
+				);
+				// await executeBatch({ status: "trashed" })
+			},
 		},
 	];
 

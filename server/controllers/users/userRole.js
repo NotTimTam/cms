@@ -109,67 +109,6 @@ export const findUserRoleById = async (req, res) => {
 };
 
 /**
- * Patch a selection of user roles.
- */
-export const batchUserRoles = async (req, res) => {
-	try {
-		// const { name, description } = req.body;
-		// if (!name) return res.status(400).send("No role name provided.");
-		// if (typeof name !== "string" || !nameRegex.test(name))
-		// 	return res
-		// 		.status(400)
-		// 		.send(
-		// 			`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
-		// 		);
-		// // if (await UserRoleModel.findOne({ name }))
-		// // 	return res
-		// // 		.status(400)
-		// // 		.send("A role already exists with that name.");
-		// if (description && typeof description !== "string")
-		// 	return res.status(400).send("Invalid description provided.");
-		// try {
-		// 	req.query = await validateGenericQuery(req.query);
-		// } catch (error) {
-		// 	if (error instanceof ValidatorError)
-		// 		return res.status(error.code).send(error.message);
-		// 	else throw error;
-		// }
-		// const { search } = req.query;
-		// let { selection } = req.query;
-		// if (!selection)
-		// 	return res
-		// 		.status(400)
-		// 		.send('No "selection" parameter provided in query.');
-		// const query = {};
-		// if (search)
-		// 	query["$or"] = [
-		// 		{ name: { $regex: search, $options: "i" } },
-		// 		{ alias: { $regex: search, $options: "i" } },
-		// 	];
-		// const articles = await ArticleModel.find(query)
-		// 	.select("+status")
-		// 	.lean();
-		// if (selection === "all")
-		// 	selection = articles.map(({ _id }) => _id.toString());
-		// else selection = selection.split(",");
-		// const updatedArticles = [];
-		// for (const id of selection) {
-		// 	const article = await ArticleModel.findById(id);
-		// 	if (!article)
-		// 		return res.status(404).send(`No article found with ID "${id}"`);
-		// 	for (const [key, value] of Object.entries(req.body)) {
-		// 		article[key] = value;
-		// 	}
-		// 	await article.save();
-		// 	updatedArticles.push(article);
-		// }
-		// return res.status(200).json({ articles: updatedArticles });
-	} catch (error) {
-		return handleUnexpectedError(res, error);
-	}
-};
-
-/**
  * Find a specific user role by its ID and position it before another one in the order system.
  * @param {Express.Request} req The API request object.
  * @param {string} req.query.active The ID of the user role to move.

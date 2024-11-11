@@ -88,7 +88,7 @@ const List = ({
 }) => {
 	const sensors = useSensors(useSensor(PointerSensor));
 
-	const fieldOffset = 3;
+	const fieldOffset = 1 + (order ? 1 : 0);
 
 	const isSelected = (id) => selection === "all" || selection.includes(id);
 	const toggleSelected = (id) => {
@@ -117,18 +117,11 @@ const List = ({
 					No {itemIdentifier}s found with that query.
 				</Message>
 			) : (
-				<div
-					className={styles["--cms-listings-table"]}
-					style={{
-						gridTemplateColumns: `repeat(${fields.length}, auto)`,
-					}}
-				>
+				<div className={styles["--cms-listings-table"]}>
 					<header
 						className={styles["--cms-listings-table-header"]}
 						style={{
-							gridColumn: `1 / ${
-								fields.length + fieldOffset + 1
-							}`,
+							gridColumn: `1 / ${fields.length + fieldOffset}`,
 						}}
 					>
 						<div
@@ -190,9 +183,7 @@ const List = ({
 					<main
 						className={styles["--cms-listings-table-body"]}
 						style={{
-							gridColumn: `1 / ${
-								fields.length + fieldOffset + 1
-							}`,
+							gridColumn: `1 / ${fields.length + fieldOffset}`,
 						}}
 					>
 						<DndContext
@@ -210,7 +201,7 @@ const List = ({
 										index={itemIndex}
 										id={_id}
 										gridColumn={`1 / ${
-											fields.length + fieldOffset + 1
+											fields.length + fieldOffset
 										}`}
 										order={order}
 									>
@@ -255,7 +246,8 @@ const List = ({
 															style={{
 																gridColumn: `${
 																	fieldIndex +
-																	fieldOffset
+																	fieldOffset +
+																	1
 																} / ${
 																	fieldIndex +
 																	fieldOffset +

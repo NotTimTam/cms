@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, Library, ToggleLeft, ToggleRight } from "lucide-react";
+import { ChevronRight, ToggleLeft, ToggleRight } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import { AdministratorContext } from "../AdministratorContext";

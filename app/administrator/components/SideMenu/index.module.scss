@@ -61,22 +61,6 @@ aside.--cms-menu {
 		background-color: var(--background-color-3);
 		border-bottom: 1px solid var(--background-color-6);
 
-		h2 {
-			padding: var(--padding);
-
-			min-height: 46px;
-
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			justify-content: flex-start;
-			gap: var(--padding);
-
-			span {
-				display: none;
-			}
-		}
-
 		button.--cms-menu-toggle {
 			border-radius: 0;
 			border: none;
@@ -191,12 +175,6 @@ aside.--cms-menu {
 		left: 0;
 
 		z-index: 3;
-
-		header.--cms-menu-header {
-			h2 {
-				display: none;
-			}
-		}
 
 		&[aria-expanded] {
 			position: absolute;

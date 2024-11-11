@@ -157,11 +157,6 @@ const SideMenu = () => {
 			aria-expanded={expanded ? "true" : undefined}
 		>
 			<header className={styles["--cms-menu-header"]}>
-				<h2>
-					<Library />
-					<span>Administrator</span>
-				</h2>
-
 				<button
 					onClick={() => setExpanded(!expanded)}
 					type="button"

@@ -1,3 +1,5 @@
+"use client";
+
 import Curate from "@/app/administrator/components/Curate";
 import Filter from "@/app/administrator/components/Filter";
 import List from "@/app/administrator/components/List";
@@ -93,6 +95,7 @@ const RoleListings = () => {
 	// Functions
 	const executeQuery = async () => {
 		setLoading(true);
+		setMessage(null);
 
 		try {
 			SessionStorage.setItem("roleQuery", query); // Remember this query.
@@ -123,21 +126,23 @@ const RoleListings = () => {
 		setLoading(false);
 	};
 
-	const reorderUserRoles = async (batch) => {
+	const reorderUserRole = async (active, over, dir) => {
 		setLoading(true);
+		setMessage(null);
 
 		try {
 			const token = await getToken();
 
-			// Batch through user roles.
-			for (const userRole of batch) {
-				// Run patch request.
-				await API.patch(
-					API.createRouteURL(API.userRoles, userRole._id),
-					userRole,
-					API.createAuthorizationConfig(token)
-				);
-			}
+			if (query.sort.dir === -1) dir *= -1;
+
+			await API.patch(
+				`${API.createRouteURL(
+					API.userRoles,
+					"order"
+				)}?active=${active}&over=${over}&dir=${dir}`,
+				undefined,
+				API.createAuthorizationConfig(token)
+			);
 
 			// Reload user roles.
 			await executeQuery();
@@ -151,6 +156,7 @@ const RoleListings = () => {
 
 	const executeBatch = async (patch) => {
 		setLoading(true);
+		setMessage(null);
 
 		try {
 			const token = await getToken();
@@ -290,21 +296,8 @@ const RoleListings = () => {
 								disabled:
 									!query.sort || query.sort.field !== "order",
 							},
-							swapItems: (active, over) => {
-								reorderUserRoles([
-									{
-										_id: active,
-										order: userRoles.find(
-											({ _id }) => _id === over
-										).order,
-									},
-									{
-										_id: over,
-										order: userRoles.find(
-											({ _id }) => _id === active
-										).order,
-									},
-								]);
+							swapItems: (active, over, dir) => {
+								reorderUserRole(active, over, dir);
 							},
 						}}
 					/>

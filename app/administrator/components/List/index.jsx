@@ -19,6 +19,7 @@ import {
 	SortableContext,
 	verticalListSortingStrategy,
 	useSortable,
+	arrayMove,
 } from "@dnd-kit/sortable";
 import Paginate from "../Paginate";
 
@@ -287,30 +288,25 @@ const List = ({
 
 		const { active, over } = event;
 
-		if (active.id !== over.id) swapItems(active.id, over.id);
+		if (active.id !== over.id) {
+			let newItems = items.map(({ _id }) => _id);
+			newItems = arrayMove(
+				newItems,
+				newItems.indexOf(active.id),
+				newItems.indexOf(over.id)
+			);
+
+			swapItems(
+				active.id,
+				over.id,
+				newItems.indexOf(active.id) > newItems.indexOf(over.id) ? 1 : -1
+			);
+		}
 	}
 };
 
 List.InfoBlock = ({ children }) => (
-	<div className={styles["--cms-listing-info"]}>
-		{/* <b className={styles["--cms-listing-info-title"]}>
-			<Link
-				aria-label="Open Role"
-				href={`/administrator/dashboard/roles?layout=edit&id=${_id}`}
-			>
-				{name}
-			</Link>
-		</b>
-		<span>
-			<b>Alias:</b> {alias}
-		</span>
-		{category && (
-			<span>
-				<b>Category:</b> {category}
-			</span>
-		)} */}
-		{children}
-	</div>
+	<div className={styles["--cms-listing-info"]}>{children}</div>
 );
 
 /**

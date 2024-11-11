@@ -359,6 +359,7 @@ const Listings = () => {
 	// Functions
 	const executeQuery = async () => {
 		setLoading(true);
+		setMessage(null);
 
 		try {
 			SessionStorage.setItem("articleQuery", query); // Remember this query.
@@ -387,6 +388,7 @@ const Listings = () => {
 
 	const reorderArticles = async (batch) => {
 		setLoading(true);
+		setMessage(null);
 
 		try {
 			const token = await getToken();
@@ -413,6 +415,7 @@ const Listings = () => {
 
 	const executeBatch = async (patch) => {
 		setLoading(true);
+		setMessage(null);
 
 		try {
 			const token = await getToken();

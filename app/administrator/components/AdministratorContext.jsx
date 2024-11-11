@@ -1,6 +1,5 @@
 "use client";
 
-import StorageInterface from "@/util/StorageInterface";
 import {
 	Blocks,
 	CircleHelp,
@@ -355,24 +354,12 @@ const menu = (siteMenus, sitePlugins) =>
 export const AdministratorContext = createContext(null);
 
 export default function AdministratorContextProvider({ children }) {
-	// Hooks
-	const SessionStorage = new StorageInterface(window.sessionStorage);
-	const {
-		data: { sideMenu },
-	} = SessionStorage;
-
 	const [administrator, setAdministrator] = useState({
 		sideMenu: {
-			expanded: sideMenu ? sideMenu.expanded : true,
+			expanded: true,
 			sections: {},
 		},
 	});
-
-	useEffect(() => {
-		SessionStorage.setItem("sideMenu", {
-			expanded: administrator.sideMenu.expanded,
-		});
-	}, [administrator.sideMenu]);
 
 	return (
 		<AdministratorContext.Provider

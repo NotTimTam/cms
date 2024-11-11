@@ -115,9 +115,7 @@ export const validateArticle = async (article) => {
 
 	if (
 		article.order &&
-		(typeof article.order !== "number" ||
-			!Number.isInteger(article.order) ||
-			article.order < 0)
+		(typeof article.order !== "number" || !Number.isInteger(article.order))
 	)
 		throw new ValidatorError(
 			400,
@@ -164,8 +162,7 @@ export const validateUserRole = async (userRole) => {
 	if (
 		userRole.order &&
 		(typeof userRole.order !== "number" ||
-			!Number.isInteger(userRole.order) ||
-			userRole.order < 0)
+			!Number.isInteger(userRole.order))
 	)
 		throw new ValidatorError(
 			400,

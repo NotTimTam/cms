@@ -15,6 +15,7 @@ import {
 	findUserRoleByIdAndUpdate,
 	findUserRoles,
 	batchUserRoles,
+	orderUserRoles,
 } from "../controllers/users/userRole.js";
 import { authenticationMiddleware } from "../middleware/userMiddleware.js";
 
@@ -33,6 +34,7 @@ userRouter
 	.get(authenticationMiddleware, findUserRoles)
 	.post(authenticationMiddleware, createUserRole);
 userRouter.patch("/roles/batch", authenticationMiddleware, batchUserRoles);
+userRouter.patch("/roles/order", authenticationMiddleware, orderUserRoles);
 userRouter
 	.route("/roles/:id")
 	.get(authenticationMiddleware, findUserRoleById)

@@ -15,4 +15,18 @@ nav.--cms-tabs-nav {
 
 main.--cms-tabs-content {
 	max-width: 100%;
+
+	&:has(article.--cms-tabs-content-main),
+	&:has(aside.--cms-tabs-content-aside) {
+		display: grid;
+		grid-template-columns: 1fr auto;
+	}
+
+	article.--cms-tabs-content-main {
+		grid-column: 1 / 2;
+	}
+
+	aside.--cms-tabs-content-aside {
+		grid-column: 2 / 3;
+	}
 }

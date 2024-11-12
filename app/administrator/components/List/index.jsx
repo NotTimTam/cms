@@ -25,6 +25,20 @@ import Paginate from "../Paginate";
 
 const SortableItem = (props) => {
 	const {
+		children,
+		preLabel,
+		order,
+		id,
+		gridColumn,
+
+		items,
+		fields,
+		fieldOffset,
+		isSelected,
+		toggleSelected,
+		swapItems,
+	} = props;
+	const {
 		attributes,
 		listeners,
 		setNodeRef,
@@ -32,47 +46,177 @@ const SortableItem = (props) => {
 		transition,
 		isDragging,
 	} = useSortable({
-		id: props.id,
-		disabled: !props.order || props.order.disabled,
+		id,
+		disabled: !order || order.disabled,
 	});
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
-		gridColumn: props.gridColumn,
+		gridColumn: gridColumn,
 		cursor: isDragging ? "grabbing" : "pointer",
 	};
 
 	return (
-		<div
-			className={styles["--cms-listings-table-body-row"]}
-			ref={setNodeRef}
-			style={style}
-		>
-			{props.order && (
-				<div
-					className={styles["--cms-listings-table-body-row-column"]}
-					style={{
-						gridColumn: `2 / 3`,
-						gridRow: `1 / 2`,
-					}}
-				>
-					<button
-						disabled={!props.order || props.order.disabled}
+		<>
+			<div
+				className={styles["--cms-listings-table-body-row"]}
+				ref={setNodeRef}
+				style={style}
+			>
+				{order && (
+					<div
 						className={
-							styles["--cms-listings-table-body-drag-thumb"]
+							styles["--cms-listings-table-body-row-column"]
 						}
-						{...listeners}
-						{...attributes}
-						aria-label={props.order.ariaLabel}
+						style={{
+							gridColumn: `2 / 3`,
+							gridRow: `1 / 2`,
+						}}
 					>
-						{props.order.icon}
-					</button>
-				</div>
+						<button
+							disabled={!order || order.disabled}
+							className={
+								styles["--cms-listings-table-body-drag-thumb"]
+							}
+							{...listeners}
+							{...attributes}
+							aria-label={order.ariaLabel}
+						>
+							{order.icon}
+						</button>
+					</div>
+				)}
+				{children}
+			</div>
+			{items && items.length > 0 && (
+				<Listings
+					{...{
+						items,
+						fields,
+						fieldOffset,
+						isSelected,
+						toggleSelected,
+						order,
+						swapItems,
+						preLabel,
+					}}
+				/>
 			)}
-			{props.children}
-		</div>
+		</>
 	);
+};
+
+const Listings = ({
+	items,
+	fields,
+	fieldOffset,
+	isSelected,
+	toggleSelected,
+	order,
+	swapItems,
+	preLabel = "",
+}) => {
+	const sensors = useSensors(useSensor(PointerSensor));
+
+	return (
+		<DndContext
+			sensors={sensors}
+			collisionDetection={closestCenter}
+			onDragEnd={handleDragEnd}
+		>
+			<SortableContext
+				items={items.map(({ _id }) => _id)}
+				strategy={verticalListSortingStrategy}
+			>
+				{items.map(({ _id, children }, itemIndex) => (
+					<SortableItem
+						key={_id}
+						index={itemIndex}
+						id={_id}
+						gridColumn={`1 / ${fields.length + fieldOffset}`}
+						order={order}
+						{...{
+							items: children,
+							fields,
+							fieldOffset,
+							isSelected,
+							toggleSelected,
+							order,
+							swapItems,
+							preLabel: <>{preLabel} &ndash;</>,
+						}}
+					>
+						<div
+							className={
+								styles["--cms-listings-table-body-row-column"]
+							}
+							style={{
+								gridColumn: "1 / 2",
+							}}
+						>
+							<button
+								aria-label="Select Article"
+								onClick={() => toggleSelected(_id)}
+							>
+								{isSelected(_id) ? <SquareCheck /> : <Square />}
+							</button>
+						</div>
+
+						{fields &&
+							fields
+								.filter((field) => field.listing)
+								.map((field, fieldIndex) => {
+									return (
+										<div
+											className={
+												styles[
+													"--cms-listings-table-body-row-column"
+												]
+											}
+											key={`${_id}-${fieldIndex}`}
+											style={{
+												gridColumn: `${
+													fieldIndex + fieldOffset + 1
+												} / ${
+													fieldIndex + fieldOffset + 1
+												}`,
+											}}
+										>
+											{field.listing.getJSXElement(
+												_id,
+												items,
+												preLabel
+											)}
+										</div>
+									);
+								})}
+					</SortableItem>
+				))}
+			</SortableContext>
+		</DndContext>
+	);
+
+	function handleDragEnd(event) {
+		if (!order || order.disabled) return;
+
+		const { active, over } = event;
+
+		if (active.id !== over.id) {
+			let newItems = items.map(({ _id }) => _id);
+			newItems = arrayMove(
+				newItems,
+				newItems.indexOf(active.id),
+				newItems.indexOf(over.id)
+			);
+
+			swapItems(
+				active.id,
+				over.id,
+				newItems.indexOf(active.id) > newItems.indexOf(over.id) ? 1 : -1
+			);
+		}
+	}
 };
 
 const List = ({
@@ -86,8 +230,6 @@ const List = ({
 	query,
 	setQuery,
 }) => {
-	const sensors = useSensors(useSensor(PointerSensor));
-
 	const fieldOffset = 1 + (order ? 1 : 0);
 
 	const isSelected = (id) => selection === "all" || selection.includes(id);
@@ -184,85 +326,17 @@ const List = ({
 							gridColumn: `1 / ${fields.length + fieldOffset}`,
 						}}
 					>
-						<DndContext
-							sensors={sensors}
-							collisionDetection={closestCenter}
-							onDragEnd={handleDragEnd}
-						>
-							<SortableContext
-								items={items.map(({ _id }) => _id)}
-								strategy={verticalListSortingStrategy}
-							>
-								{items.map(({ _id }, itemIndex) => (
-									<SortableItem
-										key={_id}
-										index={itemIndex}
-										id={_id}
-										gridColumn={`1 / ${
-											fields.length + fieldOffset
-										}`}
-										order={order}
-									>
-										<div
-											className={
-												styles[
-													"--cms-listings-table-body-row-column"
-												]
-											}
-											style={{
-												gridColumn: "1 / 2",
-											}}
-										>
-											<button
-												aria-label="Select Article"
-												onClick={() =>
-													toggleSelected(_id)
-												}
-											>
-												{isSelected(_id) ? (
-													<SquareCheck />
-												) : (
-													<Square />
-												)}
-											</button>
-										</div>
-
-										{fields &&
-											fields
-												.filter(
-													(field) => field.listing
-												)
-												.map((field, fieldIndex) => {
-													return (
-														<div
-															className={
-																styles[
-																	"--cms-listings-table-body-row-column"
-																]
-															}
-															key={`${itemIndex}-${fieldIndex}`}
-															style={{
-																gridColumn: `${
-																	fieldIndex +
-																	fieldOffset +
-																	1
-																} / ${
-																	fieldIndex +
-																	fieldOffset +
-																	1
-																}`,
-															}}
-														>
-															{field.listing.getJSXElement(
-																itemIndex
-															)}
-														</div>
-													);
-												})}
-									</SortableItem>
-								))}
-							</SortableContext>
-						</DndContext>
+						<Listings
+							{...{
+								items,
+								fields,
+								fieldOffset,
+								isSelected,
+								toggleSelected,
+								order,
+								swapItems,
+							}}
+						/>
 					</main>
 				</div>
 			)}
@@ -272,27 +346,6 @@ const List = ({
 			)}
 		</section>
 	);
-
-	function handleDragEnd(event) {
-		if (!order || order.disabled) return;
-
-		const { active, over } = event;
-
-		if (active.id !== over.id) {
-			let newItems = items.map(({ _id }) => _id);
-			newItems = arrayMove(
-				newItems,
-				newItems.indexOf(active.id),
-				newItems.indexOf(over.id)
-			);
-
-			swapItems(
-				active.id,
-				over.id,
-				newItems.indexOf(active.id) > newItems.indexOf(over.id) ? 1 : -1
-			);
-		}
-	}
 };
 
 List.InfoBlock = ({ children }) => (
@@ -379,7 +432,8 @@ List.Element = class Toggle extends List.Item {
 		this.getElement = getElement;
 	}
 
-	getJSXElement = (index) => this.getElement(index);
+	getJSXElement = (_id, items, preLabel) =>
+		this.getElement(_id, items, preLabel);
 };
 
 List.Toggle = class Toggle extends List.Item {
@@ -392,12 +446,12 @@ List.Toggle = class Toggle extends List.Item {
 		this.ariaLabel = ariaLabel;
 	}
 
-	getJSXElement = (index) => {
+	getJSXElement = (_id, items) => {
 		const { getIcon, toggle, ariaLabel } = this;
 
 		return (
-			<button aria-label={ariaLabel} onClick={() => toggle(index)}>
-				{getIcon(index)}
+			<button aria-label={ariaLabel} onClick={() => toggle(_id, items)}>
+				{getIcon(_id, items)}
 			</button>
 		);
 	};

@@ -21,6 +21,11 @@ const UserRoleSchema = new mongoose.Schema(
 			],
 			default: 0,
 		},
+		parent: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserRole",
+			required: false,
+		},
 		locked: {
 			type: Boolean,
 			required: false,

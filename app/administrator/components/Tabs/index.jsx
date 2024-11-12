@@ -41,4 +41,11 @@ const Tabs = ({ items, currentItem, setCurrentItem }) => {
 
 Tabs.Item = Item;
 
+Tabs.Item.Main = ({ children }) => (
+	<article className={styles["--cms-tabs-content-main"]}>{children}</article>
+);
+Tabs.Item.Aside = ({ children }) => (
+	<aside className={styles["--cms-tabs-content-aside"]}>{children}</aside>
+);
+
 export default Tabs;

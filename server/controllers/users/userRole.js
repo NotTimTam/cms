@@ -1,10 +1,10 @@
-import { orderDocuments } from "../../util/database.js";
+import { buildDocumentTree, orderDocuments } from "../../util/database.js";
 import UserRoleModel from "../../models/users/UserRole.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
-	validateGenericQuery,
 	validateUserRole,
-	ValidatorError,
+	ResError,
+	validateNestQuery,
 } from "../../util/validators.js";
 
 /**
@@ -25,14 +25,10 @@ export const createUserRole = async (req, res) => {
 		try {
 			req.body = await validateUserRole(req.body);
 		} catch (error) {
-			if (error instanceof ValidatorError)
+			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}
-
-		const userRole = new UserRoleModel(req.body);
-
-		await userRole.save();
 
 		return res.status(200).json({ userRole });
 	} catch (error) {
@@ -46,15 +42,20 @@ export const createUserRole = async (req, res) => {
 export const findUserRoles = async (req, res) => {
 	try {
 		try {
-			req.query = await validateGenericQuery(req.query);
+			req.query = await validateNestQuery(req.query);
 		} catch (error) {
-			if (error instanceof ValidatorError)
+			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}
 
-		const { search, sortField = "createdAt", sortDir = "-1" } = req.query;
-		let { page = "0", itemsPerPage = "20" } = req.query;
+		const {
+			search,
+			sortField = "createdAt",
+			sortDir = "-1",
+			depth,
+		} = req.query;
+		let { page = "0", itemsPerPage = "20", root } = req.query;
 
 		const query = {
 			$or: [{ locked: { $exists: false } }, { locked: false }],
@@ -73,11 +74,27 @@ export const findUserRoles = async (req, res) => {
 		if (page > numPages - 1) page = numPages - 1;
 		if (page < 0) page = 0;
 
-		const userRoles = await UserRoleModel.find(query)
-			.sort({ [sortField]: +sortDir })
-			.limit(+itemsPerPage)
-			.skip(page * +itemsPerPage)
-			.lean();
+		let userRoles = [];
+		if (!root) {
+			query.parent = { $exists: false }; // Filter to just root items.
+			userRoles = await UserRoleModel.find(query)
+				.sort({ [sortField]: +sortDir })
+				.limit(+itemsPerPage)
+				.skip(page * +itemsPerPage)
+				.lean();
+		} else {
+			query._id = root;
+			const rootUserRole = await UserRoleModel.findOne(query);
+
+			if (rootUserRole) userRoles = [rootUserRole];
+		}
+
+		if (userRoles && userRoles.length > 0)
+			userRoles = await buildDocumentTree(
+				userRoles,
+				UserRoleModel,
+				depth
+			);
 
 		return res.status(200).json({
 			userRoles,
@@ -193,7 +210,7 @@ export const findUserRoleByIdAndUpdate = async (req, res) => {
 				...req.body,
 			});
 		} catch (error) {
-			if (error instanceof ValidatorError)
+			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}

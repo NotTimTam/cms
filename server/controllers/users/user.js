@@ -80,7 +80,9 @@ export const authenticateUser = async (req, res) => {
  */
 export const createUser = async (req, res) => {
 	try {
-		let { name, username, password, email } = req.body;
+		let { name, username, password, email, roles } = req.body;
+
+		console.warn("Create global user validator.");
 
 		if (!name) return res.status(400).send("No name provided.");
 
@@ -128,7 +130,7 @@ export const createUser = async (req, res) => {
 			password: await bcrypt.hash(password, 12),
 			email,
 			verified: false,
-			groups: [],
+			roles,
 		});
 
 		await user.save();

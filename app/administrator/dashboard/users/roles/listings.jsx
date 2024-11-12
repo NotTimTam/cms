@@ -41,12 +41,13 @@ const RoleListings = () => {
 		},
 		name: {
 			label: "Name",
-			listing: new List.Element((index) => {
-				const { name, _id } = userRoles[index];
+			listing: new List.Element((_id, items, preLabel) => {
+				const { name } = items.find(({ _id: f }) => f === _id);
 
 				return (
 					<List.InfoBlock>
 						<h3>
+							{preLabel}
 							<Link
 								aria-label="Open Role"
 								href={`/administrator/dashboard/users?view=roles&layout=edit&id=${_id}`}
@@ -60,8 +61,10 @@ const RoleListings = () => {
 		},
 		createdAt: {
 			label: "Date Created",
-			listing: new List.Element((index) =>
-				new Date(userRoles[index].createdAt).toLocaleString()
+			listing: new List.Element((_id, items) =>
+				new Date(
+					items.find(({ _id: f }) => f === _id).createdAt
+				).toLocaleString()
 			),
 		},
 	};

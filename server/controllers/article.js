@@ -4,7 +4,7 @@ import { orderDocuments } from "../util/database.js";
 import {
 	validateArticle,
 	validateArticleQuery,
-	ValidatorError,
+	ResError,
 } from "../util/validators.js";
 
 /**
@@ -31,7 +31,7 @@ export const createArticle = async (req, res) => {
 		try {
 			req.body = await validateArticle(req.body);
 		} catch (error) {
-			if (error instanceof ValidatorError)
+			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}
@@ -54,7 +54,7 @@ export const findArticles = async (req, res) => {
 		try {
 			req.query = await validateArticleQuery(req.query);
 		} catch (error) {
-			if (error instanceof ValidatorError)
+			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}
@@ -122,7 +122,7 @@ export const batchArticles = async (req, res) => {
 		try {
 			req.query = await validateArticleQuery(req.query);
 		} catch (error) {
-			if (error instanceof ValidatorError)
+			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}
@@ -173,7 +173,7 @@ export const batchArticles = async (req, res) => {
 					...req.body,
 				});
 			} catch (error) {
-				if (error instanceof ValidatorError)
+				if (error instanceof ResError)
 					return res.status(error.code).send(error.message);
 				else throw error;
 			}
@@ -289,7 +289,7 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 				...req.body,
 			});
 		} catch (error) {
-			if (error instanceof ValidatorError)
+			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}

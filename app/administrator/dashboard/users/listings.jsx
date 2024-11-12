@@ -86,7 +86,7 @@ const UserListings = () => {
 
 					return (
 						<Modal>
-							<h3>Delete selected groups permanently?</h3>
+							<h3>Delete selected users permanently?</h3>
 							<p>This action cannot be undone.</p>
 							<Modal.Options>
 								<button
@@ -112,7 +112,7 @@ const UserListings = () => {
 
 				const res = await createHeadlessPopup(<PopupContent />);
 
-				if (res === true) await massDeleteGroups();
+				if (res === true) await massDeleteUsers();
 			},
 		},
 	];
@@ -186,7 +186,7 @@ const UserListings = () => {
 		setLoading(false);
 	};
 
-	const massDeleteGroups = async () => {
+	const massDeleteUsers = async () => {
 		setLoading(true);
 		setMessage(null);
 

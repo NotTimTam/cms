@@ -1,5 +1,6 @@
 import { log, success, warn } from "@nottimtam/console.js";
 import UserRoleModel from "../models/users/UserRole.js";
+import { ResError } from "./validators.js";
 
 /**
  * Reorder a database Model's documents.
@@ -49,6 +50,75 @@ export const orderDocuments = async (
 			},
 		}))
 	);
+};
+
+/**
+ * Get the path from the root level to a document.
+ * @param {string} id The id of the document to get the path to.
+ * @param {Mongoose.Model} Model The mongoose Model for the document tree.
+ * @param {string} label A label to identify the content being reordered, in error messages.
+ * @returns {string[]} An array of document ids, the first being a top-level document, and the last being the requested document.
+ */
+export const getPathToDocument = async (id, Model, label = "document", __) => {
+	const document = await Model.findById(id);
+
+	if (!document) throw new ResError(404, `No ${label} found with id "${id}"`);
+
+	__.unshift(document._id.toString());
+
+	if (document.parent)
+		return await getPathToDocument(document.parent, Model, label, __);
+
+	return __;
+};
+
+/**
+ * Get the child documents of a document using the parent/child system.
+ * @param {string} id The id of the document to get the children of.
+ * @param {Mongoose.Model} Model The mongoose Model for the document tree.
+ * @param {string} label A label to identify the content being reordered, in error messages.
+ * @returns {Array} An array of document children.
+ */
+export const getDocumentChildren = async (id, Model, label = "document") => {
+	const document = await Model.findById(id);
+
+	if (!document) throw new ResError(404, `No ${label} found with id "${id}"`);
+
+	return await Model.find({ parent: id });
+};
+
+/**
+ * Create a full document tree.
+ * @param {string} id The id of the document to start at.
+ * @param {Mongoose.Model} Model The mongoose Model for the document tree.
+ * @param {number} maxDepth The maximum depth to drill to. Nullish values will result in drilling all the way down.
+ * @returns {Array} An array of documents. Each document within children will have a `"children"` field containing them.
+ */
+export const buildDocumentTree = async (group = [], Model, maxDepth) => {
+	let curDepth = 0;
+	if (!group) {
+		// Find all root level documents.
+		group = await Model.find({
+			parent: { $exists: false },
+		});
+	}
+
+	const collectChildren = async (document, d) => {
+		document.children = await Model.find({
+			parent: document._id,
+		});
+
+		curDepth = d;
+
+		if (!isNaN(maxDepth) && curDepth >= maxDepth) return; // End once max depth is reached.
+
+		for (const child of document.children)
+			await collectChildren(child, d + 1);
+	};
+
+	for (const document of group) await collectChildren(document, 0);
+
+	return group;
 };
 
 /**

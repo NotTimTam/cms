@@ -175,39 +175,56 @@ const RoleEditor = ({ id }) => {
 					tabs: [
 						Tabs.Item(
 							"Content",
-							<form
-								className="--cms-form"
-								onSubmit={(e) => e.preventDefault()}
-							>
-								<label htmlFor="name" required>
-									Name
-								</label>
-								<input
-									value={userRole.name || ""}
-									onChange={({ target: { value } }) =>
-										setUserRole({
-											...userRole,
-											name: value,
-										})
-									}
-									type="text"
-									id="name"
-									placeholder="Article Editor, Website Manager, Etc."
-								/>
+							<>
+								<Tabs.Item.Main>
+									<form
+										className="--cms-form"
+										onSubmit={(e) => e.preventDefault()}
+									>
+										<label htmlFor="name" required>
+											Name
+										</label>
+										<input
+											value={userRole.name || ""}
+											onChange={({ target: { value } }) =>
+												setUserRole({
+													...userRole,
+													name: value,
+												})
+											}
+											type="text"
+											id="name"
+											placeholder="Article Editor, Website Manager, Etc."
+										/>
 
-								<label htmlFor="description">Description</label>
-								<textarea
-									value={userRole.description || ""}
-									onChange={({ target: { value } }) =>
-										setUserRole({
-											...userRole,
-											description: value,
-										})
-									}
-									id="description"
-									placeholder="What is the purpose of this role?"
-								></textarea>
-							</form>
+										<label htmlFor="description">
+											Description
+										</label>
+										<textarea
+											value={userRole.description || ""}
+											onChange={({ target: { value } }) =>
+												setUserRole({
+													...userRole,
+													description: value,
+												})
+											}
+											id="description"
+											placeholder="What is the purpose of this role?"
+										></textarea>
+									</form>
+								</Tabs.Item.Main>
+								<Tabs.Item.Aside>
+									<form
+										className="--cms-form"
+										onSubmit={(e) => e.preventDefault()}
+									>
+										<label htmlFor="parent">
+											Parent Role
+										</label>
+										<select id="parent"></select>
+									</form>
+								</Tabs.Item.Aside>
+							</>
 						),
 					],
 				}}

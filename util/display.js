@@ -77,3 +77,10 @@ export const getCurrentMenu = (menu, pathname, searchParams) => {
 		})
 		.filter((menu) => menu)[0];
 };
+
+/**
+ * Create a depth indicator for parent/child nesting systems.
+ * @param {number} depth The level of depth to indicate.
+ * @returns {string} A string-based depth indicator.
+ */
+export const depthIndicator = (depth) => "\u2013 ".repeat(depth).trim();

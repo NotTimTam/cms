@@ -6,6 +6,7 @@ import Message from "@/app/administrator/components/Message";
 import Tabs from "@/app/administrator/components/Tabs";
 import { getToken } from "@/app/cookies";
 import API from "@/util/API";
+import { depthIndicator } from "@/util/display";
 import { FileInput, FilePlus2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -63,7 +64,7 @@ const RoleEditor = ({ id }) => {
 			const {
 				data: { userRoles: possibleParents },
 			} = await API.get(
-				`${API.userRoles}?itemsPerPage=all`,
+				`${API.createRouteURL(API.userRoles, "parents", id || "all")}`,
 				API.createAuthorizationConfig(token)
 			);
 
@@ -274,11 +275,14 @@ const RoleEditor = ({ id }) => {
 													Parent User Role
 												</option>
 												{possibleParents.map(
-													({ name, _id }) => (
+													({ name, depth, _id }) => (
 														<option
 															key={_id}
 															value={_id}
 														>
+															{depthIndicator(
+																depth
+															)}{" "}
 															{name}
 														</option>
 													)

@@ -9,6 +9,7 @@ import Modal from "@/app/administrator/components/Modal";
 import { getToken } from "@/app/cookies";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import API from "@/util/API";
+import { depthIndicator } from "@/util/display";
 import StorageInterface from "@/util/StorageInterface";
 import { EllipsisVertical, Trash2, X } from "lucide-react";
 import Link from "next/link";
@@ -47,7 +48,7 @@ const RoleListings = () => {
 				return (
 					<List.InfoBlock>
 						<h3>
-							{"\u2013 ".repeat(depth).trim()}
+							{depthIndicator(depth)}
 							<Link
 								aria-label="Open Role"
 								href={`/administrator/dashboard/users?view=roles&layout=edit&id=${_id}`}
@@ -141,8 +142,6 @@ const RoleListings = () => {
 				`${API.userRoles}?${searchParams.toString()}`,
 				API.createAuthorizationConfig(token)
 			);
-
-			console.log(userRoles);
 
 			setUserRoles(userRoles);
 			setQuery((query) => ({

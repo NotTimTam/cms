@@ -8,7 +8,10 @@ export default class API {
 	 * @returns {string} A valid API route url.
 	 */
 	static createRouteURL = (...branches) =>
-		branches.map((branch) => branch.trim()).join("/");
+		branches
+			.filter((branch) => branch)
+			.map((branch) => branch.trim())
+			.join("/");
 
 	static route = "/api";
 	static users = `${API.route}/users`;

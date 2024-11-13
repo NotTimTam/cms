@@ -1,7 +1,9 @@
 import {
 	buildDocumentTree,
 	flattenDocumentTree,
+	getPathToDocument,
 	orderDocuments,
+	unlockedQuery,
 } from "../../util/database.js";
 import UserRoleModel from "../../models/users/UserRole.js";
 import { handleUnexpectedError } from "../../util/controller.js";
@@ -10,6 +12,7 @@ import {
 	ResError,
 	validateNestQuery,
 } from "../../util/validators.js";
+import mongoose from "mongoose";
 
 /**
  * Create a new UserRole document.
@@ -66,7 +69,7 @@ export const findUserRoles = async (req, res) => {
 		let { page = "0", itemsPerPage = "20", root } = req.query;
 
 		const query = {
-			$or: [{ locked: { $exists: false } }, { locked: false }],
+			...unlockedQuery,
 		};
 
 		if (search) query.name = { $regex: search, $options: "i" };
@@ -127,6 +130,66 @@ export const findUserRoles = async (req, res) => {
 };
 
 /**
+ * Query user roles for possible parents.
+ * @param {Express.Request} req The API request object.
+ * @param {string} req.params.id The ID of the user role to find a parent for.
+ */
+export const getPossibleParents = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		// Return every user role since they are all valid parents.
+		if (id === "all")
+			return res.status(200).json({
+				userRoles: flattenDocumentTree(
+					await buildDocumentTree(
+						undefined,
+						UserRoleModel,
+						unlockedQuery,
+						{ order: 1 }
+					)
+				),
+			});
+		else if (!mongoose.Schema.Types.ObjectId.isValid(id))
+			return res.status(400).send("Invalid user role id provided.");
+
+		const userRole = await UserRoleModel.findById(id);
+
+		if (!userRole)
+			return res.status(400).send(`No user role found with id "${id}"`);
+
+		// Get all user roles that are NOT this role, and NOT a direct child of it.
+		const userRoles = await UserRoleModel.find({
+			_id: { $ne: id },
+			$or: [{ parent: { $exists: false } }, { parent: { $ne: id } }],
+			...unlockedQuery,
+		}).lean();
+
+		// Determine all "path-to-roots" for each user role and ensure that the selected role is NOT found in any of them.
+		let notReferenced = [];
+
+		for (const userRole of userRoles) {
+			const path = await getPathToDocument(
+				id,
+				UserRoleModel,
+				"user role"
+			);
+			path.pop(); // Remove the id from the end of the array.
+
+			if (path.includes(id)) continue;
+
+			notReferenced.push(userRole);
+		}
+
+		return res.status(200).json({
+			userRoles,
+		});
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
  * Delete a selection of user roles.
  */
 export const deleteUserRoles = async (req, res) => {
@@ -147,7 +210,7 @@ export const deleteUserRoles = async (req, res) => {
 		else selection = selection.split(",");
 
 		await UserRoleModel.deleteMany({
-			$or: [{ locked: { $exists: false } }, { locked: false }], // Locked roles cannot be deleted.
+			...unlockedQuery, // Locked roles cannot be deleted.
 			_id: { $in: selection },
 		});
 

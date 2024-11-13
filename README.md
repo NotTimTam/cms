@@ -80,3 +80,4 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Editor unsaved changes before exit warning.
 -   Finish adding filtration options for user roles, users, articles, etc.
 -   Add user/content custom fields.
+-   When deleting a user role, delete all children of it.

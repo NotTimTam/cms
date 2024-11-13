@@ -96,7 +96,7 @@ export const getDocumentChildren = async (id, Model, label = "document") => {
  * @returns {Array} An array of documents. Each document within children will have a `"children"` field containing them.
  */
 export const buildDocumentTree = async (
-	group = [],
+	group,
 	Model,
 	query = {},
 	sort = { createdAt: 1 },
@@ -195,4 +195,11 @@ export const ensureWebmaster = async () => {
 			error
 		);
 	}
+};
+
+/**
+ * A query object that will return only objects that are not "locked".
+ */
+export const unlockedQuery = {
+	$or: [{ locked: { $exists: false } }, { locked: false }],
 };

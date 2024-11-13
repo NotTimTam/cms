@@ -88,21 +88,21 @@ const SortableItem = (props) => {
 					</div>
 				)}
 				{children}
+				{!isDragging && items && items.length > 0 && (
+					<Listings
+						{...{
+							items,
+							fields,
+							fieldOffset,
+							isSelected,
+							toggleSelected,
+							order,
+							swapItems,
+							preLabel,
+						}}
+					/>
+				)}
 			</div>
-			{items && items.length > 0 && (
-				<Listings
-					{...{
-						items,
-						fields,
-						fieldOffset,
-						isSelected,
-						toggleSelected,
-						order,
-						swapItems,
-						preLabel,
-					}}
-				/>
-			)}
 		</>
 	);
 };

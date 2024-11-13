@@ -13,7 +13,6 @@ section.--cms-listings {
 
 	div.--cms-listings-table {
 		border: 1px solid var(--background-color-6);
-		border-bottom: none;
 
 		min-width: 0;
 		max-width: 100%;
@@ -40,8 +39,6 @@ section.--cms-listings {
 		header.--cms-listings-table-header {
 			display: grid;
 			grid-template-columns: subgrid;
-
-			border-bottom: 1px solid var(--background-color-6);
 
 			div.--cms-listings-table-header-column {
 				button {
@@ -70,7 +67,7 @@ section.--cms-listings {
 			div.--cms-listings-table-body-row {
 				display: grid;
 				grid-template-columns: subgrid;
-				border-bottom: 1px solid var(--background-color-6);
+				border-top: 1px solid var(--background-color-6);
 
 				div.--cms-listings-table-body-row-column {
 					display: flex;

@@ -30,6 +30,10 @@ export const createUserRole = async (req, res) => {
 			else throw error;
 		}
 
+		const userRole = new UserRoleModel(req.body);
+
+		await userRole.save();
+
 		return res.status(200).json({ userRole });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
@@ -79,20 +83,24 @@ export const findUserRoles = async (req, res) => {
 			query.parent = { $exists: false }; // Filter to just root items.
 			userRoles = await UserRoleModel.find(query)
 				.sort({ [sortField]: +sortDir })
-				.limit(+itemsPerPage)
-				.skip(page * +itemsPerPage)
 				.lean();
+
+			delete query.parent;
 		} else {
 			query._id = root;
-			const rootUserRole = await UserRoleModel.findOne(query);
+			const rootUserRole = await UserRoleModel.findOne(query).lean();
 
 			if (rootUserRole) userRoles = [rootUserRole];
+
+			delete query._id;
 		}
 
 		if (userRoles && userRoles.length > 0)
 			userRoles = await buildDocumentTree(
 				userRoles,
 				UserRoleModel,
+				query,
+				{ [sortField]: +sortDir },
 				depth
 			);
 

@@ -54,7 +54,6 @@ const SortableItem = (props) => {
 		transform: CSS.Transform.toString(transform),
 		transition,
 		gridColumn: gridColumn,
-		cursor: isDragging ? "grabbing" : "pointer",
 	};
 
 	return (
@@ -81,6 +80,9 @@ const SortableItem = (props) => {
 							}
 							{...listeners}
 							{...attributes}
+							style={{
+								cursor: isDragging ? "grabbing" : "pointer",
+							}}
 							aria-label={order.ariaLabel}
 						>
 							{order.icon}

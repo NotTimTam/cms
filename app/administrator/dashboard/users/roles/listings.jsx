@@ -142,7 +142,9 @@ const RoleListings = () => {
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserRoles(userRoles.filter(({ locked }) => !locked));
+			console.log(userRoles);
+
+			setUserRoles(userRoles);
 			setQuery((query) => ({
 				...query,
 				page: newPage,

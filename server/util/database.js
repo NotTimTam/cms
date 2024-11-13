@@ -92,9 +92,16 @@ export const getDocumentChildren = async (id, Model, label = "document") => {
  * @param {string} id The id of the document to start at.
  * @param {Mongoose.Model} Model The mongoose Model for the document tree.
  * @param {number} maxDepth The maximum depth to drill to. Nullish values will result in drilling all the way down.
+ * @param {Object} query An optional query object for filtration.
  * @returns {Array} An array of documents. Each document within children will have a `"children"` field containing them.
  */
-export const buildDocumentTree = async (group = [], Model, maxDepth) => {
+export const buildDocumentTree = async (
+	group = [],
+	Model,
+	query = {},
+	sort = { createdAt: 1 },
+	maxDepth
+) => {
 	let curDepth = 0;
 	if (!group) {
 		// Find all root level documents.
@@ -105,8 +112,9 @@ export const buildDocumentTree = async (group = [], Model, maxDepth) => {
 
 	const collectChildren = async (document, d) => {
 		document.children = await Model.find({
+			...query,
 			parent: document._id,
-		});
+		}).sort(sort);
 
 		curDepth = d;
 

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 const defaultRole = {
 	name: "",
 	description: "",
+	parent: "",
 };
 
 const RoleEditor = ({ id }) => {
@@ -22,6 +23,7 @@ const RoleEditor = ({ id }) => {
 	const [message, setMessage] = useState(null);
 
 	const [userRole, setUserRole] = useState(id ? { _id: id } : defaultRole);
+	const [possibleParents, setPossibleParents] = useState(null);
 
 	// Functions
 	const getRole = async () => {
@@ -51,6 +53,30 @@ const RoleEditor = ({ id }) => {
 		setLoading(false);
 	};
 
+	const getPossibleParents = async () => {
+		setMessage(null);
+		setLoading(true);
+
+		try {
+			const token = await getToken();
+
+			const {
+				data: { userRoles: possibleParents },
+			} = await API.get(
+				`${API.userRoles}?itemsPerPage=all`,
+				API.createAuthorizationConfig(token)
+			);
+
+			setPossibleParents(possibleParents);
+		} catch (error) {
+			console.error(error);
+
+			setMessage(<Message type="error">{error.data}</Message>);
+		}
+
+		setLoading(false);
+	};
+
 	const saveRole = async () => {
 		setMessage(null);
 
@@ -61,17 +87,23 @@ const RoleEditor = ({ id }) => {
 		try {
 			const token = await getToken();
 
+			// The empty string used to signify "no selection" must be removed.
+			const submittableRole = {
+				...userRole,
+				parent: userRole.parent === "" ? undefined : userRole.parent,
+			};
+
 			const {
 				data: { userRole: newUserRole },
 			} = userRole._id
 				? await API.patch(
 						API.createRouteURL(API.userRoles, userRole._id),
-						userRole,
+						submittableRole,
 						API.createAuthorizationConfig(token)
 				  )
 				: await API.post(
 						API.userRoles,
-						userRole,
+						submittableRole,
 						API.createAuthorizationConfig(token)
 				  );
 
@@ -94,6 +126,8 @@ const RoleEditor = ({ id }) => {
 	useEffect(() => {
 		if (!id) setUserRole(defaultRole);
 		else getRole();
+
+		getPossibleParents();
 	}, [id]);
 
 	if (loading) return <Loading />;
@@ -148,6 +182,7 @@ const RoleEditor = ({ id }) => {
 												} - ${new Date().toISOString()}`,
 												description:
 													userRole.description,
+												parent: userRole.parent,
 											},
 											API.createAuthorizationConfig(token)
 										);
@@ -214,15 +249,47 @@ const RoleEditor = ({ id }) => {
 									</form>
 								</Tabs.Item.Main>
 								<Tabs.Item.Aside>
-									<form
-										className="--cms-form"
-										onSubmit={(e) => e.preventDefault()}
-									>
-										<label htmlFor="parent">
-											Parent Role
-										</label>
-										<select id="parent"></select>
-									</form>
+									{possibleParents ? (
+										<form
+											className="--cms-form"
+											onSubmit={(e) => e.preventDefault()}
+										>
+											<label htmlFor="parent">
+												Parent Role
+											</label>
+											<select
+												id="parent"
+												value={userRole.parent}
+												onChange={(e) =>
+													setUserRole((userRole) => ({
+														...userRole,
+														parent: e.target.value,
+													}))
+												}
+											>
+												<option
+													disabled={true}
+													value=""
+												>
+													Parent User Role
+												</option>
+												{possibleParents.map(
+													({ name, _id }) => (
+														<option
+															key={_id}
+															value={_id}
+														>
+															{name}
+														</option>
+													)
+												)}
+											</select>
+										</form>
+									) : (
+										<div className="--cms-padding">
+											<Loading />
+										</div>
+									)}
 								</Tabs.Item.Aside>
 							</>
 						),

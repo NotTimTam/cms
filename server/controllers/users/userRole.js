@@ -1,4 +1,8 @@
-import { buildDocumentTree, orderDocuments } from "../../util/database.js";
+import {
+	buildDocumentTree,
+	flattenDocumentTree,
+	orderDocuments,
+} from "../../util/database.js";
 import UserRoleModel from "../../models/users/UserRole.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
@@ -95,7 +99,8 @@ export const findUserRoles = async (req, res) => {
 			delete query._id;
 		}
 
-		if (userRoles && userRoles.length > 0)
+		if (userRoles && userRoles.length > 0) {
+			// Build document tree.
 			userRoles = await buildDocumentTree(
 				userRoles,
 				UserRoleModel,
@@ -103,6 +108,13 @@ export const findUserRoles = async (req, res) => {
 				{ [sortField]: +sortDir },
 				depth
 			);
+
+			// Flatten document tree.
+			userRoles = flattenDocumentTree(userRoles).slice(
+				page * itemsPerPage,
+				page * itemsPerPage + itemsPerPage
+			);
+		}
 
 		return res.status(200).json({
 			userRoles,

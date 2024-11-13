@@ -106,15 +106,20 @@ export const buildDocumentTree = async (
 	if (!group) {
 		// Find all root level documents.
 		group = await Model.find({
+			...query,
 			parent: { $exists: false },
-		});
+		})
+			.sort(sort)
+			.lean();
 	}
 
 	const collectChildren = async (document, d) => {
 		document.children = await Model.find({
 			...query,
 			parent: document._id,
-		}).sort(sort);
+		})
+			.sort(sort)
+			.lean();
 
 		curDepth = d;
 
@@ -127,6 +132,30 @@ export const buildDocumentTree = async (
 	for (const document of group) await collectChildren(document, 0);
 
 	return group;
+};
+
+/**
+ * Flatten document tree.
+ * @param {Array<Object>} documents The documents to flatten.
+ */
+export const flattenDocumentTree = (documents) => {
+	let newTree = [];
+
+	const flattenDocument = (document, depth) => {
+		let children = [];
+		if (document.children) {
+			children = [...document.children];
+			delete document.children;
+		}
+
+		newTree.push({ ...document, depth });
+
+		for (const child of children) flattenDocument(child, depth + 1);
+	};
+
+	for (const document of documents) flattenDocument(document, 0);
+
+	return newTree;
 };
 
 /**

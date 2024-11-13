@@ -27,5 +27,7 @@ nav.--cms-paginate {
 	button.--cms-paginate-page {
 		height: 100%;
 		aspect-ratio: 1 / 1;
+
+		min-height: 42px;
 	}
 }

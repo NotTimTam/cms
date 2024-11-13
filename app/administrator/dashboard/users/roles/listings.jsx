@@ -41,13 +41,13 @@ const RoleListings = () => {
 		},
 		name: {
 			label: "Name",
-			listing: new List.Element((_id, items, preLabel) => {
-				const { name } = items.find(({ _id: f }) => f === _id);
+			listing: new List.Element((_id, items) => {
+				const { name, depth } = items.find(({ _id: f }) => f === _id);
 
 				return (
 					<List.InfoBlock>
 						<h3>
-							{preLabel}
+							{"\u2013 ".repeat(depth).trim()}
 							<Link
 								aria-label="Open Role"
 								href={`/administrator/dashboard/users?view=roles&layout=edit&id=${_id}`}

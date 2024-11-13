@@ -26,7 +26,6 @@ import Paginate from "../Paginate";
 const SortableItem = (props) => {
 	const {
 		children,
-		preLabel,
 		order,
 		id,
 		gridColumn,
@@ -100,7 +99,6 @@ const SortableItem = (props) => {
 							toggleSelected,
 							order,
 							swapItems,
-							preLabel,
 						}}
 					/>
 				)}
@@ -117,7 +115,6 @@ const Listings = ({
 	toggleSelected,
 	order,
 	swapItems,
-	preLabel = "",
 }) => {
 	const sensors = useSensors(useSensor(PointerSensor));
 
@@ -146,7 +143,6 @@ const Listings = ({
 							toggleSelected,
 							order,
 							swapItems,
-							preLabel: <>{preLabel} &ndash;</>,
 						}}
 					>
 						<div
@@ -187,8 +183,7 @@ const Listings = ({
 										>
 											{field.listing.getJSXElement(
 												_id,
-												items,
-												preLabel
+												items
 											)}
 										</div>
 									);
@@ -434,8 +429,7 @@ List.Element = class Toggle extends List.Item {
 		this.getElement = getElement;
 	}
 
-	getJSXElement = (_id, items, preLabel) =>
-		this.getElement(_id, items, preLabel);
+	getJSXElement = (_id, items) => this.getElement(_id, items);
 };
 
 List.Toggle = class Toggle extends List.Item {

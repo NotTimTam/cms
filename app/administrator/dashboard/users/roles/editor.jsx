@@ -91,7 +91,7 @@ const RoleEditor = ({ id }) => {
 			// The empty string used to signify "no selection" must be removed.
 			const submittableRole = {
 				...userRole,
-				parent: userRole.parent === "" ? undefined : userRole.parent,
+				parent: userRole.parent === "" ? null : userRole.parent,
 			};
 
 			const {
@@ -260,7 +260,11 @@ const RoleEditor = ({ id }) => {
 											</label>
 											<select
 												id="parent"
-												value={userRole.parent}
+												value={
+													userRole.parent === null
+														? ""
+														: userRole.parent
+												}
 												onChange={(e) =>
 													setUserRole((userRole) => ({
 														...userRole,
@@ -268,11 +272,8 @@ const RoleEditor = ({ id }) => {
 													}))
 												}
 											>
-												<option
-													disabled={true}
-													value=""
-												>
-													Parent User Role
+												<option value="">
+													{"No Parent"}
 												</option>
 												{possibleParents.map(
 													({ name, depth, _id }) => (

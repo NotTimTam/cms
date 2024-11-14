@@ -300,7 +300,7 @@ export const findUserRoleByIdAndUpdate = async (req, res) => {
 
 		// Store new values.
 		for (const [key, value] of Object.entries(req.body)) {
-			userRole[key] = value;
+			userRole[key] = value === null ? undefined : value;
 		}
 
 		await userRole.save();

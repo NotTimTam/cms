@@ -173,6 +173,16 @@ export const validateUserRole = async (userRole) => {
 			'Invalid "locked" state provided. Expected a boolean.'
 		);
 
+	if (userRole.parent && userRole.parent !== null) {
+		const parentRole = await UserRoleModel.findById(userRole.parent);
+
+		if (!parentRole)
+			throw new ResError(
+				404,
+				`No user role found with id "${userRole.parent}"`
+			);
+	}
+
 	return userRole;
 };
 

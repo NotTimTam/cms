@@ -205,36 +205,28 @@ export const deleteUserRoles = async (req, res) => {
 
 		if (selection === "all")
 			selection = userRoles
-				.map(({ _id }) => _id.toString())
-				.filter(({ locked }) => !locked);
+				.filter(({ locked }) => !locked)
+				.map(({ _id }) => _id.toString());
 		else selection = selection.split(",");
+
+		// Delete all descendants of roles.
+		const itemsAndDescendants = flattenDocumentTree(
+			await buildDocumentTree(
+				await UserRoleModel.find({
+					...unlockedQuery, // Locked roles cannot be deleted.
+					_id: { $in: selection },
+				}).lean(),
+				UserRoleModel,
+				{ ...unlockedQuery }
+			)
+		).map(({ _id }) => _id.toString());
 
 		await UserRoleModel.deleteMany({
 			...unlockedQuery, // Locked roles cannot be deleted.
-			_id: { $in: selection },
+			_id: { $in: itemsAndDescendants },
 		});
 
 		return res.status(200).send("User roles deleted successfully.");
-	} catch (error) {
-		return handleUnexpectedError(res, error);
-	}
-};
-
-/**
- * Find a specific user role by its ID.
- * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the user role to find.
- */
-export const findUserRoleById = async (req, res) => {
-	try {
-		const { id } = req.params;
-
-		const userRole = await UserRoleModel.findById(id);
-
-		if (!userRole)
-			return res.status(404).send(`No user role found with id "${id}"`);
-
-		return res.status(200).json({ userRole });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
@@ -255,6 +247,26 @@ export const orderUserRoles = async (req, res) => {
 		await orderDocuments(active, over, dir, UserRoleModel, "user role");
 
 		return res.status(200).send("User role order change successful.");
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Find a specific user role by its ID.
+ * @param {Express.Request} req The API request object.
+ * @param {string} req.params.id The ID of the user role to find.
+ */
+export const findUserRoleById = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		const userRole = await UserRoleModel.findById(id);
+
+		if (!userRole)
+			return res.status(404).send(`No user role found with id "${id}"`);
+
+		return res.status(200).json({ userRole });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

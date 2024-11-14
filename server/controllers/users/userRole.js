@@ -138,39 +138,39 @@ export const getPossibleParents = async (req, res) => {
 	try {
 		const { id } = req.params;
 
-		// Return every user role since they are all valid parents.
-		if (id === "all")
-			return res.status(200).json({
-				userRoles: flattenDocumentTree(
-					await buildDocumentTree(
-						undefined,
-						UserRoleModel,
-						unlockedQuery,
-						{ order: 1 }
-					)
-				),
-			});
-		else if (!mongoose.Schema.Types.ObjectId.isValid(id))
+		if (id !== "all" && !mongoose.Types.ObjectId.isValid(id))
 			return res.status(400).send("Invalid user role id provided.");
 
-		const userRole = await UserRoleModel.findById(id);
+		const query = { ...unlockedQuery };
 
-		if (!userRole)
-			return res.status(400).send(`No user role found with id "${id}"`);
+		if (id !== "all") {
+			const userRole = await UserRoleModel.findById(id);
+
+			if (!userRole)
+				return res
+					.status(400)
+					.send(`No user role found with id "${id}"`);
+
+			query._id = { $ne: id };
+			query.$or = [
+				{ parent: { $exists: false } },
+				{ parent: { $ne: id } },
+			];
+		}
 
 		// Get all user roles that are NOT this role, and NOT a direct child of it.
-		const userRoles = await UserRoleModel.find({
-			_id: { $ne: id },
-			$or: [{ parent: { $exists: false } }, { parent: { $ne: id } }],
-			...unlockedQuery,
-		}).lean();
+		const userRoles = flattenDocumentTree(
+			await buildDocumentTree(undefined, UserRoleModel, query, {
+				order: 1,
+			})
+		);
 
 		// Determine all "path-to-roots" for each user role and ensure that the selected role is NOT found in any of them.
 		let notReferenced = [];
 
 		for (const userRole of userRoles) {
 			const path = await getPathToDocument(
-				id,
+				userRole._id,
 				UserRoleModel,
 				"user role"
 			);
@@ -182,7 +182,7 @@ export const getPossibleParents = async (req, res) => {
 		}
 
 		return res.status(200).json({
-			userRoles,
+			userRoles: notReferenced,
 		});
 	} catch (error) {
 		return handleUnexpectedError(res, error);

@@ -59,7 +59,12 @@ export const orderDocuments = async (
  * @param {string} label A label to identify the content being reordered, in error messages.
  * @returns {string[]} An array of document ids, the first being a top-level document, and the last being the requested document.
  */
-export const getPathToDocument = async (id, Model, label = "document", __) => {
+export const getPathToDocument = async (
+	id,
+	Model,
+	label = "document",
+	__ = []
+) => {
 	const document = await Model.findById(id);
 
 	if (!document) throw new ResError(404, `No ${label} found with id "${id}"`);

@@ -236,7 +236,7 @@ export const validateGenericQuery = async (query) => {
 export const validateNestQuery = async (query) => {
 	query = await validateGenericQuery(query);
 
-	if (query.root && !mongoose.Schema.Types.ObjectId.isValid(query.root))
+	if (query.root && !mongoose.Types.ObjectId.isValid(query.root))
 		throw new ResError(
 			400,
 			'Invalid query "root" parameter. Expected an object id.'

@@ -30,9 +30,13 @@ export const orderDocuments = async (
 	if (!overModel)
 		return res.status(404).send(`No user ${label} found with id "${over}"`);
 
-	const nearestModel = await Model.findOne({
+	const nearestQuery = {
 		order: dir === 1 ? { $gt: overModel.order } : { $lt: overModel.order },
-	}).sort({ order: dir });
+	};
+	if (activeModel.parent && overModel.parent)
+		nearestQuery.parent = activeModel.parent;
+
+	const nearestModel = await Model.findOne(nearestQuery).sort({ order: dir });
 
 	// Find a halfway point (or if none, the position before/after) the "over" item.
 	activeModel.order = nearestModel
@@ -41,7 +45,10 @@ export const orderDocuments = async (
 	await activeModel.save();
 
 	// Normalize the order across all items.
-	const allItems = await Model.find({}).sort({ order: 1 });
+	const allItemsQuery = {};
+	if (activeModel.parent && overModel.parent)
+		allItemsQuery.parent = activeModel.parent;
+	const allItems = await Model.find(allItemsQuery).sort({ order: 1 });
 	await Model.bulkWrite(
 		allItems.map((item, index) => ({
 			updateOne: {

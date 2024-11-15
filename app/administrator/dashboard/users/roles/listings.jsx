@@ -9,7 +9,7 @@ import Modal from "@/app/administrator/components/Modal";
 import { getToken } from "@/app/cookies";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import API from "@/util/API";
-import { depthIndicator } from "@/util/display";
+import { depthIndicator, unflattenDocumentTree } from "@/util/display";
 import StorageInterface from "@/util/StorageInterface";
 import { EllipsisVertical, Trash2, X } from "lucide-react";
 import Link from "next/link";
@@ -143,7 +143,7 @@ const RoleListings = () => {
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserRoles(userRoles);
+			setUserRoles(unflattenDocumentTree(userRoles));
 			setQuery((query) => ({
 				...query,
 				page: newPage,

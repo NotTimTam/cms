@@ -84,3 +84,25 @@ export const getCurrentMenu = (menu, pathname, searchParams) => {
  * @returns {string} A string-based depth indicator.
  */
 export const depthIndicator = (depth) => "\u2013 ".repeat(depth).trim();
+
+/**
+ * Unflatten document tree.
+ * @param {Array<Object>} documents The documents to unflatten.
+ */
+export const unflattenDocumentTree = (documents) => {
+	let newTree = [];
+
+	const unflattenDocument = (document) => {
+		document.children = documents.filter(
+			({ parent }) => parent && parent === document._id
+		);
+
+		if (!document.parent) newTree.push(document);
+
+		for (const child of document.children) unflattenDocument(child);
+	};
+
+	for (const document of documents) unflattenDocument(document, 0);
+
+	return newTree;
+};

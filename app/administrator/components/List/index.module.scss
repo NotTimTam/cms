@@ -67,7 +67,10 @@ section.--cms-listings {
 			div.--cms-listings-table-body-row {
 				display: grid;
 				grid-template-columns: subgrid;
-				border-top: 1px solid var(--background-color-6);
+
+				&:not([aria-hidden]) {
+					border-top: 1px solid var(--background-color-6);
+				}
 
 				div.--cms-listings-table-body-row-column {
 					display: flex;
@@ -94,6 +97,12 @@ section.--cms-listings {
 							align-items: center;
 							gap: var(--gap);
 						}
+					}
+				}
+
+				&[aria-hidden] {
+					> div.--cms-listings-table-body-row-column {
+						display: none;
 					}
 				}
 			}

@@ -92,17 +92,29 @@ export const depthIndicator = (depth) => "\u2013 ".repeat(depth).trim();
 export const unflattenDocumentTree = (documents) => {
 	let newTree = [];
 
-	const unflattenDocument = (document) => {
+	const unflattenDocument = (document, drilled = false) => {
 		document.children = documents.filter(
 			({ parent }) => parent && parent === document._id
 		);
 
+		// Items without parents are root and added to the array.
 		if (!document.parent) newTree.push(document);
+		// Items with parents, but whose parents aren't provided in the current documents array are also added.
+		else if (!drilled) {
+			const createNestedPsuedoParents = (depth, child) => {
+				if (depth === 0) return child;
+				return {
+					hide: true,
+					children: [createNestedPsuedoParents(depth - 1, child)],
+				};
+			};
+			newTree.push(createNestedPsuedoParents(document.depth, document));
+		}
 
-		for (const child of document.children) unflattenDocument(child);
+		for (const child of document.children) unflattenDocument(child, true);
 	};
 
-	for (const document of documents) unflattenDocument(document, 0);
+	for (const document of documents) unflattenDocument(document, false);
 
 	return newTree;
 };

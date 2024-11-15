@@ -29,7 +29,7 @@ const SortableItem = (props) => {
 		order,
 		id,
 		gridColumn,
-
+		hide,
 		items,
 		fields,
 		fieldOffset,
@@ -61,6 +61,7 @@ const SortableItem = (props) => {
 				className={styles["--cms-listings-table-body-row"]}
 				ref={setNodeRef}
 				style={style}
+				aria-hidden={hide ? "true" : undefined}
 			>
 				{order && (
 					<div
@@ -89,7 +90,7 @@ const SortableItem = (props) => {
 					</div>
 				)}
 				{children}
-				{!isDragging && items && items.length > 0 && (
+				{(!isDragging || hide) && items && items.length > 0 && (
 					<Listings
 						{...{
 							items,
@@ -128,13 +129,14 @@ const Listings = ({
 				items={items.map(({ _id }) => _id)}
 				strategy={verticalListSortingStrategy}
 			>
-				{items.map(({ _id, children }, itemIndex) => (
+				{items.map(({ _id, hide, children }, itemIndex) => (
 					<SortableItem
-						key={_id}
+						key={itemIndex}
 						index={itemIndex}
 						id={_id}
 						gridColumn={`1 / ${fields.length + fieldOffset}`}
 						order={order}
+						hide={hide}
 						{...{
 							items: children,
 							fields,
@@ -145,49 +147,63 @@ const Listings = ({
 							swapItems,
 						}}
 					>
-						<div
-							className={
-								styles["--cms-listings-table-body-row-column"]
-							}
-							style={{
-								gridColumn: "1 / 2",
-							}}
-						>
-							<button
-								aria-label="Select Article"
-								onClick={() => toggleSelected(_id)}
-							>
-								{isSelected(_id) ? <SquareCheck /> : <Square />}
-							</button>
-						</div>
+						{!hide && (
+							<>
+								<div
+									className={
+										styles[
+											"--cms-listings-table-body-row-column"
+										]
+									}
+									style={{
+										gridColumn: "1 / 2",
+									}}
+								>
+									<button
+										aria-label="Select Article"
+										onClick={() => toggleSelected(_id)}
+									>
+										{isSelected(_id) ? (
+											<SquareCheck />
+										) : (
+											<Square />
+										)}
+									</button>
+								</div>
 
-						{fields &&
-							fields
-								.filter((field) => field.listing)
-								.map((field, fieldIndex) => {
-									return (
-										<div
-											className={
-												styles[
-													"--cms-listings-table-body-row-column"
-												]
-											}
-											key={`${_id}-${fieldIndex}`}
-											style={{
-												gridColumn: `${
-													fieldIndex + fieldOffset + 1
-												} / ${
-													fieldIndex + fieldOffset + 1
-												}`,
-											}}
-										>
-											{field.listing.getJSXElement(
-												_id,
-												items
-											)}
-										</div>
-									);
-								})}
+								{fields &&
+									fields
+										.filter((field) => field.listing)
+										.map((field, fieldIndex) => {
+											return (
+												<div
+													className={
+														styles[
+															"--cms-listings-table-body-row-column"
+														]
+													}
+													key={`${_id}-${fieldIndex}`}
+													style={{
+														gridColumn: `${
+															fieldIndex +
+															fieldOffset +
+															1
+														} / ${
+															fieldIndex +
+															fieldOffset +
+															1
+														}`,
+													}}
+												>
+													{field.listing.getJSXElement(
+														_id,
+														items
+													)}
+												</div>
+											);
+										})}
+							</>
+						)}
 					</SortableItem>
 				))}
 			</SortableContext>
@@ -198,6 +214,8 @@ const Listings = ({
 		if (!order || order.disabled) return;
 
 		const { active, over } = event;
+
+		if (!over) return;
 
 		if (active.id !== over.id) {
 			let newItems = items.map(({ _id }) => _id);

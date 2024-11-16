@@ -6,11 +6,11 @@ import Message from "@/app/administrator/components/Message";
 import Tabs from "@/app/administrator/components/Tabs";
 import { getToken } from "@/app/cookies";
 import API from "@/util/API";
-import { depthIndicator } from "@/util/display";
-import { FileInput, FilePlus2, Square, SquareCheck } from "lucide-react";
+import { FileInput, FilePlus2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Select from "../../components/Select";
 
 const defaultUser = {
 	name: "",
@@ -242,104 +242,17 @@ const UserEditor = ({ id }) => {
 							<div className="--cms-padding">
 								{userRoles &&
 									(userRoles.length > 0 ? (
-										<ul className="--cms-no-decor">
-											{userRoles.map(
-												({
-													name,
-													description,
-													depth,
-													_id,
-												}) => {
-													const selected =
-														user.roles &&
-														user.roles.includes(
-															_id
-														);
-
-													return (
-														<li
-															key={_id}
-															style={{
-																display: "flex",
-																flexDirection:
-																	"row",
-																justifyContent:
-																	"flex-start",
-																gap: "var(--padding)",
-															}}
-														>
-															{depth > 0 &&
-																depthIndicator(
-																	depth,
-																	"\u2014"
-																)
-																	.split(" ")
-																	.map(
-																		(
-																			item,
-																			index
-																		) => (
-																			<span
-																				key={
-																					index
-																				}
-																				style={{
-																					marginLeft:
-																						"var(--gap)",
-																				}}
-																			>
-																				{
-																					item
-																				}
-																			</span>
-																		)
-																	)}
-															<button
-																className="--cms-text-like"
-																onClick={() => {
-																	if (
-																		selected
-																	)
-																		setUser(
-																			(
-																				user
-																			) => ({
-																				...user,
-																				roles: user.roles.filter(
-																					(
-																						roleId
-																					) =>
-																						roleId !==
-																						_id
-																				),
-																			})
-																		);
-																	else
-																		setUser(
-																			(
-																				user
-																			) => ({
-																				...user,
-																				roles: [
-																					...user.roles,
-																					_id,
-																				],
-																			})
-																		);
-																}}
-															>
-																{selected ? (
-																	<SquareCheck />
-																) : (
-																	<Square />
-																)}
-																{name}
-															</button>
-														</li>
-													);
-												}
-											)}
-										</ul>
+										<Select
+											{...{
+												items: userRoles,
+												selection: user.roles,
+												setSelection: (selection) =>
+													setUser((user) => ({
+														...user,
+														roles: selection,
+													})),
+											}}
+										/>
 									) : (
 										<Message type="info" fill>
 											No user roles have been defined.{" "}

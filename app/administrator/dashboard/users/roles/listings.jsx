@@ -9,7 +9,11 @@ import Modal from "@/app/administrator/components/Modal";
 import { getToken } from "@/app/cookies";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import API from "@/util/API";
-import { depthIndicator, unflattenDocumentTree } from "@/util/display";
+import {
+	depthIndicator,
+	findById,
+	unflattenDocumentTree,
+} from "@/util/display";
 import StorageInterface from "@/util/StorageInterface";
 import { EllipsisVertical, Trash2, X } from "lucide-react";
 import Link from "next/link";
@@ -43,7 +47,7 @@ const RoleListings = () => {
 		name: {
 			label: "Name",
 			listing: new List.Element((_id, items) => {
-				const { name, depth } = items.find(({ _id: f }) => f === _id);
+				const { name, depth } = findById(items, _id);
 
 				return (
 					<List.InfoBlock>
@@ -63,9 +67,7 @@ const RoleListings = () => {
 		createdAt: {
 			label: "Date Created",
 			listing: new List.Element((_id, items) =>
-				new Date(
-					items.find(({ _id: f }) => f === _id).createdAt
-				).toLocaleString()
+				new Date(findById(items, _id).createdAt).toLocaleString()
 			),
 		},
 	};

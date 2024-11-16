@@ -118,3 +118,11 @@ export const unflattenDocumentTree = (documents) => {
 
 	return newTree;
 };
+
+/**
+ * Search for an item by its id.
+ * @param {Array<Object>} array The document array to search.
+ * @param {string} _id The id of the item to find.
+ * @returns {Object|undefined} The found item, or undefined if one was not found.
+ */
+export const findById = (array, _id) => array.find(({ _id: f }) => f === _id);

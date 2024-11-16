@@ -9,6 +9,7 @@ import Modal from "@/app/administrator/components/Modal";
 import { getToken } from "@/app/cookies";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import API from "@/util/API";
+import { findById } from "@/util/display";
 import StorageInterface from "@/util/StorageInterface";
 import { EllipsisVertical, Trash2, X } from "lucide-react";
 import Link from "next/link";
@@ -41,8 +42,8 @@ const UserListings = () => {
 		},
 		name: {
 			label: "Name",
-			listing: new List.Element((index) => {
-				const { name, email, _id } = users[index];
+			listing: new List.Element((elementId, users) => {
+				const { name, email, _id } = findById(users, elementId);
 
 				return (
 					<List.InfoBlock>
@@ -65,8 +66,8 @@ const UserListings = () => {
 		},
 		createdAt: {
 			label: "Date Created",
-			listing: new List.Element((index) =>
-				new Date(users[index].createdAt).toLocaleString()
+			listing: new List.Element((userId, users) =>
+				new Date(findById(users, userId).createdAt).toLocaleString()
 			),
 		},
 	};

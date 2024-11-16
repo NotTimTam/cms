@@ -6,10 +6,11 @@ import Message from "@/app/administrator/components/Message";
 import Tabs from "@/app/administrator/components/Tabs";
 import { getToken } from "@/app/cookies";
 import API from "@/util/API";
+import { depthIndicator } from "@/util/display";
 import { FileInput, FilePlus2, Square, SquareCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 const defaultUser = {
 	name: "",
@@ -246,6 +247,7 @@ const UserEditor = ({ id }) => {
 												({
 													name,
 													description,
+													depth,
 													_id,
 												}) => {
 													const selected =
@@ -255,7 +257,43 @@ const UserEditor = ({ id }) => {
 														);
 
 													return (
-														<li key={_id}>
+														<li
+															key={_id}
+															style={{
+																display: "flex",
+																flexDirection:
+																	"row",
+																justifyContent:
+																	"flex-start",
+																gap: "var(--padding)",
+															}}
+														>
+															{depth > 0 &&
+																depthIndicator(
+																	depth,
+																	"\u2014"
+																)
+																	.split(" ")
+																	.map(
+																		(
+																			item,
+																			index
+																		) => (
+																			<span
+																				key={
+																					index
+																				}
+																				style={{
+																					marginLeft:
+																						"var(--gap)",
+																				}}
+																			>
+																				{
+																					item
+																				}
+																			</span>
+																		)
+																	)}
 															<button
 																className="--cms-text-like"
 																onClick={() => {
@@ -294,7 +332,7 @@ const UserEditor = ({ id }) => {
 																	<SquareCheck />
 																) : (
 																	<Square />
-																)}{" "}
+																)}
 																{name}
 															</button>
 														</li>

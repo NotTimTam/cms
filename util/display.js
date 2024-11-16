@@ -115,7 +115,10 @@ export const unflattenDocumentTree = (documents) => {
 		for (const child of document.children) unflattenDocument(child, true);
 	};
 
-	for (const document of documents) unflattenDocument(document, false);
+	for (const document of documents.filter(
+		({ parent }) => !parent || !documents.find(({ _id }) => _id === parent)
+	))
+		unflattenDocument(document, false);
 
 	return newTree;
 };

@@ -28,6 +28,9 @@ section.--cms-editor-content {
 		overflow: hidden;
 		height: max-content;
 
+		display: flex;
+		flex-direction: column;
+
 		aside.--cms-editor-side-menu {
 			justify-self: start;
 

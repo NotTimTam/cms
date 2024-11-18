@@ -57,6 +57,7 @@ export const constructWebmaster = async () => {
 	if (!user.verified) {
 		const password = generateRandomPassword(12);
 		user.password = await bcrypt.hash(password, +process.env.SALT || 12);
+		user.jwtTimestamp = new Date().toISOString();
 
 		await user.save();
 

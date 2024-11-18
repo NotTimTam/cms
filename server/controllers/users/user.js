@@ -43,7 +43,7 @@ export const loginUser = async (req, res) => {
 				.send(`Incorrect username or password provided.`);
 
 		await jwt.sign(
-			{ userId: user._id },
+			{ userId: user._id, jwtTimestamp: user.jwtTimestamp },
 			process.env.JWT_SECRET,
 			{
 				expiresIn: "1w",
@@ -81,6 +81,8 @@ export const authenticateUser = async (req, res) => {
  */
 export const createUser = async (req, res) => {
 	try {
+		req.body.jwtTimestamp = new Date().toISOString();
+
 		try {
 			req.body = await validateUser(req.body);
 		} catch (error) {
@@ -173,6 +175,14 @@ export const findUserByIdAndUpdate = async (req, res) => {
 		const user = await UserModel.findById(id);
 
 		if (!user) return res.status(404).send(`No user found with id "${id}"`);
+
+		if (req.body.password) {
+			req.body.password = await bcrypt.hash(
+				req.body.password,
+				+process.env.SALT || 12
+			);
+			req.body.jwtTimestamp = new Date().toISOString();
+		}
 
 		try {
 			req.body = await validateUser({

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Loading from "../../Loading";
-import Message from "..";
+import Loading from "../Loading";
+import Message from "../Message";
 import API from "@/util/API";
 import styles from "./index.module.scss";
 
@@ -15,7 +15,12 @@ const SystemMessages = ({ token, fill }) => {
 		try {
 			const {
 				data: { systemMessages },
-			} = await API.get(API.messages);
+			} = await API.get(
+				token
+					? API.createRouteURL(API.messages, "confidential")
+					: API.messages,
+				token ? API.createAuthorizationConfig(token) : undefined
+			);
 
 			setMessages(systemMessages);
 		} catch (error) {

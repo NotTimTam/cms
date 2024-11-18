@@ -17,12 +17,12 @@ export const authenticationMiddleware = async (req, res, next) => {
 				.send('No "authorization" property in header.');
 
 		if (!authorization.includes("Bearer "))
-			return res.status(401).send("Authorization malformed.");
+			return res.status(498).send("Authorization malformed.");
 
 		const [Bearer, token] = authorization.split(" ");
 
 		if (!token)
-			return res.status(401).send("Authorization token malformed.");
+			return res.status(498).send("Authorization token malformed.");
 
 		const decoded = jwt.decode(token, process.env.JWT_SECRET);
 
@@ -31,13 +31,21 @@ export const authenticationMiddleware = async (req, res, next) => {
 
 		if (!decoded.userId)
 			throw new Error(
-				'No "userId" parameter attached to JWT token. This could mean the JWT signed a malformed token.'
+				'No "userId" parameter attached to JWT token. This could mean that JWT signed a malformed token.'
+			);
+
+		if (!decoded.jwtTimestamp)
+			throw new Error(
+				`No "jwtTimestamp" parameter attached to JWT token. This could mean that JWT signed a malformed token.`
 			);
 
 		const user = await UserModel.findById(decoded.userId);
 
 		if (!user)
-			return res.status(401).send("Authorization token malformed.");
+			return res.status(498).send("Authorization token malformed.");
+
+		if (user.jwtTimestamp.toISOString() !== decoded.jwtTimestamp)
+			return res.status(498).send("Authentication token expired.");
 
 		req.user = user;
 

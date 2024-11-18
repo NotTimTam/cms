@@ -1,6 +1,5 @@
 import { CircleCheck, Info, OctagonAlert, TriangleAlert } from "lucide-react";
 import styles from "./index.module.scss";
-import SystemMessages from "./SystemMessages";
 
 const Message = ({ type = "info", fill, children }) => {
 	const icon = (() => {
@@ -28,7 +27,5 @@ const Message = ({ type = "info", fill, children }) => {
 		</div>
 	);
 };
-
-Message.SystemMessages = SystemMessages;
 
 export default Message;

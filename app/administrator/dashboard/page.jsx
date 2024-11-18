@@ -1,10 +1,15 @@
 import Link from "next/link";
 import styles from "./page.module.scss";
 import nodePackage from "@/package.json" assert { type: "json" };
+import { getToken } from "@/app/cookies";
+import SystemMessages from "../components/SystemMessages";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+	const token = await getToken();
+
 	return (
 		<div className={styles["--cms-dashboard"]}>
+			<SystemMessages token={token} />
 			<section className={styles["--cms-dashboard-section"]}>
 				<header className={styles["--cms-dashboard-section-header"]}>
 					<h2>Site</h2>

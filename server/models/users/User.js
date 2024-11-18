@@ -40,6 +40,11 @@ const UserSchema = new mongoose.Schema(
 				"You must provide the User's verification status.",
 			],
 		},
+
+		jwtTimestamp: {
+			type: Date,
+			required: false,
+		},
 	},
 	{ timestamps: true }
 );

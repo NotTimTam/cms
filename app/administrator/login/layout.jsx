@@ -1,4 +1,4 @@
-import Message from "../components/Message";
+import SystemMessages from "../components/SystemMessages";
 
 export const metadata = {
 	title: "Login",
@@ -7,7 +7,7 @@ export const metadata = {
 export default async function LoginLayout({ children }) {
 	return (
 		<>
-			<Message.SystemMessages fill />
+			<SystemMessages fill />
 			<article className="--cms-form-container">{children}</article>
 		</>
 	);

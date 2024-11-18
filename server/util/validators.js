@@ -256,6 +256,13 @@ export const validateUser = async (user) => {
 		throw new ResError(400, "User verification status must be a boolean.");
 	else if (!user.hasOwnProperty("verified")) user.verified = false;
 
+	if (
+		user.jwtTimestamp &&
+		!(user.jwtTimestamp instanceof Data) &&
+		isNaN(new Date(user.jwtTimestamp).getTime())
+	)
+		throw new ResError(400, 'Invalid "jwtTimestamp" provided.');
+
 	return user;
 };
 

@@ -4,12 +4,16 @@ import next from "next";
 import cors from "cors";
 import { rateLimit } from "express-rate-limit";
 import { error, log, warn } from "@nottimtam/console.js";
+
 import nodePackage from "./package.json" assert { type: "json" };
+
 import connectMongoDB from "./server/util/connectMongoDB.js";
-import articleRouter from "./server/routers/articleRoutes.js";
-import userRouter from "./server/routers/userRoutes.js";
-import API from "./util/API.js";
 import { constructWebmaster } from "./server/config/constructors.js";
+
+import API from "./util/API.js";
+import userRouter from "./server/routers/userRoutes.js";
+import articleRouter from "./server/routers/articleRoutes.js";
+import systemMessageRouter from "./server/routers/systemMessageRoutes.js";
 
 // Import configuration.
 const { version, name } = nodePackage;
@@ -67,6 +71,7 @@ app.use(express.json(), cors(), rateLimiter);
 // Load and configure API.
 const apiRoute = `/api`;
 
+app.use(API.createRouteURL(apiRoute, "messages"), systemMessageRouter);
 app.use(API.createRouteURL(apiRoute, "articles"), articleRouter);
 app.use(API.createRouteURL(apiRoute, "users"), userRouter);
 

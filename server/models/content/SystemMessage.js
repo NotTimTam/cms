@@ -21,7 +21,7 @@ const SystemMessageSchema = new mongoose.Schema(
 			default: "info",
 			enum: messageTypeEnum,
 		},
-		showOnClient: {
+		confidential: {
 			type: Boolean,
 			required: true,
 			default: false,

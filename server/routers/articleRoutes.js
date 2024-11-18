@@ -8,7 +8,7 @@ import {
 	findArticleByAlias,
 	batchArticles,
 	orderArticles,
-} from "../controllers/article.js";
+} from "../controllers/content/article.js";
 
 import { authenticationMiddleware } from "../middleware/userMiddleware.js";
 

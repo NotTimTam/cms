@@ -74,8 +74,8 @@ export const constructWebmaster = async () => {
 				alias: "unverified-webmaster",
 				type: "warning",
 				content:
-					"An unverified webmaster user exists in the database. Check the server logs for credentials and log in as the webmaster to change the password immediately.",
-				showOnClient: false,
+					"An unverified webmaster user exists in the database. Check the server logs for credentials and login as the webmaster to change the password immediately.",
+				confidential: false,
 			});
 
 			await message.save();

@@ -14,9 +14,10 @@ export default class API {
 			.join("/");
 
 	static route = "/api";
-	static users = `${API.route}/users`;
-	static articles = `${API.route}/articles`;
+	static users = API.createRouteURL(API.route, "users");
+	static articles = API.createRouteURL(API.route, "articles");
 	static userRoles = API.createRouteURL(API.users, "roles");
+	static messages = API.createRouteURL(API.route, "messages");
 
 	/**
 	 * Create a query from a JS Object.

@@ -1,14 +1,14 @@
-import { getToken } from "@/app/cookies";
-import { redirect } from "next/navigation";
+import Message from "../components/Message";
 
 export const metadata = {
 	title: "Login",
 };
 
 export default async function LoginLayout({ children }) {
-	const token = await getToken();
-
-	// if (token) redirect("/administrator/dashboard");
-
-	return <article className="--cms-form-container">{children}</article>;
+	return (
+		<>
+			<Message.SystemMessages fill />
+			<article className="--cms-form-container">{children}</article>
+		</>
+	);
 }

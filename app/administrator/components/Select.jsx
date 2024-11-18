@@ -3,14 +3,25 @@ import { Square, SquareCheck } from "lucide-react";
 
 const Select = ({ items, selection, setSelection }) => {
 	const hasParentSelected = (_id) => {
-		const parent = items.find(({ children }) =>
-			children.find(({ _id: s }) => s === _id)
+		let parents = [];
+
+		const mapItem = (_id) => {
+			const item = items.find(({ _id: f }) => _id === f);
+
+			if (item.parent) {
+				parents.push(item.parent);
+
+				mapItem(item.parent);
+			}
+		};
+
+		mapItem(_id);
+
+		parents = parents.filter(
+			(parent) => selection && selection.includes(parent)
 		);
 
-		if (!parent) return false;
-
-		if (selection && selection.includes(parent)) return true;
-		else return hasParentSelected(parent._id);
+		return parents && parents.length > 0;
 	};
 
 	const toggleSelected = (_id) => {
@@ -39,10 +50,6 @@ const Select = ({ items, selection, setSelection }) => {
 		if (selected)
 			newSelection = newSelection.filter((itemId) => itemId !== _id);
 		else {
-			throw new Error(
-				"Ensure this works, if a parent is alreayd selected, the child should not be selectable. After doing that, make it so all children show selected if ancestor is selected."
-			);
-
 			// If this item has a parent selected, we do not select it.
 			if (!hasParentSelected(_id)) {
 				// Otherwise we select it and deselect all of its descendants.
@@ -65,7 +72,9 @@ const Select = ({ items, selection, setSelection }) => {
 			}}
 		>
 			{items.map(({ name, depth, _id }) => {
-				const selected = selection && selection.includes(_id);
+				const parentSelected = hasParentSelected(_id);
+				const selected =
+					selection && (selection.includes(_id) || parentSelected);
 
 				return (
 					<li
@@ -92,6 +101,7 @@ const Select = ({ items, selection, setSelection }) => {
 								))}
 						<button
 							className="--cms-text-like"
+							disabled={parentSelected}
 							style={{
 								alignItems: "flex-start",
 								textAlign: "left",

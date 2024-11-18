@@ -55,6 +55,8 @@ ol {
 }
 
 button,
+input[type="submit"],
+input[type="reset"],
 a.--cms-button {
 	display: flex;
 	flex-direction: row;
@@ -221,6 +223,10 @@ select {
 		&:focus {
 			outline: none;
 		}
+	}
+
+	&[type="password"] {
+		font-size: 0.75rem !important;
 	}
 }
 

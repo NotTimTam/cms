@@ -1,6 +1,7 @@
 import UserModel from "../../models/users/User.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import { emailRegex, nameRegex } from "../../../util/regex.js";
+import { ResError, validateUser } from "../../util/validators.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -80,58 +81,20 @@ export const authenticateUser = async (req, res) => {
  */
 export const createUser = async (req, res) => {
 	try {
-		let { name, username, password, email, roles } = req.body;
-
-		console.warn("Create global user validator.");
-
-		if (!name) return res.status(400).send("No name provided.");
-
-		if (typeof name !== "string" || !nameRegex.test(name))
-			return res
-				.status(400)
-				.send(
-					`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
-				);
-
-		if (!username) return res.status(400).send("No username provided.");
-
-		if (typeof username !== "string" || !nameRegex.test(username))
-			return res
-				.status(400)
-				.send(
-					`Invalid username provided. Expected a string between 1 and 1024 characters in length.`
-				);
-
-		if (await UserModel.findOne({ username }))
-			return res
-				.status(422)
-				.send(`A user already exists with that username.`);
-
-		if (!password || typeof password !== "string")
-			return res.status(400).send("No/invalid password provided.");
-
-		if (email) {
-			if (typeof email !== "string" || !emailRegex.test(email))
-				return res
-					.status(400)
-					.send(
-						`Invalid email provided. Expected a valid email address.`
-					);
-
-			if (await UserModel.findOne({ email }))
-				return res
-					.status(422)
-					.send(`A user already exists with that email.`);
+		try {
+			req.body = await validateUser(req.body);
+		} catch (error) {
+			if (error instanceof ResError)
+				return res.status(error.code).send(error.message);
+			else throw error;
 		}
 
-		const user = new UserModel({
-			name,
-			username,
-			password: await bcrypt.hash(password, 12),
-			email,
-			verified: false,
-			roles,
-		});
+		req.body.password = await bcrypt.hash(
+			req.body.password,
+			+process.env.SALT || 12
+		);
+
+		const user = new UserModel(req.body);
 
 		await user.save();
 
@@ -143,7 +106,7 @@ export const createUser = async (req, res) => {
 
 /**
  * Query users.
- * @param {Express.Request} req
+ * @param {Express.Request} req The API request object.
  */
 export const findUsers = async (req, res) => {
 	try {
@@ -200,11 +163,34 @@ export const findUserByIdAndUpdate = async (req, res) => {
 	try {
 		const { id } = req.params;
 
+		if (req.body._id && id.toString() !== req.body._id.toString())
+			return res
+				.status(400)
+				.send(
+					'Request body "_id" parameter does not match request "_id" parameter.'
+				);
+
 		const user = await UserModel.findById(id);
 
 		if (!user) return res.status(404).send(`No user found with id "${id}"`);
 
-		throw new Error("No update logic implemented.");
+		try {
+			req.body = await validateUser({
+				...(await UserModel.findById(id).lean()),
+				...req.body,
+			});
+		} catch (error) {
+			if (error instanceof ResError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
+		// Store new values.
+		for (const [key, value] of Object.entries(req.body)) {
+			user[key] = value;
+		}
+
+		await user.save();
 
 		return res.status(200).json({ user });
 	} catch (error) {

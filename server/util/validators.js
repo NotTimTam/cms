@@ -1,9 +1,10 @@
 import ArticleModel from "../models/content/Article.js";
 import UserModel from "../models/users/User.js";
 import UserRoleModel from "../models/users/UserRole.js";
-import { aliasRegex, nameRegex } from "../../util/regex.js";
+import { aliasRegex, emailRegex, nameRegex } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
 import { sortEnum, statusEnum } from "../../util/enum.js";
+import { isBoolean } from "../../util/data.js";
 import mongoose from "mongoose";
 
 export class ResError {
@@ -69,7 +70,7 @@ export const validateArticle = async (article) => {
 		(!article._id ||
 			existsWithAlias._id.toString() !== article._id.toString())
 	)
-		throw new ResError(404, "An article already exists with that alias.");
+		throw new ResError(422, "An article already exists with that alias.");
 
 	if (!article.content) article.content = "";
 	else if (typeof article.content !== "string")
@@ -149,7 +150,7 @@ export const validateUserRole = async (userRole) => {
 				existing._id.toString() !== userRole._id.toString())
 		)
 			throw new ResError(
-				400,
+				422,
 				"A user role already exists with that name."
 			);
 	}
@@ -187,6 +188,75 @@ export const validateUserRole = async (userRole) => {
 	}
 
 	return userRole;
+};
+
+/**
+ * Validate a User document.
+ * @param {Object} user The user data to validate.
+ * @throws {Error} An error is thrown if the user is not valid.
+ * @returns {Object} The user data, reformatted, if necessary.
+ */
+export const validateUser = async (user) => {
+	if (!user.name) throw new ResError(400, "No name provided to user.");
+	else if (typeof user.name !== "string" || !nameRegex.test(user.name))
+		throw new ResError(
+			400,
+			`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
+		);
+
+	if (!user.username) throw new ResError(400, "No username provided.");
+	else {
+		const existing = await UserModel.findOne({ username: user.username });
+
+		if (
+			existing &&
+			(!user._id || existing._id.toString() !== user._id.toString())
+		)
+			throw new ResError(
+				422,
+				"A user already exists with that username."
+			);
+	}
+
+	if (!user.password || typeof user.password !== "string")
+		throw new ResError(400, "No password string provided.");
+
+	if (user.email) {
+		if (typeof user.email !== "string" || !emailRegex.test(user.email))
+			throw new ResError(400, "Invalid email address provided.");
+
+		const existing = await UserModel.findOne({ email: user.email });
+
+		if (
+			existing &&
+			(!user._id || existing._id.toString() !== user._id.toString())
+		)
+			throw new ResError(
+				422,
+				"A user already exists with that email address."
+			);
+	}
+
+	if (user.roles) {
+		if (!(user.roles instanceof Array))
+			throw new ResError(
+				400,
+				"A user's role field must be an array of user role ids."
+			);
+
+		for (const id of user.roles) {
+			const userRole = await UserRoleModel.findById(id);
+
+			if (!userRole)
+				throw new ResError(404, `No user role found with id "${id}"`);
+		}
+	}
+
+	if (user.hasOwnProperty("verified") && !isBoolean(user.verified))
+		throw new ResError(400, "User verification status must be a boolean.");
+	else if (!user.hasOwnProperty("verified")) user.verified = false;
+
+	return user;
 };
 
 /**

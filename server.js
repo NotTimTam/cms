@@ -3,13 +3,13 @@ import express from "express";
 import next from "next";
 import cors from "cors";
 import { rateLimit } from "express-rate-limit";
-import { error, log } from "@nottimtam/console.js";
+import { error, log, warn } from "@nottimtam/console.js";
 import nodePackage from "./package.json" assert { type: "json" };
 import connectMongoDB from "./server/util/connectMongoDB.js";
 import articleRouter from "./server/routers/articleRoutes.js";
 import userRouter from "./server/routers/userRoutes.js";
 import API from "./util/API.js";
-import { ensureWebmaster } from "./server/util/database.js";
+import { constructWebmaster } from "./server/config/constructors.js";
 
 // Import configuration.
 const { version, name } = nodePackage;
@@ -20,11 +20,22 @@ const {
 	RATELIMIT_REQUESTS = "10000",
 	RATELIMIT_INFO_IN_HEADERS = "true",
 	JWT_SECRET,
+	SALT,
 } = process.env;
 
 // Validate environment variables.
 if (!JWT_SECRET)
 	throw new Error('No "JWT_SECRET" environment variable defined.');
+
+if (SALT) {
+	if (isNaN(+SALT))
+		throw new Error(`Environment variable "SALT" is not a number.`);
+
+	if (+SALT < 12 || +SALT > 24)
+		warn(
+			`An environment "SALT" variable at or between 12 and 24 is recommended for optimal password security/validation speed.`
+		);
+}
 
 // Initialize express app.
 const app = express();
@@ -63,7 +74,7 @@ nextJS.prepare().then(async () => {
 	log(`Staring ${name} version ${version}`);
 
 	await connectMongoDB();
-	await ensureWebmaster();
+	await constructWebmaster();
 
 	app.all("*", (req, res) => nextJSRequestHandler(req, res));
 

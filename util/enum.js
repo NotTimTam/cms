@@ -16,3 +16,8 @@ export const sortEnum = [
 	"createdAt",
 	"hits",
 ];
+
+/**
+ * Enum for message types.
+ */
+export const messageTypeEnum = ["error", "warning", "success", "info"];

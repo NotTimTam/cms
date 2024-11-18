@@ -258,7 +258,7 @@ export const validateUser = async (user) => {
 
 	if (
 		user.jwtTimestamp &&
-		!(user.jwtTimestamp instanceof Data) &&
+		!(user.jwtTimestamp instanceof Date) &&
 		isNaN(new Date(user.jwtTimestamp).getTime())
 	)
 		throw new ResError(400, 'Invalid "jwtTimestamp" provided.');

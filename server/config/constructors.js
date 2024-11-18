@@ -81,5 +81,8 @@ export const constructWebmaster = async () => {
 
 			await message.save();
 		}
-	}
+	} else
+		await SystemMessageModel.findOneAndDelete({
+			alias: "unverified-webmaster",
+		});
 };

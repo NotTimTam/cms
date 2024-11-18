@@ -41,6 +41,8 @@ const SystemMessages = ({ token, fill }) => {
 		getSystemMessages();
 	}, []);
 
+	if (messages && messages.length === 0) return null;
+
 	return (
 		<div className={styles["--cms-system-messages"]}>
 			{messages ? (

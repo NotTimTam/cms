@@ -186,7 +186,7 @@ export const findUserByIdAndUpdate = async (req, res) => {
 
 		try {
 			req.body = await validateUser({
-				...(await UserModel.findById(id).lean()),
+				...(await UserModel.findById(id).select("+password").lean()),
 				...req.body,
 			});
 		} catch (error) {

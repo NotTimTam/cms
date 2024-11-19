@@ -58,7 +58,7 @@ const Editor = ({
 							className="--cms-success"
 							aria-label="Save & Close"
 							onClick={async () => {
-								const savedSuccessfully = await saveData();
+								const savedSuccessfully = await saveData(false);
 
 								if (savedSuccessfully) closeEditor();
 							}}

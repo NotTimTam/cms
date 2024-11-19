@@ -98,12 +98,12 @@ const UserEditor = ({ id }) => {
 			// If the user is trying to change their password.
 			if (user.password) {
 				if (
-					!user.passwordRepeat ||
-					user.passwordRepeat !== user.password
+					!user.repeatPassword ||
+					user.repeatPassword !== user.password
 				)
 					throw { data: "Passwords must match." };
 
-				delete user.passwordRepeat;
+				delete user.repeatPassword;
 			}
 
 			const {
@@ -277,7 +277,6 @@ const UserEditor = ({ id }) => {
 								id="email"
 								autoComplete="email"
 								placeholder="john.doe@provider.com"
-								pattern={emailRegex}
 							/>
 
 							<label htmlFor="password">Password</label>

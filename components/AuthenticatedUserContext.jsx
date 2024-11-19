@@ -7,7 +7,7 @@ import Loading from "../app/administrator/components/Loading";
 
 /**
  * A React context that providers the current logged-in user.
- * @returns {Object[]} `[user, setUser]`
+ * @returns {Object} The user data object.
  */
 export const AuthenticatedUserContext = createContext(null);
 
@@ -41,7 +41,7 @@ export default function AuthenticatedUserProvider({
 	if (!user) return <Loading />;
 
 	return (
-		<AuthenticatedUserContext.Provider value={[user, setUser]}>
+		<AuthenticatedUserContext.Provider value={user}>
 			{children}
 		</AuthenticatedUserContext.Provider>
 	);

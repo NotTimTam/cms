@@ -7,7 +7,6 @@ import {
 	FileLock2,
 	FileText,
 	FolderClosed,
-	Group,
 	Home,
 	Images,
 	List,

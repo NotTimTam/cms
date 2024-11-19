@@ -202,7 +202,7 @@ export const findUserByIdAndUpdate = async (req, res) => {
 
 		await user.save();
 
-		return res.status(200).json({ user });
+		return res.status(200).json({ user: await UserModel.findById(id) });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

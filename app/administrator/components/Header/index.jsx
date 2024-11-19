@@ -15,12 +15,14 @@ import {
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import { deleteToken } from "@/app/cookies";
 import { getCurrentMenu } from "@/util/display";
+import { AuthenticatedUserContext } from "@/components/AuthenticatedUserContext";
 
 const Header = () => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
 	const { menu } = useContext(AdministratorContext);
+	const user = useContext(AuthenticatedUserContext);
 
 	const activeMenu = getCurrentMenu(menu, pathname, searchParams);
 
@@ -62,7 +64,7 @@ const Header = () => {
 										<Link
 											aria-label="My Profile"
 											className="--cms-button"
-											href="/administrator/dashboard/users?layout=edit&id=me"
+											href={`/administrator/dashboard/users?layout=edit&id=${user._id}`}
 										>
 											<FileUser /> My Profile
 										</Link>
@@ -90,7 +92,7 @@ const Header = () => {
 					}}
 				>
 					<UserCircle />
-					User Menu <ChevronDown />
+					{(user && user.name) || "User Menu"} <ChevronDown />
 				</button>
 			</nav>
 		</header>

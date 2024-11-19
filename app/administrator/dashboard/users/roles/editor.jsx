@@ -33,7 +33,7 @@ const RoleEditor = ({ id }) => {
 		setLoading(true);
 
 		try {
-			if (!userRole._id) return;
+			if (!id) return;
 
 			const token = await getToken();
 
@@ -78,7 +78,7 @@ const RoleEditor = ({ id }) => {
 		setLoading(false);
 	};
 
-	const saveRole = async () => {
+	const saveRole = async (isolated = true) => {
 		setMessage(null);
 
 		setLoading(true);
@@ -108,11 +108,19 @@ const RoleEditor = ({ id }) => {
 						API.createAuthorizationConfig(token)
 				  );
 
-			setUserRole(newUserRole);
+			if (!id && isolated)
+				router.push(
+					`/administrator/dashboard/users?view=roles&layout=edit&id=${newUserRole._id}`
+				);
+			else {
+				setUserRole(newUserRole);
 
-			ret = true;
+				ret = true;
+			}
 		} catch (error) {
 			console.error(error);
+
+			if (error.status === 404) router.push("/not-found");
 
 			setMessage(<Message type="error">{error.data}</Message>);
 
@@ -148,7 +156,7 @@ const RoleEditor = ({ id }) => {
 							),
 							ariaLabel: "Save & New",
 							callback: async () => {
-								const savedSuccessfully = await saveRole();
+								const savedSuccessfully = await saveRole(false);
 
 								if (savedSuccessfully)
 									router.push(
@@ -164,7 +172,7 @@ const RoleEditor = ({ id }) => {
 							),
 							ariaLabel: "Save & Copy",
 							callback: async () => {
-								const savedSuccessfully = await saveRole();
+								const savedSuccessfully = await saveRole(false);
 
 								if (savedSuccessfully) {
 									setLoading(true);

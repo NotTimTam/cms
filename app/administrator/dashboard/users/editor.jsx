@@ -17,7 +17,6 @@ const defaultUser = {
 	name: "",
 	username: "",
 	password: "",
-	email: "",
 	roles: [],
 };
 
@@ -64,7 +63,7 @@ const UserEditor = ({ id }) => {
 		setLoading(true);
 
 		try {
-			if (!user._id) return;
+			if (!id) return;
 
 			const token = await getToken();
 
@@ -79,13 +78,15 @@ const UserEditor = ({ id }) => {
 		} catch (error) {
 			console.error(error);
 
+			if (error.status === 404) router.push("/not-found");
+
 			setMessage(<Message type="error">{error.data}</Message>);
 		}
 
 		setLoading(false);
 	};
 
-	const saveUser = async () => {
+	const saveUser = async (isolated = true) => {
 		setMessage(null);
 
 		setLoading(true);
@@ -120,9 +121,15 @@ const UserEditor = ({ id }) => {
 						API.createAuthorizationConfig(token)
 				  );
 
-			setUser(newUser);
+			if (!id && isolated)
+				router.push(
+					`/administrator/dashboard/users?layout=edit&id=${newUser._id}`
+				);
+			else {
+				setUser(newUser);
 
-			ret = true;
+				ret = true;
+			}
 		} catch (error) {
 			console.error(error);
 
@@ -137,7 +144,7 @@ const UserEditor = ({ id }) => {
 	};
 
 	useEffect(() => {
-		if (!id) setUser(defaultRole);
+		if (!id) setUser(defaultUser);
 		else getUser();
 	}, [id]);
 
@@ -163,7 +170,7 @@ const UserEditor = ({ id }) => {
 						),
 						ariaLabel: "Save & New",
 						callback: async () => {
-							const savedSuccessfully = await saveUser();
+							const savedSuccessfully = await saveUser(false);
 
 							if (savedSuccessfully)
 								router.push(
@@ -179,7 +186,7 @@ const UserEditor = ({ id }) => {
 						),
 						ariaLabel: "Save & Copy",
 						callback: async () => {
-							const savedSuccessfully = await saveUser();
+							const savedSuccessfully = await saveUser(false);
 
 							if (savedSuccessfully) {
 								setLoading(true);
@@ -309,20 +316,25 @@ const UserEditor = ({ id }) => {
 								autoComplete="new-password"
 							/>
 
-							<label>Verification Status</label>
-							{user.verified ? (
-								<Message type="success" fill>
-									This user has been verified.
-								</Message>
-							) : (
-								<Message type="warning" fill>
-									This user has not been verified. A user must
-									log in and change their password once to
-									verify themselves. An unverified user cannot
-									access any other portions of the
-									administrative dashboard until they have
-									verified themselves.
-								</Message>
+							{user._id && (
+								<>
+									<label>Verification Status</label>
+									{user.verified ? (
+										<Message type="success" fill>
+											This user has been verified.
+										</Message>
+									) : (
+										<Message type="warning" fill>
+											This user has not been verified. A
+											user must log in and change their
+											password once to verify themselves.
+											An unverified user cannot access any
+											other portions of the administrative
+											dashboard until they have verified
+											themselves.
+										</Message>
+									)}
+								</>
 							)}
 						</form>
 					),

@@ -43,12 +43,9 @@ export const constructWebmaster = async () => {
 		user = new UserModel({
 			name: "Webmaster",
 			username: "webmaster",
-			password: "",
 			verified: false,
 			roles: [webmasterRole._id],
 		});
-
-		await user.save();
 
 		warn("No webmaster user exists. One has been created.");
 	} else success("Webmaster exists.");

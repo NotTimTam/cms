@@ -7,6 +7,7 @@ import {
 	findUsers,
 	loginUser,
 	authenticateUser,
+	deleteUsers,
 } from "../controllers/users/user.js";
 import {
 	createUserRole,
@@ -22,7 +23,11 @@ import { authenticationMiddleware } from "../middleware/userMiddleware.js";
 const userRouter = Router();
 
 // General User Routes
-userRouter.route("/").get(findUsers).post(createUser);
+userRouter
+	.route("/")
+	.get(authenticationMiddleware, findUsers)
+	.post(authenticationMiddleware, createUser)
+	.delete(authenticationMiddleware, deleteUsers);
 userRouter
 	.route("/auth")
 	.post(loginUser)

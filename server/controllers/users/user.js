@@ -96,11 +96,15 @@ export const createUser = async (req, res) => {
 			+process.env.SALT || 12
 		);
 
+		console.log(req.body);
+
 		const user = new UserModel(req.body);
 
 		await user.save();
 
-		return res.status(200).json({ user });
+		return res
+			.status(200)
+			.json({ user: await UserModel.findById(user._id) });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
@@ -151,6 +155,34 @@ export const findUserByIdAndDelete = async (req, res) => {
 		await UserModel.findByIdAndDelete(id);
 
 		return res.status(200).send("User deleted successfully.");
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Delete a selection of users.
+ */
+export const deleteUsers = async (req, res) => {
+	try {
+		let { selection } = req.query;
+
+		if (!selection)
+			return res
+				.status(400)
+				.send('No "selection" parameter provided in query.');
+
+		const users = await UserModel.find({}).lean();
+
+		if (selection === "all")
+			selection = users.map(({ _id }) => _id.toString());
+		else selection = selection.split(",");
+
+		await UserModel.deleteMany({
+			_id: { $in: selection },
+		});
+
+		return res.status(200).send("Users deleted successfully.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

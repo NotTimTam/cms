@@ -24,6 +24,7 @@ const UserSchema = new mongoose.Schema(
 			required: false,
 			match: [emailRegex, "Invalid email address provided to User."],
 			unique: [true, 'User "email" field must be unique.'],
+			sparse: true,
 		},
 		roles: [
 			{

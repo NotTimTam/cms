@@ -45,7 +45,7 @@ const Option = ({
 		getData();
 	}, [search]);
 
-	const DisplayElement = () => {
+	const displayElement = (() => {
 		switch (optionType) {
 			case "select":
 				return (
@@ -72,7 +72,7 @@ const Option = ({
 					/>
 				);
 		}
-	};
+	})();
 
 	return (
 		<div
@@ -85,7 +85,7 @@ const Option = ({
 						styles["--cms-filter-option-input-group-display"]
 					}
 				>
-					<DisplayElement />
+					{displayElement}
 				</span>
 				<button
 					className="--cms-info"

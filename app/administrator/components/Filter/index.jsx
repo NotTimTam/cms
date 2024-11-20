@@ -1,59 +1,85 @@
 "use client";
 
-import { ChevronDown, FilterIcon, Search, X } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import styles from "./index.module.scss";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import Message from "../Message";
 import Loading from "../Loading";
-import Modal from "../Modal";
 
 const Option = ({
-	ariaLabel,
-	readOnly,
-	getter,
-	openFilterOption,
-	setOpenFilterOption,
-	index,
+	option: {
+		ariaLabel,
+		readOnly,
+		state: [option, setOption],
+		getter,
+		getter: { type },
+	},
 }) => {
-	const { type } = getter;
+	const [data, setData] = useState(null);
+	const [search, setSearch] = useState("");
+	const [open, setOpen] = useState(false);
 
-	const [data, setData] = useState(type === "static" && getter.data);
+	const getData = async () => {
+		if (type === "static") setData(getter.data);
+		else if (type === "dynamic") {
+			try {
+				const data = await getter.callback(search);
+
+				setData(data);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	};
+
+	useEffect(() => {
+		getData();
+	}, [search]);
 
 	return (
 		<div
-			aria-expanded={openFilterOption === index ? "true" : undefined}
-			className={styles["--cms-filter-options-form-option"]}
+			aria-expanded={open ? "true" : undefined}
+			className={styles["--cms-filter-option"]}
 		>
-			<span className={styles["--cms-filter-options-form-input-group"]}>
+			<span className={styles["--cms-filter-option-input-group"]}>
 				<input
 					type="text"
 					aria-label={ariaLabel}
 					placeholder={ariaLabel}
 					readOnly={readOnly}
-					onFocus={() => openFilterOption !== index && setOpen(true)}
+					value={search}
+					onFocus={() => setOpen(true)}
+					onChange={({ target: { value } }) => setSearch(value)}
 				/>
 				<button
 					className="--cms-info"
 					type="button"
 					aria-label={ariaLabel}
-					onClick={() =>
-						setOpenFilterOption(
-							openFilterOption === index ? null : index
-						)
-					}
+					onClick={() => setOpen(!open)}
 				>
 					<ChevronDown />
 				</button>
 			</span>
-			{openFilterOption === index && (
+			{open && (
 				<div
 					className={`--cms-popup-content ${styles["--cms-filter-option-results"]}`}
 				>
 					<nav className="--cms-popup-nav">
 						{data ? (
 							data.map((item, index) => (
-								<button key={index} aria-label={item.label}>
+								<button
+									key={index}
+									aria-label={item.label}
+									aria-selected={
+										option === item.id ? "true" : undefined
+									}
+									onClick={() => {
+										setOption(item.id);
+										if (item.search) setSearch(item.search);
+										setOpen(false);
+									}}
+								>
 									{item.label}
 								</button>
 							))
@@ -76,11 +102,14 @@ const Filter = ({
 	filterOptions,
 	defaultQuery = {},
 }) => {
-	const [openFilterOption, setOpenFilterOption] = useState(null);
+	// States
+	const [filterOptionsOpen, setFilterOptionsOpen] = useState(false);
 
 	// Handlers
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
+		executeQuery();
 	};
 
 	const handleClear = (e) => {
@@ -121,7 +150,6 @@ const Filter = ({
 						type="submit"
 						aria-label="Search"
 						className="--cms-info"
-						onClick={executeQuery}
 					>
 						<Search />
 					</button>
@@ -132,73 +160,9 @@ const Filter = ({
 							type="button"
 							className={`--cms-info --cms-popup-trigger ${styles["--cms-filter-form-search-tools"]}`}
 							aria-label="Search Tools"
-							onClick={async (e) => {
-								const rect = e.target.getBoundingClientRect();
-
-								const PopupContent = () => {
-									const closePopup = useContext(PopupContext);
-
-									return (
-										<Modal>
-											<form
-												onClick={(e) =>
-													e.stopPropagation()
-												}
-												onSubmit={(e) => {
-													e.preventDefault();
-												}}
-												className={`--cms-form ${styles["--cms-filter-options-form"]}`}
-											>
-												<section>
-													{filterOptions.map(
-														(option, index) => {
-															return (
-																<Option
-																	key={index}
-																	index={
-																		index
-																	}
-																	{...option}
-																	{...{
-																		openFilterOption,
-																		setOpenFilterOption,
-																	}}
-																/>
-															);
-														}
-													)}
-												</section>
-
-												<section>
-													<button
-														type="reset"
-														aria-label="Cancel"
-														className="--cms-error"
-														onClick={() =>
-															closePopup()
-														}
-													>
-														<X /> Cancel
-													</button>
-
-													<button
-														type="submit"
-														aria-label="Filter"
-														className="--cms-success"
-													>
-														<FilterIcon /> Filter
-													</button>
-												</section>
-											</form>
-										</Modal>
-									);
-								};
-
-								const res = await createHeadlessPopup(
-									<PopupContent />,
-									[rect.x, rect.bottom]
-								);
-							}}
+							onClick={() =>
+								setFilterOptionsOpen(!filterOptionsOpen)
+							}
 						>
 							Filter Options <ChevronDown />
 						</button>
@@ -372,6 +336,16 @@ const Filter = ({
 					<ChevronDown />
 				</button>
 			</section>
+
+			{filterOptionsOpen && (
+				<section className={styles["--cms-filter-options"]}>
+					{filterOptions.map((option, index) => {
+						return (
+							<Option key={index} index={index} option={option} />
+						);
+					})}
+				</section>
+			)}
 		</form>
 	);
 };

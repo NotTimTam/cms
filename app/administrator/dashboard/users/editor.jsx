@@ -42,7 +42,8 @@ const UserEditor = ({ id }) => {
 				data: { userRoles },
 			} = await API.get(
 				`${API.createRouteURL(
-					API.userRoles
+					API.userRoles,
+					"tree"
 				)}?itemsPerPage=all&sortDir=1&sortField=order`,
 				API.createAuthorizationConfig(token)
 			);

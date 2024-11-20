@@ -141,7 +141,7 @@ const RoleListings = () => {
 			const {
 				data: { userRoles, page: newPage, numPages },
 			} = await API.get(
-				`${API.userRoles}?${searchParams.toString()}`,
+				`${API.userRoles}/tree?${searchParams.toString()}`,
 				API.createAuthorizationConfig(token)
 			);
 

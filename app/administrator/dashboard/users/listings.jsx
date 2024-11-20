@@ -9,13 +9,14 @@ import Modal from "@/app/administrator/components/Modal";
 import { getToken } from "@/app/cookies";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import API from "@/util/API";
-import { findById } from "@/util/display";
+import { depthIndicator, findById } from "@/util/display";
 import StorageInterface from "@/util/StorageInterface";
 import { EllipsisVertical, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
 let lastQuery;
+let controller;
 
 const defaultQuery = {
 	search: "",
@@ -33,6 +34,17 @@ const UserListings = () => {
 	const {
 		data: { userQuery },
 	} = SessionStorage;
+
+	// States
+	const [selection, setSelection] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [users, setUsers] = useState([]);
+	const [query, setQuery] = useState(userQuery || defaultQuery);
+	const [message, setMessage] = useState(null);
+
+	useEffect(() => {
+		console.log(query);
+	}, [query]);
 
 	// Data
 	const sortingOptions = {
@@ -118,12 +130,52 @@ const UserListings = () => {
 		},
 	];
 
-	// States
-	const [selection, setSelection] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const [users, setUsers] = useState([]);
-	const [query, setQuery] = useState(userQuery || defaultQuery);
-	const [message, setMessage] = useState(null);
+	const filterOptions = [
+		{
+			ariaLabel: "User Role",
+			state: [
+				query.role,
+				(id) => setQuery((query) => ({ ...query, role: id })),
+			],
+			getter: {
+				type: "dynamic",
+				callback: async (search) => {
+					try {
+						const token = await getToken();
+
+						if (controller) controller.abort();
+
+						controller = new AbortController();
+
+						const {
+							data: { userRoles },
+						} = await API.get(
+							`${API.createRouteURL(
+								API.userRoles
+							)}?search=${search}`,
+							{
+								...API.createAuthorizationConfig(token),
+								signal: controller.signal,
+							}
+						);
+
+						controller = undefined;
+
+						return userRoles.map((userRole) => ({
+							id: userRole._id,
+							label:
+								depthIndicator(userRole.depth, "\u2014") +
+								" " +
+								userRole.name,
+							search: userRole.name,
+						}));
+					} catch (error) {
+						console.error(error);
+					}
+				},
+			},
+		},
+	];
 
 	// Functions
 	const executeQuery = async () => {
@@ -295,6 +347,7 @@ const UserListings = () => {
 							setQuery,
 							executeQuery,
 							sortingOptions,
+							filterOptions,
 							defaultQuery,
 						}}
 					/>

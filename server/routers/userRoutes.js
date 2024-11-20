@@ -17,6 +17,7 @@ import {
 	findUserRoleById,
 	findUserRoleByIdAndUpdate,
 	getPossibleParents,
+	getUserRoleTree,
 } from "../controllers/users/userRole.js";
 import { authenticationMiddleware } from "../middleware/userMiddleware.js";
 
@@ -40,6 +41,7 @@ userRouter
 	.post(authenticationMiddleware, createUserRole)
 	.delete(authenticationMiddleware, deleteUserRoles);
 userRouter.patch("/roles/order", authenticationMiddleware, orderUserRoles);
+userRouter.get("/roles/tree", authenticationMiddleware, getUserRoleTree);
 userRouter.get(
 	"/roles/parents/:id",
 	authenticationMiddleware,

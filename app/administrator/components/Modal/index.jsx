@@ -8,7 +8,10 @@ const Modal = ({ children }) => {
 	const closePopup = useContext(PopupContext);
 
 	return (
-		<div className={styles["--cms-modal-container"]} onClick={closePopup}>
+		<div
+			className={styles["--cms-modal-container"]}
+			onClick={() => closePopup()}
+		>
 			<div className={styles["--cms-modal"]}>{children}</div>
 		</div>
 	);

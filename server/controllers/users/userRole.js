@@ -85,6 +85,71 @@ export const findUserRoles = async (req, res) => {
 		if (page > numPages - 1) page = numPages - 1;
 		if (page < 0) page = 0;
 
+		const userRoles = await UserRoleModel.find(query)
+			.sort({ [sortField]: +sortDir })
+			.limit(+itemsPerPage)
+			.skip(page * +itemsPerPage)
+			.lean();
+
+		for (const userRole of userRoles) {
+			const path = await getPathToDocument(
+				userRole._id,
+				UserRoleModel,
+				"user role"
+			);
+			path.pop(); // Remove the id from the end of the array.
+
+			userRole.depth = path.length;
+		}
+
+		return res.status(200).json({
+			userRoles,
+			page,
+			numPages,
+		});
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Query user roles in a tree format.
+ */
+export const getUserRoleTree = async (req, res) => {
+	try {
+		try {
+			req.query = await validateNestQuery(req.query);
+		} catch (error) {
+			if (error instanceof ResError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
+		const {
+			search,
+			sortField = "createdAt",
+			sortDir = "-1",
+			depth,
+		} = req.query;
+		let { page = "0", itemsPerPage = "20", root } = req.query;
+
+		const query = {
+			...unlockedQuery,
+		};
+
+		if (search) query.name = { $regex: search, $options: "i" };
+
+		const numRoles = await UserRoleModel.countDocuments(query);
+
+		itemsPerPage = itemsPerPage === "all" ? numRoles : +itemsPerPage;
+
+		const numPages = Math.ceil(numRoles / itemsPerPage);
+
+		page = +page;
+
+		if (page > numPages - 1) page = numPages - 1;
+		if (page < 0) page = 0;
+
 		let userRoles = [];
 		if (!root) {
 			query.parent = { $exists: false }; // Filter to just root items.
@@ -136,12 +201,25 @@ export const findUserRoles = async (req, res) => {
  */
 export const getPossibleParents = async (req, res) => {
 	try {
+		if (req.query) {
+			try {
+				req.query = await validateNestQuery(req.query);
+			} catch (error) {
+				if (error instanceof ResError)
+					return res.status(error.code).send(error.message);
+				else throw error;
+			}
+		}
+
 		const { id } = req.params;
 
 		if (id !== "all" && !mongoose.Types.ObjectId.isValid(id))
 			return res.status(400).send("Invalid user role id provided.");
 
 		const query = { ...unlockedQuery };
+
+		if (req.query && req.query.search)
+			query.name = { $regex: req.query.search, $options: "i" };
 
 		if (id !== "all") {
 			const userRole = await UserRoleModel.findById(id);
@@ -168,18 +246,24 @@ export const getPossibleParents = async (req, res) => {
 		// Determine all "path-to-roots" for each user role and ensure that the selected role is NOT found in any of them.
 		let notReferenced = [];
 
-		for (const userRole of userRoles) {
-			const path = await getPathToDocument(
-				userRole._id,
-				UserRoleModel,
-				"user role"
-			);
-			path.pop(); // Remove the id from the end of the array.
+		if (id === "all") {
+			notReferenced = userRoles;
+		} else {
+			for (const userRole of userRoles) {
+				const path = await getPathToDocument(
+					userRole._id,
+					UserRoleModel,
+					"user role"
+				);
+				path.pop(); // Remove the id from the end of the array.
 
-			if (path.includes(id)) continue;
+				if (path.includes(id)) continue;
 
-			notReferenced.push(userRole);
+				notReferenced.push(userRole);
+			}
 		}
+
+		console.log(req.query, userRoles);
 
 		return res.status(200).json({
 			userRoles: notReferenced,

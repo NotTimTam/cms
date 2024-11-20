@@ -70,63 +70,70 @@ form.--cms-filter-options-form {
 		flex-wrap: wrap;
 		gap: var(--gap);
 
-		div.--cms-filter-options-form-option {
-			display: flex;
-			flex-direction: column;
-			align-items: stretch;
+		&.--cms-filter-options {
+			background-color: var(--background-color);
 
-			flex-grow: 2;
+			div.--cms-filter-option {
+				display: flex;
+				flex-direction: column;
+				align-items: stretch;
 
-			&[aria-expanded] {
-				span.--cms-filter-options-form-input-group {
-					input {
-						border-bottom-left-radius: 0;
-					}
+				flex-grow: 2;
 
-					button {
-						border-bottom-right-radius: 0;
-						border-bottom: 1px solid var(--background-color);
-						svg {
-							transform: rotate(-180deg);
+				&[aria-expanded] {
+					span.--cms-filter-option-input-group {
+						display: flex;
+						flex-direction: row;
+
+						input {
+							border-bottom-left-radius: 0;
+						}
+
+						button {
+							border-bottom-right-radius: 0;
+							border-bottom: 1px solid var(--background-color);
+							svg {
+								transform: rotate(-180deg);
+							}
 						}
 					}
 				}
-			}
 
-			span.--cms-filter-options-form-input-group {
-				display: flex;
-				flex-direction: row;
-				align-items: stretch;
+				span.--cms-filter-option-input-group {
+					display: flex;
+					flex-direction: row;
+					align-items: stretch;
 
-				width: 100%;
+					width: 100%;
 
-				input {
-					flex-grow: 2;
-					margin: 0;
-					border: none;
-					border-top-right-radius: 0;
-					border-bottom-right-radius: 0;
-				}
+					input {
+						flex-grow: 2;
+						margin: 0;
+						border: none;
+						border-top-right-radius: 0;
+						border-bottom-right-radius: 0;
+					}
 
-				button {
-					border-top-left-radius: 0;
-					border-bottom-left-radius: 0;
+					button {
+						border-top-left-radius: 0;
+						border-bottom-left-radius: 0;
 
-					svg {
-						transition: transform 0.15s ease-in-out;
+						svg {
+							transition: transform 0.15s ease-in-out;
+						}
 					}
 				}
-			}
 
-			div.--cms-filter-option-results {
-				border: 1px solid var(--background-color);
-				border-top: none;
-				border-radius: 0;
-				border-bottom-left-radius: var(--gap);
-				border-bottom-right-radius: var(--gap);
-				margin-top: 0;
+				div.--cms-filter-option-results {
+					border: 1px solid var(--background-color);
+					border-top: none;
+					border-radius: 0;
+					border-bottom-left-radius: var(--gap);
+					border-bottom-right-radius: var(--gap);
+					margin-top: 0;
 
-				z-index: 2;
+					z-index: 2;
+				}
 			}
 		}
 

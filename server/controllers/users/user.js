@@ -1,7 +1,13 @@
 import UserModel from "../../models/users/User.js";
+import UserRoleModel from "../../models/users/UserRole.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import { emailRegex, nameRegex } from "../../../util/regex.js";
-import { ResError, validateUser } from "../../util/validators.js";
+import { getPathToDocument } from "../..//util/database.js";
+import {
+	ResError,
+	validateUser,
+	validateUserQuery,
+} from "../../util/validators.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -116,9 +122,72 @@ export const createUser = async (req, res) => {
  */
 export const findUsers = async (req, res) => {
 	try {
-		const users = await UserModel.find({});
+		try {
+			req.query = await validateUserQuery(req.query);
+		} catch (error) {
+			if (error instanceof ResError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
 
-		return res.status(200).json({ users });
+		const {
+			search,
+			sortField = "createdAt",
+			sortDir = "-1",
+			role,
+		} = req.query;
+		let { page = "0", itemsPerPage = "20" } = req.query;
+
+		const query = {};
+
+		if (search)
+			query["$or"] = [
+				{ name: { $regex: search, $options: "i" } },
+				{ email: { $regex: search, $options: "i" } },
+			];
+
+		const numUsers = await UserModel.countDocuments(query);
+
+		itemsPerPage = itemsPerPage === "all" ? numUsers : +itemsPerPage;
+
+		const numPages = Math.ceil(numUsers / itemsPerPage);
+
+		page = +page;
+
+		if (page > numPages - 1) page = numPages - 1;
+		if (page < 0) page = 0;
+
+		let users = await UserModel.find(query)
+			.sort({ [sortField]: +sortDir })
+			.select("+status")
+			.limit(+itemsPerPage)
+			.skip(page * +itemsPerPage)
+			.lean();
+
+		if (role) {
+			const userRole = await UserRoleModel.findById(role);
+
+			if (!userRole)
+				return res
+					.status(404)
+					.send(`No user role found with id "${role}"`);
+
+			const roleTree = await getPathToDocument(
+				userRole._id,
+				UserRoleModel,
+				"user role"
+			);
+
+			users = users.filter(({ roles }) =>
+				roles.some((role) => roleTree.includes(role.toString()))
+			);
+		}
+
+		return res.status(200).json({
+			users,
+			page,
+			numPages,
+		});
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

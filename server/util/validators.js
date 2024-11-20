@@ -345,6 +345,24 @@ export const validateNestQuery = async (query) => {
 };
 
 /**
+ * Validate a filtration query object used for filtering through users.
+ * @param {Object} query The query data to validate.
+ * @throws {Error} An error is thrown if the query data is not valid.
+ * @returns {Object} The query data, reformatted, if necessary.
+ */
+export const validateUserQuery = async (query) => {
+	query = await validateGenericQuery(query);
+
+	if (query.role && !mongoose.Types.ObjectId.isValid(query.role))
+		throw new ResError(
+			400,
+			'Invalid query "role" parameter. Expected an object id.'
+		);
+
+	return query;
+};
+
+/**
  * Validate an Article filtration query object.
  * @param {Object} query The query data to validate.
  * @throws {Error} An error is thrown if the query data is not valid.

@@ -80,3 +80,6 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Editor unsaved changes before exit warning.
 -   Finish adding filtration options for user roles, users, articles, etc.
 -   Add user/content custom fields.
+-   NO side menu on editor pages.
+-   Filter Options some are just dropdowns, some allow for "search" input, some allow for multiple selections and display them as little widgets in the text box.
+-   Direct robots.txt access and control.

@@ -16,7 +16,8 @@ import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
 let lastQuery;
-let controller;
+
+const controllers = {};
 
 const defaultQuery = {
 	search: "",
@@ -41,10 +42,6 @@ const UserListings = () => {
 	const [users, setUsers] = useState([]);
 	const [query, setQuery] = useState(userQuery || defaultQuery);
 	const [message, setMessage] = useState(null);
-
-	useEffect(() => {
-		console.log(query);
-	}, [query]);
 
 	// Data
 	const sortingOptions = {
@@ -133,6 +130,7 @@ const UserListings = () => {
 	const filterOptions = [
 		{
 			ariaLabel: "User Role",
+			type: "search",
 			state: [
 				query.role,
 				(id) => setQuery((query) => ({ ...query, role: id })),
@@ -143,9 +141,9 @@ const UserListings = () => {
 					try {
 						const token = await getToken();
 
-						if (controller) controller.abort();
+						if (controllers.role) controllers.role.abort();
 
-						controller = new AbortController();
+						controllers.role = new AbortController();
 
 						const {
 							data: { userRoles },
@@ -155,11 +153,11 @@ const UserListings = () => {
 							)}?search=${search}`,
 							{
 								...API.createAuthorizationConfig(token),
-								signal: controller.signal,
+								signal: controllers.role.signal,
 							}
 						);
 
-						controller = undefined;
+						controllers.role = undefined;
 
 						return userRoles.map((userRole) => ({
 							id: userRole._id,
@@ -170,6 +168,55 @@ const UserListings = () => {
 							search: userRole.name,
 						}));
 					} catch (error) {
+						if (error.name === "AbortError") return;
+
+						console.error(error);
+					}
+				},
+			},
+		},
+		{
+			ariaLabel: "Test Input",
+			type: "select",
+			state: [
+				query.test,
+				(id) => setQuery((query) => ({ ...query, test: id })),
+			],
+			getter: {
+				type: "dynamic",
+				callback: async (search) => {
+					try {
+						const token = await getToken();
+
+						if (controllers.test) controllers.test.abort();
+
+						controllers.test = new AbortController();
+
+						const {
+							data: { userRoles },
+						} = await API.get(
+							`${API.createRouteURL(
+								API.userRoles
+							)}?search=${search}`,
+							{
+								...API.createAuthorizationConfig(token),
+								signal: controllers.test.signal,
+							}
+						);
+
+						controllers.test = undefined;
+
+						return userRoles.map((userRole) => ({
+							id: userRole._id,
+							label:
+								depthIndicator(userRole.depth, "\u2014") +
+								" " +
+								userRole.name,
+							search: userRole.name,
+						}));
+					} catch (error) {
+						if (error.name === "AbortError") return;
+
 						console.error(error);
 					}
 				},

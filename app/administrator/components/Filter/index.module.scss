@@ -15,21 +15,148 @@ form.--cms-filter-form {
 	position: sticky;
 	left: 0;
 
-	input {
-		background: none;
-		margin-bottom: 0;
-
-		&::placeholder {
-			color: var(--text-color);
-		}
-	}
-
 	section {
 		display: flex;
 		flex-direction: row;
 		gap: var(--gap);
 
 		flex-wrap: wrap;
+
+		&:not(.--cms-filter-options) {
+			input {
+				background: none;
+				margin-bottom: 0;
+
+				&::placeholder {
+					color: var(--text-color);
+				}
+			}
+		}
+
+		&.--cms-filter-options {
+			background-color: var(--background-color);
+			flex-grow: 2;
+			width: 100%;
+			border-radius: var(--gap);
+			padding: var(--padding);
+
+			display: none;
+			&[aria-expanded] {
+				display: flex;
+			}
+
+			div.--cms-filter-option {
+				display: flex;
+				flex-direction: column;
+				align-items: stretch;
+
+				width: min-content;
+
+				position: relative;
+
+				span.--cms-filter-option-input-group {
+					display: flex;
+					flex-direction: row;
+					align-items: stretch;
+
+					width: max-content;
+
+					span.--cms-filter-option-input-group-display {
+						flex-grow: 2;
+						border: 1px solid var(--background-color-6);
+						border-radius: var(--gap);
+						border-right: none;
+						border-top-right-radius: 0;
+						border-bottom-right-radius: 0;
+						width: 200px;
+						overflow: hidden;
+
+						display: flex;
+						flex-direction: row;
+						align-items: stretch;
+
+						input {
+							border: none;
+							margin: 0;
+
+							&::placeholder {
+								color: var(--background-color-4);
+								opacity: 1;
+							}
+						}
+
+						button {
+							text-align: left;
+							justify-content: flex-start;
+							border: none;
+							border-radius: 0;
+
+							&.--cms-placeholder {
+								color: var(--background-color-4);
+
+								&:hover {
+									color: var(--background-color-4);
+								}
+							}
+
+							&:hover {
+								background: none;
+								color: unset;
+							}
+						}
+
+						input,
+						button {
+							width: 100%;
+						}
+					}
+
+					button {
+						border-top-left-radius: 0;
+						border-bottom-left-radius: 0;
+
+						svg {
+							transition: transform 0.15s ease-in-out;
+						}
+					}
+				}
+
+				div.--cms-filter-option-results {
+					border: 1px solid var(--background-color);
+					border-top: none;
+					border-radius: 0;
+					border-bottom-left-radius: var(--gap);
+					border-bottom-right-radius: var(--gap);
+					margin-top: 0;
+
+					max-height: $mobile-s;
+
+					position: absolute;
+					top: 100%;
+					left: 0;
+
+					width: 100%;
+
+					z-index: 2;
+				}
+
+				&[aria-expanded] {
+					span.--cms-filter-option-input-group {
+						span.--cms-filter-option-input-group-display {
+							border-bottom-left-radius: 0;
+						}
+
+						button {
+							border-bottom-right-radius: 0;
+							border-bottom: 1px solid var(--background-color);
+							svg {
+								transform: rotate(-180deg);
+							}
+						}
+					}
+				}
+			}
+		}
 
 		> span {
 			display: flex;
@@ -53,92 +180,14 @@ form.--cms-filter-form {
 					border-left: none;
 				}
 			}
-		}
-	}
-}
 
-form.--cms-filter-options-form {
-	gap: var(--gap);
-	max-width: $mobile-l;
-	width: 100%;
-
-	padding: 0;
-
-	> section {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		gap: var(--gap);
-
-		&.--cms-filter-options {
-			background-color: var(--background-color);
-
-			div.--cms-filter-option {
-				display: flex;
-				flex-direction: column;
-				align-items: stretch;
-
-				flex-grow: 2;
-
+			button.--cms-filter-form-search-tools {
 				&[aria-expanded] {
-					span.--cms-filter-option-input-group {
-						display: flex;
-						flex-direction: row;
-
-						input {
-							border-bottom-left-radius: 0;
-						}
-
-						button {
-							border-bottom-right-radius: 0;
-							border-bottom: 1px solid var(--background-color);
-							svg {
-								transform: rotate(-180deg);
-							}
-						}
+					svg {
+						transform: rotate(-180deg);
 					}
-				}
-
-				span.--cms-filter-option-input-group {
-					display: flex;
-					flex-direction: row;
-					align-items: stretch;
-
-					width: 100%;
-
-					input {
-						flex-grow: 2;
-						margin: 0;
-						border: none;
-						border-top-right-radius: 0;
-						border-bottom-right-radius: 0;
-					}
-
-					button {
-						border-top-left-radius: 0;
-						border-bottom-left-radius: 0;
-
-						svg {
-							transition: transform 0.15s ease-in-out;
-						}
-					}
-				}
-
-				div.--cms-filter-option-results {
-					border: 1px solid var(--background-color);
-					border-top: none;
-					border-radius: 0;
-					border-bottom-left-radius: var(--gap);
-					border-bottom-right-radius: var(--gap);
-					margin-top: 0;
-
-					z-index: 2;
 				}
 			}
-		}
-
-		> button {
-			flex-grow: 2;
 		}
 	}
 }

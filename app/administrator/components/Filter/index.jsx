@@ -13,20 +13,28 @@ const Option = ({
 		readOnly,
 		state: [option, setOption],
 		getter,
-		getter: { type },
+		getter: { type: dataType },
+		type: optionType,
 	},
+	expanded,
+	setExpanded,
 }) => {
 	const [data, setData] = useState(null);
-	const [search, setSearch] = useState("");
-	const [open, setOpen] = useState(false);
+	const [search, setSearch] = useState(null);
 
 	const getData = async () => {
-		if (type === "static") setData(getter.data);
-		else if (type === "dynamic") {
+		if (dataType === "static") setData(getter.data);
+		else if (dataType === "dynamic") {
 			try {
-				const data = await getter.callback(search);
+				const data = await getter.callback(search || "");
 
 				setData(data);
+
+				if (search === null && option) {
+					const selectedOption = data.find(({ id }) => id === option);
+
+					if (selectedOption) setSearch(selectedOption.search);
+				}
 			} catch (error) {
 				console.error(error);
 			}
@@ -37,31 +45,58 @@ const Option = ({
 		getData();
 	}, [search]);
 
+	const DisplayElement = () => {
+		switch (optionType) {
+			case "select":
+				return (
+					<button
+						type="button"
+						aria-label={ariaLabel}
+						onClick={() => setExpanded(!expanded)}
+						className={!search ? styles["--cms-placeholder"] : null}
+					>
+						{search || ariaLabel}
+					</button>
+				);
+			case "search":
+			default:
+				return (
+					<input
+						type="text"
+						aria-label={ariaLabel}
+						placeholder={ariaLabel}
+						readOnly={readOnly}
+						value={search || ""}
+						onFocus={() => setExpanded(true)}
+						onChange={({ target: { value } }) => setSearch(value)}
+					/>
+				);
+		}
+	};
+
 	return (
 		<div
-			aria-expanded={open ? "true" : undefined}
+			aria-expanded={expanded ? "true" : undefined}
 			className={styles["--cms-filter-option"]}
 		>
 			<span className={styles["--cms-filter-option-input-group"]}>
-				<input
-					type="text"
-					aria-label={ariaLabel}
-					placeholder={ariaLabel}
-					readOnly={readOnly}
-					value={search}
-					onFocus={() => setOpen(true)}
-					onChange={({ target: { value } }) => setSearch(value)}
-				/>
+				<span
+					className={
+						styles["--cms-filter-option-input-group-display"]
+					}
+				>
+					<DisplayElement />
+				</span>
 				<button
 					className="--cms-info"
 					type="button"
 					aria-label={ariaLabel}
-					onClick={() => setOpen(!open)}
+					onClick={() => setExpanded(!expanded)}
 				>
 					<ChevronDown />
 				</button>
 			</span>
-			{open && (
+			{expanded && (
 				<div
 					className={`--cms-popup-content ${styles["--cms-filter-option-results"]}`}
 				>
@@ -77,7 +112,7 @@ const Option = ({
 									onClick={() => {
 										setOption(item.id);
 										if (item.search) setSearch(item.search);
-										setOpen(false);
+										setExpanded(false);
 									}}
 								>
 									{item.label}
@@ -104,6 +139,7 @@ const Filter = ({
 }) => {
 	// States
 	const [filterOptionsOpen, setFilterOptionsOpen] = useState(false);
+	const [expandedFilterOption, setExpandedFilterOption] = useState(null);
 
 	// Handlers
 	const handleSubmit = (e) => {
@@ -160,6 +196,9 @@ const Filter = ({
 							type="button"
 							className={`--cms-info --cms-popup-trigger ${styles["--cms-filter-form-search-tools"]}`}
 							aria-label="Search Tools"
+							aria-expanded={
+								filterOptionsOpen ? "true" : undefined
+							}
 							onClick={() =>
 								setFilterOptionsOpen(!filterOptionsOpen)
 							}
@@ -337,15 +376,27 @@ const Filter = ({
 				</button>
 			</section>
 
-			{filterOptionsOpen && (
-				<section className={styles["--cms-filter-options"]}>
-					{filterOptions.map((option, index) => {
-						return (
-							<Option key={index} index={index} option={option} />
-						);
-					})}
-				</section>
-			)}
+			<section
+				aria-expanded={filterOptionsOpen ? "true" : undefined}
+				className={styles["--cms-filter-options"]}
+			>
+				{filterOptions.map((option, index) => {
+					return (
+						<Option
+							key={index}
+							index={index}
+							option={option}
+							{...{
+								expanded: expandedFilterOption === index,
+								setExpanded: (bool) =>
+									bool
+										? setExpandedFilterOption(index)
+										: setExpandedFilterOption(null),
+							}}
+						/>
+					);
+				})}
+			</section>
 		</form>
 	);
 };

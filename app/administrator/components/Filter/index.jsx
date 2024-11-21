@@ -10,7 +10,6 @@ import Loading from "../Loading";
 const Option = ({
 	option: {
 		ariaLabel,
-		readOnly,
 		state: [option, setOption],
 		getter,
 		getter: { type: dataType },
@@ -65,7 +64,6 @@ const Option = ({
 						type="text"
 						aria-label={ariaLabel}
 						placeholder={ariaLabel}
-						readOnly={readOnly}
 						value={search || ""}
 						onFocus={() => setExpanded(true)}
 						onChange={({ target: { value } }) => setSearch(value)}

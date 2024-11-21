@@ -11,7 +11,7 @@ import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import API from "@/util/API";
 import { depthIndicator, findById } from "@/util/display";
 import StorageInterface from "@/util/StorageInterface";
-import { EllipsisVertical, Trash2, X } from "lucide-react";
+import { Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
@@ -45,10 +45,6 @@ const UserListings = () => {
 
 	// Data
 	const sortingOptions = {
-		order: {
-			label: "Order",
-			hideFromList: true,
-		},
 		name: {
 			label: "Name",
 			listing: new List.Element((elementId, users) => {
@@ -137,6 +133,7 @@ const UserListings = () => {
 			],
 			getter: {
 				type: "dynamic",
+				clear: { label: "\u2014 Clear \u2014" },
 				callback: async (search) => {
 					try {
 						const token = await getToken();
@@ -158,53 +155,6 @@ const UserListings = () => {
 						);
 
 						controllers.role = undefined;
-
-						return userRoles.map((userRole) => ({
-							id: userRole._id,
-							label:
-								depthIndicator(userRole.depth, "\u2014") +
-								" " +
-								userRole.name,
-							search: userRole.name,
-						}));
-					} catch (error) {
-						if (error.name === "AbortError") return;
-
-						console.error(error);
-					}
-				},
-			},
-		},
-		{
-			ariaLabel: "Test Input",
-			type: "select",
-			state: [
-				query.test,
-				(id) => setQuery((query) => ({ ...query, test: id })),
-			],
-			getter: {
-				type: "dynamic",
-				callback: async (search) => {
-					try {
-						const token = await getToken();
-
-						if (controllers.test) controllers.test.abort();
-
-						controllers.test = new AbortController();
-
-						const {
-							data: { userRoles },
-						} = await API.get(
-							`${API.createRouteURL(
-								API.userRoles
-							)}?search=${search}`,
-							{
-								...API.createAuthorizationConfig(token),
-								signal: controllers.test.signal,
-							}
-						);
-
-						controllers.test = undefined;
 
 						return userRoles.map((userRole) => ({
 							id: userRole._id,
@@ -420,13 +370,6 @@ const UserListings = () => {
 						{...{ selection, setSelection }}
 						{...{ query, setQuery, executeQuery }}
 						{...{
-							order: {
-								field: "order",
-								icon: <EllipsisVertical />,
-								ariaLabel: "Reorder",
-								disabled:
-									!query.sort || query.sort.field !== "order",
-							},
 							swapItems: (active, over, dir) => {
 								reorderUser(active, over, dir);
 							},

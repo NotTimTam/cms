@@ -104,7 +104,10 @@ export const findArticles = async (req, res) => {
 		return res.status(200).json({
 			articles: articles.map((article) => ({
 				...article,
-				author: { name: article.author.name, _id: article.author._id },
+				author: article.author && {
+					name: article.author.name,
+					_id: article.author._id,
+				},
 			})),
 			page,
 			numPages,

@@ -19,10 +19,9 @@ import {
 } from "lucide-react";
 import styles from "./page.module.scss";
 import Link from "next/link";
-import { capitalizeWords } from "@/util/display";
+import { capitalizeWords, findById } from "@/util/display";
 import Filter from "../../components/Filter";
 import { getToken } from "@/app/cookies";
-import { statusEnum } from "@/util/enum";
 
 let lastQuery;
 
@@ -53,13 +52,13 @@ const Listings = () => {
 		featured: {
 			label: "Featured",
 			listing: new List.Toggle(
-				(index) =>
-					articles[index].featured ? (
+				(id) =>
+					findById(articles, id).featured ? (
 						<Sparkles color="var(--warning-color)" />
 					) : (
 						<Sparkle color="var(--background-color-6)" />
 					),
-				async (index) => {
+				async (id) => {
 					setLoading(true);
 
 					setMessage(null);
@@ -67,7 +66,7 @@ const Listings = () => {
 					try {
 						const token = await getToken();
 
-						const article = articles[index];
+						const article = findById(articles, id);
 
 						const {
 							data: { article: newArticle },
@@ -100,8 +99,8 @@ const Listings = () => {
 		status: {
 			label: "Status",
 			listing: new List.Toggle(
-				(index) => {
-					const { status } = articles[index];
+				(id) => {
+					const { status } = findById(articles, id);
 
 					switch (status) {
 						case "published":
@@ -118,7 +117,7 @@ const Listings = () => {
 							return <CircleHelp />;
 					}
 				},
-				async (index) => {
+				async (id) => {
 					setLoading(true);
 
 					setMessage(null);
@@ -126,7 +125,7 @@ const Listings = () => {
 					try {
 						const token = await getToken();
 
-						const article = articles[index];
+						const article = findById(articles, id);
 
 						const {
 							data: { article: newArticle },
@@ -163,8 +162,8 @@ const Listings = () => {
 		},
 		name: {
 			label: "Name",
-			listing: new List.Element((index) => {
-				const { name, alias, category, _id } = articles[index];
+			listing: new List.Element((id) => {
+				const { name, alias, category, _id } = findById(articles, id);
 
 				return (
 					<List.InfoBlock>
@@ -194,29 +193,34 @@ const Listings = () => {
 		},
 		access: {
 			label: "Access",
-			listing: new List.Element((index) =>
-				capitalizeWords(articles[index].access)
+			listing: new List.Element((id) =>
+				capitalizeWords(findById(articles, id).access)
 			),
 		},
 		author: {
 			label: "Author",
-			listing: new List.Element((index) => (
-				<Link
-					href={`/administrator/dashboard/users?layout=edit&id=${articles[index].author._id}`}
-				>
-					{articles[index].author.name}
-				</Link>
-			)),
+			listing: new List.Element((id) => {
+				const author = findById(articles, id).author;
+				return author ? (
+					<Link
+						href={`/administrator/dashboard/users?layout=edit&id=${author._id}`}
+					>
+						{author.name}
+					</Link>
+				) : (
+					<b>None</b>
+				);
+			}),
 		},
 		createdAt: {
 			label: "Date Created",
-			listing: new List.Element((index) =>
-				new Date(articles[index].createdAt).toLocaleString()
+			listing: new List.Element((id) =>
+				new Date(findById(articles, id).createdAt).toLocaleString()
 			),
 		},
 		hits: {
 			label: "Hits",
-			listing: new List.Element((index) => articles[index].hits),
+			listing: new List.Element((id) => findById(articles, id).hits),
 		},
 	};
 
@@ -296,54 +300,48 @@ const Listings = () => {
 		 * group of dropdowns with darker background
 		 * each dropdown is both a text input for filtration, and a selection list. In the case of authors, the dropdown shows the word "None" and the top 5 authors on the site.
 		 */
-		{
-			readOnly: true,
-			ariaLabel: "Featured",
-			getter: {
-				type: "static",
-				data: [
-					{
-						id: false,
-						label: "Unfeatured",
-					},
-					{
-						id: true,
-						label: "Featured",
-					},
-				],
-			},
-		},
-		{
-			ariaLabel: "Status",
-			getter: {
-				type: "static",
-				data: statusEnum.map((item) => ({
-					id: item,
-					label: capitalizeWords(item),
-				})),
-			},
-		},
-
-		{
-			ariaLabel: "Category",
-			getter: {},
-		},
-
-		{
-			ariaLabel: "Access",
-			getter: {},
-		},
-
-		{
-			ariaLabel: "Author",
-			getter: {},
-		},
-
-		{
-			ariaLabel: "Tag",
-			getter: {},
-		},
-
+		// {
+		// 	ariaLabel: "Featured",
+		// 	getter: {
+		// 		type: "static",
+		// 		data: [
+		// 			{
+		// 				id: false,
+		// 				label: "Unfeatured",
+		// 			},
+		// 			{
+		// 				id: true,
+		// 				label: "Featured",
+		// 			},
+		// 		],
+		// 	},
+		// },
+		// {
+		// 	ariaLabel: "Status",
+		// 	getter: {
+		// 		type: "static",
+		// 		data: statusEnum.map((item) => ({
+		// 			id: item,
+		// 			label: capitalizeWords(item),
+		// 		})),
+		// 	},
+		// },
+		// {
+		// 	ariaLabel: "Category",
+		// 	getter: {},
+		// },
+		// {
+		// 	ariaLabel: "Access",
+		// 	getter: {},
+		// },
+		// {
+		// 	ariaLabel: "Author",
+		// 	getter: {},
+		// },
+		// {
+		// 	ariaLabel: "Tag",
+		// 	getter: {},
+		// },
 		// {
 		// 	ariaLabel: "Max Levels", // For other dropdowns.
 		// },
@@ -352,7 +350,7 @@ const Listings = () => {
 	// States
 	const [selection, setSelection] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [articles, setArticles] = useState([]);
+	const [articles, setArticles] = useState(null);
 	const [query, setQuery] = useState(articleQuery || defaultQuery);
 	const [message, setMessage] = useState(null);
 
@@ -516,7 +514,7 @@ const Listings = () => {
 					{message}
 				</div>
 			)}
-			{loading ? (
+			{loading || !articles ? (
 				<Loading />
 			) : (
 				<>

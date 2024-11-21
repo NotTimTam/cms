@@ -77,13 +77,13 @@ export const findCategories = async (req, res) => {
 		if (page > numPages - 1) page = numPages - 1;
 		if (page < 0) page = 0;
 
-		const categorys = await CategoryModel.find(query)
+		const categories = await CategoryModel.find(query)
 			.sort({ [sortField]: +sortDir })
 			.limit(+itemsPerPage)
 			.skip(page * +itemsPerPage)
 			.lean();
 
-		for (const category of categorys) {
+		for (const category of categories) {
 			const path = await getPathToDocument(
 				category._id,
 				CategoryModel,
@@ -95,7 +95,7 @@ export const findCategories = async (req, res) => {
 		}
 
 		return res.status(200).json({
-			categorys,
+			categories,
 			page,
 			numPages,
 		});
@@ -140,10 +140,10 @@ export const getCategoryTree = async (req, res) => {
 		if (page > numPages - 1) page = numPages - 1;
 		if (page < 0) page = 0;
 
-		let categorys = [];
+		let categories = [];
 		if (!root) {
 			query.parent = { $exists: false }; // Filter to just root items.
-			categorys = await CategoryModel.find(query)
+			categories = await CategoryModel.find(query)
 				.sort({ [sortField]: +sortDir })
 				.lean();
 
@@ -152,15 +152,15 @@ export const getCategoryTree = async (req, res) => {
 			query._id = root;
 			const rootCategory = await CategoryModel.findOne(query).lean();
 
-			if (rootCategory) categorys = [rootCategory];
+			if (rootCategory) categories = [rootCategory];
 
 			delete query._id;
 		}
 
-		if (categorys && categorys.length > 0) {
+		if (categories && categories.length > 0) {
 			// Build document tree.
-			categorys = await buildDocumentTree(
-				categorys,
+			categories = await buildDocumentTree(
+				categories,
 				CategoryModel,
 				query,
 				{ [sortField]: +sortDir },
@@ -168,14 +168,14 @@ export const getCategoryTree = async (req, res) => {
 			);
 
 			// Flatten document tree.
-			categorys = flattenDocumentTree(categorys).slice(
+			categories = flattenDocumentTree(categories).slice(
 				page * itemsPerPage,
 				page * itemsPerPage + itemsPerPage
 			);
 		}
 
 		return res.status(200).json({
-			categorys,
+			categories,
 			page,
 			numPages,
 		});
@@ -227,7 +227,7 @@ export const getPossibleParents = async (req, res) => {
 		}
 
 		// Get all categories that are NOT this role, and NOT a direct child of it.
-		const categorys = flattenDocumentTree(
+		const categories = flattenDocumentTree(
 			await buildDocumentTree(undefined, CategoryModel, query, {
 				order: 1,
 			})
@@ -237,9 +237,9 @@ export const getPossibleParents = async (req, res) => {
 		let notReferenced = [];
 
 		if (id === "all") {
-			notReferenced = categorys;
+			notReferenced = categories;
 		} else {
-			for (const category of categorys) {
+			for (const category of categories) {
 				const path = await getPathToDocument(
 					category._id,
 					CategoryModel,
@@ -253,10 +253,10 @@ export const getPossibleParents = async (req, res) => {
 			}
 		}
 
-		console.log(req.query, categorys);
+		console.log(req.query, categories);
 
 		return res.status(200).json({
-			categorys: notReferenced,
+			categories: notReferenced,
 		});
 	} catch (error) {
 		return handleUnexpectedError(res, error);
@@ -275,10 +275,10 @@ export const deleteCategories = async (req, res) => {
 				.status(400)
 				.send('No "selection" parameter provided in query.');
 
-		const categorys = await CategoryModel.find({}).lean();
+		const categories = await CategoryModel.find({}).lean();
 
 		if (selection === "all")
-			selection = categorys
+			selection = categories
 				.filter(({ locked }) => !locked)
 				.map(({ _id }) => _id.toString());
 		else selection = selection.split(",");

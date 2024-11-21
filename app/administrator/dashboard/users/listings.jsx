@@ -208,34 +208,6 @@ const UserListings = () => {
 		setLoading(false);
 	};
 
-	const reorderUser = async (active, over, dir) => {
-		setLoading(true);
-		setMessage(null);
-
-		try {
-			const token = await getToken();
-
-			if (query.sort.dir === -1) dir *= -1;
-
-			await API.patch(
-				`${API.createRouteURL(
-					API.users,
-					"order"
-				)}?active=${active}&over=${over}&dir=${dir}`,
-				undefined,
-				API.createAuthorizationConfig(token)
-			);
-
-			// Reload users.
-			await executeQuery();
-		} catch (error) {
-			console.error(error);
-			setMessage(<Message type="error">{error.data}</Message>);
-		}
-
-		setLoading(false);
-	};
-
 	const massDeleteUsers = async () => {
 		setLoading(true);
 		setMessage(null);
@@ -353,27 +325,20 @@ const UserListings = () => {
 						items={users}
 						itemIdentifier="user"
 						fields={Object.entries(sortingOptions).map(
-							([field, { label, listing, hideFromList }]) => ({
+							([field, { label, listing }]) => ({
 								listing,
-								header:
-									!hideFromList &&
-									List.Header(
-										{
-											field,
-											label: label,
-										},
-										query,
-										setQuery
-									),
+								header: List.Header(
+									{
+										field,
+										label: label,
+									},
+									query,
+									setQuery
+								),
 							})
 						)}
 						{...{ selection, setSelection }}
 						{...{ query, setQuery, executeQuery }}
-						{...{
-							swapItems: (active, over, dir) => {
-								reorderUser(active, over, dir);
-							},
-						}}
 					/>
 				</>
 			)}

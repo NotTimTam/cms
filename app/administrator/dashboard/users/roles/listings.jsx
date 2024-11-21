@@ -40,10 +40,6 @@ const RoleListings = () => {
 
 	// Data
 	const sortingOptions = {
-		order: {
-			label: "Order",
-			hideFromList: true,
-		},
 		name: {
 			label: "Name",
 			listing: new List.Element((_id, items) => {
@@ -303,18 +299,16 @@ const RoleListings = () => {
 						items={userRoles}
 						itemIdentifier="user role"
 						fields={Object.entries(sortingOptions).map(
-							([field, { label, listing, hideFromList }]) => ({
+							([field, { label, listing }]) => ({
 								listing,
-								header:
-									!hideFromList &&
-									List.Header(
-										{
-											field,
-											label: label,
-										},
-										query,
-										setQuery
-									),
+								header: List.Header(
+									{
+										field,
+										label: label,
+									},
+									query,
+									setQuery
+								),
 							})
 						)}
 						{...{ selection, setSelection }}

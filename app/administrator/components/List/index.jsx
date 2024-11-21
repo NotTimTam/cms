@@ -112,6 +112,7 @@ const Listings = ({
 	items,
 	fields,
 	fieldOffset,
+	totalItems,
 	isSelected,
 	toggleSelected,
 	order,
@@ -134,7 +135,7 @@ const Listings = ({
 						key={itemIndex}
 						index={itemIndex}
 						id={_id}
-						gridColumn={`1 / ${fields.length + fieldOffset}`}
+						gridColumn={`1 / ${totalItems}`}
 						order={order}
 						hide={hide}
 						{...{
@@ -186,8 +187,7 @@ const Listings = ({
 													style={{
 														gridColumn: `${
 															fieldIndex +
-															fieldOffset +
-															1
+															fieldOffset
 														} / ${
 															fieldIndex +
 															fieldOffset +
@@ -245,7 +245,11 @@ const List = ({
 	query,
 	setQuery,
 }) => {
-	const fieldOffset = 1 + (order ? 1 : 0);
+	// Number of fields + Order column + Selection column.
+	const totalItems = fields.length + (order ? 1 : 0) + 2;
+
+	// 1 (Selection) + 1 (Order) + 1 (Accounting for the offset from the grid endpoint of the last one)
+	const fieldOffset = 1 + (order ? 1 : 0) + 1;
 
 	const isSelected = (id) => selection === "all" || selection.includes(id);
 	const toggleSelected = (id) => {
@@ -276,13 +280,14 @@ const List = ({
 					<header
 						className={styles["--cms-listings-table-header"]}
 						style={{
-							gridColumn: `1 / ${fields.length + fieldOffset}`,
+							gridColumn: `1 / ${totalItems}`,
 						}}
 					>
 						<div
 							className={
 								styles["--cms-listings-table-header-column"]
 							}
+							style={{ gridColumn: "1 / 2" }}
 						>
 							<button
 								aria-label="Select All"
@@ -308,6 +313,7 @@ const List = ({
 								className={
 									styles["--cms-listings-table-header-column"]
 								}
+								style={{ gridColumn: "2 / 3" }}
 							>
 								{List.Header(
 									{ field: order.field },
@@ -329,6 +335,11 @@ const List = ({
 												]
 											}
 											key={index}
+											style={{
+												gridColumn: `${
+													index + fieldOffset
+												} / ${index + fieldOffset + 1}`,
+											}}
 										>
 											{field.header}
 										</div>
@@ -338,7 +349,7 @@ const List = ({
 					<main
 						className={styles["--cms-listings-table-body"]}
 						style={{
-							gridColumn: `1 / ${fields.length + fieldOffset}`,
+							gridColumn: `1 / ${totalItems}`,
 						}}
 					>
 						<Listings
@@ -346,6 +357,7 @@ const List = ({
 								items,
 								fields,
 								fieldOffset,
+								totalItems,
 								isSelected,
 								toggleSelected,
 								order,

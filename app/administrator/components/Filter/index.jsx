@@ -287,7 +287,11 @@ const Filter = ({
 				>
 					{query.sort ? (
 						<>
-							{sortingOptions[query.sort.field].label}{" "}
+							{(() => {
+								if (query.sort.field === "order")
+									return "Order";
+								return sortingOptions[query.sort.field].label;
+							})()}{" "}
 							{query.sort.dir === -1 ? "Ascending" : "Descending"}
 						</>
 					) : (
@@ -374,27 +378,29 @@ const Filter = ({
 				</button>
 			</section>
 
-			<section
-				aria-expanded={filterOptionsOpen ? "true" : undefined}
-				className={styles["--cms-filter-options"]}
-			>
-				{filterOptions.map((option, index) => {
-					return (
-						<Option
-							key={index}
-							index={index}
-							option={option}
-							{...{
-								expanded: expandedFilterOption === index,
-								setExpanded: (bool) =>
-									bool
-										? setExpandedFilterOption(index)
-										: setExpandedFilterOption(null),
-							}}
-						/>
-					);
-				})}
-			</section>
+			{filterOptions && (
+				<section
+					aria-expanded={filterOptionsOpen ? "true" : undefined}
+					className={styles["--cms-filter-options"]}
+				>
+					{filterOptions.map((option, index) => {
+						return (
+							<Option
+								key={index}
+								index={index}
+								option={option}
+								{...{
+									expanded: expandedFilterOption === index,
+									setExpanded: (bool) =>
+										bool
+											? setExpandedFilterOption(index)
+											: setExpandedFilterOption(null),
+								}}
+							/>
+						);
+					})}
+				</section>
+			)}
 		</form>
 	);
 };

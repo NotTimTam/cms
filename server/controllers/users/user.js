@@ -277,11 +277,24 @@ export const findUserByIdAndUpdate = async (req, res) => {
 
 		if (!user) return res.status(404).send(`No user found with id "${id}"`);
 
+		let verifiedSelf = false;
 		if (req.body.password) {
+			// Hash the new password.
 			req.body.password = await bcrypt.hash(
 				req.body.password,
 				+process.env.SALT || 12
 			);
+
+			// If the user is unverified and updating their own password, we can mark them as verified.
+			if (
+				!user.verified &&
+				req.user._id.toString() === user._id.toString()
+			) {
+				req.body.verified = true;
+				verifiedSelf = true;
+			}
+
+			// Update JWT timestamp. This will require the user to relogin by invalidating existing JWT tokens.
 			req.body.jwtTimestamp = new Date().toISOString();
 		}
 
@@ -303,7 +316,11 @@ export const findUserByIdAndUpdate = async (req, res) => {
 
 		await user.save();
 
-		return res.status(200).json({ user: await UserModel.findById(id) });
+		// If the user just verified themselves, we redirect them to log back in.
+		if (verifiedSelf) return res.redirect("/administrator/login");
+		// Otherwise we return the updated user data.
+		else
+			return res.status(200).json({ user: await UserModel.findById(id) });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

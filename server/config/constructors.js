@@ -2,7 +2,6 @@ import { error, log, success, warn } from "@nottimtam/console.js";
 import bcrypt from "bcryptjs";
 import UserRoleModel from "../models/users/UserRole.js";
 import UserModel from "../models/users/User.js";
-import SystemMessageModel from "../models/content/SystemMessage.js";
 import { generateRandomPassword } from "../../util/data.js";
 
 /**
@@ -61,25 +60,5 @@ export const constructWebmaster = async () => {
 		error(
 			`Webmaster credentials:\n\nUsername: ${user.username}\nPassword: ${password}\n\nLogin as webmaster and change the password immediately.`
 		);
-
-		// Ensure a system message exists to indicate the user is unverified.
-		let message = await SystemMessageModel.findOne({
-			alias: "unverified-webmaster",
-		});
-
-		if (!message) {
-			message = new SystemMessageModel({
-				alias: "unverified-webmaster",
-				type: "warning",
-				content:
-					"An unverified webmaster user exists in the database. Check the server logs for credentials and login as the webmaster to change the password immediately.",
-				confidential: false,
-			});
-
-			await message.save();
-		}
-	} else
-		await SystemMessageModel.findOneAndDelete({
-			alias: "unverified-webmaster",
-		});
+	}
 };

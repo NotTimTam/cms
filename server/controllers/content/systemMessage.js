@@ -1,16 +1,47 @@
-import SystemMessageModel from "../../models/content/SystemMessage.js";
+import { messageTypeEnum } from "../../../util/enum.js";
+import UserModel from "../../models/users/User.js";
+import UserRoleModel from "../../models/users/UserRole.js";
+
+class SystemMessage {
+	constructor(type, content) {
+		if (!content || typeof content !== "string")
+			throw new TypeError("SystemMessage content must be a string.");
+		if (!messageTypeEnum.includes(type))
+			throw new Error("Invalid SystemMessage type.");
+
+		this.type = type;
+		this.content = content;
+	}
+}
 
 /**
- * Query system messages.
+ * Get system messages.
  */
-export const findSystemMessages = async (req, res) => {
+export const getSystemMessages = async (req, res) => {
 	try {
 		const query = {};
 
 		// Unverified users can only access non-confidential messages.
 		if (!req.user) query.confidential = false;
 
-		const systemMessages = await SystemMessageModel.find(query);
+		const systemMessages = [];
+
+		// Check webmaster.
+		const webmasterRole = await UserRoleModel.findOne({
+			name: "Webmaster",
+		});
+		const webmaster = await UserModel.findOne({
+			roles: { $in: [webmasterRole._id] },
+		});
+
+		if (webmaster && !webmaster.verified) {
+			systemMessages.push(
+				new SystemMessage(
+					"warning",
+					"An unverified webmaster user exists in the database. Check the server logs for credentials and login as the webmaster to change the password immediately."
+				)
+			);
+		}
 
 		return res.status(200).json({
 			systemMessages,

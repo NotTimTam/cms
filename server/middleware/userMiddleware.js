@@ -64,7 +64,29 @@ export const verificationMiddleware = async (req, res, next) => {
 		if (!req.user)
 			return res.status(401).send("User is not authenticated.");
 
-		console.log(req.user);
+		// Unverified users are routed to a page where they can verify themselves.
+		if (!req.user.verified)
+			return res.status(401).send("User is not verified.");
+
+		next();
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Simulate user verification status temporarily, for the purpose of allowing them to validate themselves.
+ */
+export const psuedoVerifiedMiddleware = async (req, res, next) => {
+	try {
+		if (!req.user)
+			return res.status(401).send("User is not authenticated.");
+
+		if (!req.user.verified) {
+			const { id } = req.params;
+
+			if (id === req.user._id.toString()) req.user.verified = true;
+		}
 
 		next();
 	} catch (error) {

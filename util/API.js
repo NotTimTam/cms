@@ -144,6 +144,8 @@ export default class API {
 
 		const res = await API.__getData(await fetch(url, data));
 
+		if (res.redirected && window) window.location = res.url;
+
 		if (!res.ok) throw res;
 
 		return res;

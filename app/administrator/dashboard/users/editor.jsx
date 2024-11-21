@@ -9,9 +9,10 @@ import API from "@/util/API";
 import { FileInput, FilePlus2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Select from "../../components/Select";
-import { emailRegex, nameRegex } from "@/util/regex";
+import { nameRegex } from "@/util/regex";
+import { AuthenticatedUserContext } from "@/components/AuthenticatedUserContext";
 
 const defaultUser = {
 	name: "",
@@ -21,6 +22,9 @@ const defaultUser = {
 };
 
 const UserEditor = ({ id }) => {
+	const currentUser = useContext(AuthenticatedUserContext);
+	const me = id && currentUser._id === id;
+
 	const router = useRouter();
 
 	const [loading, setLoading] = useState(false);
@@ -32,8 +36,9 @@ const UserEditor = ({ id }) => {
 
 	// Functions
 	const getUserRoles = async () => {
+		if (!currentUser.verified) return;
+
 		setMessage(null);
-		setLoading(true);
 
 		try {
 			const token = await getToken();
@@ -54,19 +59,19 @@ const UserEditor = ({ id }) => {
 
 			setMessage(<Message type="error">{error.data}</Message>);
 		}
-
-		setLoading(false);
 	};
 
 	const getUser = async () => {
+		if (!id) return;
+
 		setMessage(null);
 
 		setLoading(true);
 
 		try {
-			if (!id) return;
-
 			const token = await getToken();
+
+			console.log(id);
 
 			const {
 				data: { user: newUser },
@@ -88,6 +93,8 @@ const UserEditor = ({ id }) => {
 	};
 
 	const saveUser = async (isolated = true) => {
+		console.log("SAVE USER CALLED");
+
 		setMessage(null);
 
 		setLoading(true);
@@ -145,6 +152,11 @@ const UserEditor = ({ id }) => {
 	};
 
 	useEffect(() => {
+		if (!currentUser.verified && !me)
+			router.push(
+				`/administrator/dashboard/users?layout=edit&id=${currentUser._id}`
+			);
+
 		if (!id) setUser(defaultUser);
 		else getUser();
 	}, [id]);
@@ -317,7 +329,18 @@ const UserEditor = ({ id }) => {
 								autoComplete="new-password"
 							/>
 
-							{user._id && (
+							{me && !user.verified && (
+								<Message type="info" fill>
+									Enter a new password into the {'"Password"'}{" "}
+									and
+									{' "Repeat Password"'} inputs and hit{" "}
+									{'"Save"'} to verify yourself. You will be
+									prompted to log back in with your new
+									credentials.
+								</Message>
+							)}
+
+							{user._id && !me && (
 								<>
 									<label>Verification Status</label>
 									{user.verified ? (
@@ -339,37 +362,38 @@ const UserEditor = ({ id }) => {
 							)}
 						</form>
 					),
-					Tabs.Item(
-						<>
-							User Roles
-							{user.roles &&
-								user.roles.length > 0 &&
-								` (${user.roles.length})`}
-						</>,
-						<div className="--cms-padding">
-							{userRoles &&
-								(userRoles.length > 0 ? (
-									<Select
-										{...{
-											items: userRoles,
-											selection: user.roles,
-											setSelection: (selection) =>
-												setUser((user) => ({
-													...user,
-													roles: selection,
-												})),
-										}}
-									/>
-								) : (
-									<Message type="info" fill>
-										No user roles have been defined.{" "}
-										<Link href="/administrator/dashboard/users?view=roles">
-											Create a user role.
-										</Link>
-									</Message>
-								))}
-						</div>
-					),
+					userRoles &&
+						Tabs.Item(
+							<>
+								User Roles
+								{user.roles &&
+									user.roles.length > 0 &&
+									` (${user.roles.length})`}
+							</>,
+							<div className="--cms-padding">
+								{userRoles &&
+									(userRoles.length > 0 ? (
+										<Select
+											{...{
+												items: userRoles,
+												selection: user.roles,
+												setSelection: (selection) =>
+													setUser((user) => ({
+														...user,
+														roles: selection,
+													})),
+											}}
+										/>
+									) : (
+										<Message type="info" fill>
+											No user roles have been defined.{" "}
+											<Link href="/administrator/dashboard/users?view=roles">
+												Create a user role.
+											</Link>
+										</Message>
+									))}
+							</div>
+						),
 				],
 			}}
 		/>

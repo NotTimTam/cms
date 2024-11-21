@@ -9,6 +9,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { getCurrentMenu } from "@/util/display";
 import scssVars from "../../scssVars";
 import StorageInterface from "@/util/StorageInterface";
+import { AuthenticatedUserContext } from "@/components/AuthenticatedUserContext";
 
 const SideMenuSection = ({
 	title,
@@ -55,6 +56,8 @@ const SideMenuSection = ({
 };
 
 const SideMenu = () => {
+	const user = useContext(AuthenticatedUserContext);
+
 	const SessionStorage = new StorageInterface(window.sessionStorage);
 	const storedSideMenu = SessionStorage.getItem("sideMenu");
 
@@ -150,6 +153,8 @@ const SideMenu = () => {
 			);
 		else if (type === "d") return <hr key={index} />;
 	};
+
+	if (!user.verified) return null;
 
 	return (
 		<aside

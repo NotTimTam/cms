@@ -9,6 +9,8 @@ import styles from "./index.module.scss";
 const Item = (header, content, ariaLabel) => ({ header, content, ariaLabel });
 
 const Tabs = ({ items, currentItem, setCurrentItem }) => {
+	items = items.filter((item) => item);
+
 	if (!items || items.length === 0) return null;
 
 	return (

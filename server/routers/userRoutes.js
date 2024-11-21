@@ -21,6 +21,7 @@ import {
 } from "../controllers/users/userRole.js";
 import {
 	authenticationMiddleware,
+	psuedoVerifiedMiddleware,
 	verificationMiddleware,
 } from "../middleware/userMiddleware.js";
 
@@ -70,10 +71,21 @@ userRouter
 	);
 
 // User-Specific Routes
+
 userRouter
 	.route("/:id")
-	.get(authenticationMiddleware, findUserById)
-	.patch(authenticationMiddleware, findUserByIdAndUpdate)
+	.get(
+		authenticationMiddleware,
+		psuedoVerifiedMiddleware,
+		verificationMiddleware,
+		findUserById
+	)
+	.patch(
+		authenticationMiddleware,
+		psuedoVerifiedMiddleware,
+		verificationMiddleware,
+		findUserByIdAndUpdate
+	)
 	.delete(
 		authenticationMiddleware,
 		verificationMiddleware,

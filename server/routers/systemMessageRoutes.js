@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findSystemMessages } from "../controllers/content/systemMessage.js";
+import { getSystemMessages } from "../controllers/content/systemMessage.js";
 
 import {
 	authenticationMiddleware,
@@ -8,12 +8,12 @@ import {
 
 const systemMessageRouter = Router();
 
-systemMessageRouter.get("/", findSystemMessages);
+systemMessageRouter.get("/", getSystemMessages);
 systemMessageRouter.get(
 	"/confidential",
 	authenticationMiddleware,
 	verificationMiddleware,
-	findSystemMessages
+	getSystemMessages
 );
 
 export default systemMessageRouter;

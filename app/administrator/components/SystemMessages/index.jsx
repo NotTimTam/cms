@@ -46,11 +46,11 @@ const SystemMessages = ({ token, fill, style = {} }) => {
 	return (
 		<div style={style} className={styles["--cms-system-messages"]}>
 			{messages ? (
-				messages.map((message) => {
-					const { _id, content, createdAt, type } = message;
+				messages.map((message, key) => {
+					const { content, type } = message;
 
 					return (
-						<Message fill={fill} key={_id} type={type}>
+						<Message fill={fill} key={key} type={type}>
 							<span>{content}</span>
 						</Message>
 					);

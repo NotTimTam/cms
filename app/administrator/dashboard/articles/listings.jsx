@@ -356,6 +356,8 @@ const Listings = () => {
 		setMessage(null);
 
 		try {
+			const token = await getToken();
+
 			SessionStorage.setItem("articleQuery", query); // Remember this query.
 
 			// Create search params.
@@ -364,7 +366,10 @@ const Listings = () => {
 			// Get articles.
 			const {
 				data: { articles, page: newPage, numPages },
-			} = await API.get(`${API.articles}?${searchParams.toString()}`);
+			} = await API.get(
+				`${API.articles}?${searchParams.toString()}`,
+				API.createAuthorizationConfig(token)
+			);
 
 			setArticles(articles);
 			setQuery((query) => ({

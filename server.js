@@ -12,9 +12,10 @@ import { constructWebmaster } from "./server/config/constructors.js";
 
 import API from "./util/API.js";
 
-import userRouter from "./server/routers/userRoutes.js";
 import articleRouter from "./server/routers/articleRoutes.js";
+import categoryRouter from "./server/routers/categoryRoutes";
 import systemMessageRouter from "./server/routers/systemMessageRoutes.js";
+import userRouter from "./server/routers/userRoutes.js";
 
 import {
 	authenticationMiddleware,
@@ -77,13 +78,19 @@ app.use(express.json(), cors(), rateLimiter);
 // Load and configure API.
 const apiRoute = `/api`;
 
-app.use(API.createRouteURL(apiRoute, "messages"), systemMessageRouter);
 app.use(
 	API.createRouteURL(apiRoute, "articles"),
 	authenticationMiddleware,
 	verificationMiddleware,
 	articleRouter
 );
+app.use(
+	API.createRouteURL(apiRoute, "categories"),
+	authenticationMiddleware,
+	verificationMiddleware,
+	categoryRouter
+);
+app.use(API.createRouteURL(apiRoute, "messages"), systemMessageRouter);
 app.use(API.createRouteURL(apiRoute, "users"), userRouter);
 
 nextJS.prepare().then(async () => {

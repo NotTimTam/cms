@@ -1,4 +1,5 @@
 import ArticleModel from "../models/content/Article.js";
+import CategoryModel from "../models/content/Category.js";
 import UserModel from "../models/users/User.js";
 import UserRoleModel from "../models/users/UserRole.js";
 import { aliasRegex, emailRegex, nameRegex } from "../../util/regex.js";
@@ -125,6 +126,94 @@ export const validateArticle = async (article) => {
 	// Tags
 
 	return article;
+};
+
+/**
+ * Validate a Category document.
+ * @param {Object} category The category data to validate.
+ * @throws {Error} An error is thrown if the category is not valid.
+ * @returns {Object} The category data, reformatted, if necessary.
+ */
+export const validateCategory = async (category) => {
+	if (!category.author)
+		throw new ResError(400, "No author ID provided to category.");
+	else {
+		const author = await UserModel.findById(category.author);
+
+		if (!author)
+			throw new ResError(404, "No author user found with that ID.");
+	}
+
+	if (!category.name) throw new ResError(400, "No role name provided.");
+	else {
+		if (typeof category.name !== "string" || !nameRegex.test(category.name))
+			throw new ResError(
+				400,
+				`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
+			);
+
+		const existing = await CategoryModel.findOne({ name: category.name });
+
+		if (
+			existing &&
+			(!category._id ||
+				existing._id.toString() !== category._id.toString())
+		)
+			throw new ResError(
+				422,
+				"A category already exists with that name."
+			);
+	}
+
+	if (!category.alias) category.alias = nameToAlias(category.name);
+	else {
+		if (
+			typeof category.alias !== "string" ||
+			!aliasRegex.test(category.alias)
+		)
+			throw new ResError(
+				400,
+				`Invalid category alias provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+			);
+	}
+
+	const existsWithAlias = await CategoryModel.findOne({
+		alias: category.alias,
+	});
+	if (
+		existsWithAlias &&
+		(!category._id ||
+			existsWithAlias._id.toString() !== category._id.toString())
+	)
+		throw new ResError(422, "A category already exists with that alias.");
+
+	if (category.description && typeof category.description !== "string")
+		throw new ResError(400, "Invalid description provided.");
+
+	if (
+		category.order &&
+		(typeof category.order !== "number" ||
+			!Number.isInteger(category.order))
+	)
+		throw new ResError(
+			400,
+			"Invalid order value provided. Expected an integer."
+		);
+
+	if (category.hasOwnProperty("parent")) {
+		if (category.parent === null) category.parent = undefined;
+		else {
+			const parentRole = await CategoryModel.findById(category.parent);
+
+			if (!parentRole)
+				throw new ResError(
+					404,
+					`No category found with id "${category.parent}"`
+				);
+		}
+	}
+
+	return userRole;
 };
 
 /**

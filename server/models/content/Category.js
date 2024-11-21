@@ -23,6 +23,14 @@ const CategorySchema = new mongoose.Schema(
 			type: String,
 			required: false,
 		},
+		order: {
+			type: Number,
+			required: [
+				true,
+				"You must provide order placement for this UserRole.",
+			],
+			default: 0,
+		},
 		parent: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Category",

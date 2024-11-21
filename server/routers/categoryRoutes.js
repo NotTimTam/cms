@@ -1,37 +1,32 @@
 import { Router } from "express";
 
+import {
+	createCategory,
+	findCategories,
+	getCategoryTree,
+	getPossibleParents,
+	deleteCategories,
+	orderCategories,
+	findCategoryById,
+	findCategoryByIdAndUpdate,
+} from "../controllers/content/category.js";
+
 const categoryRouter = Router();
 
-// Roles
-// userRouter
-// 	.route("/roles")
-// 	.get(  findUserRoles)
-// 	.post(  createUserRole)
-// 	.delete(  deleteUserRoles);
-// userRouter.patch(
-// 	"/roles/order",
-//
-//
-// 	orderUserRoles
-// );
-// userRouter.get(
-// 	"/roles/tree",
-//
-//
-// 	getUserRoleTree
-// );
-// userRouter.get(
-// 	"/roles/parents/:id",
-//
-// 	getPossibleParents
-// );
-// userRouter
-// 	.route("/roles/:id")
-// 	.get(  findUserRoleById)
-// 	.patch(
-//
-//
-// 		findUserRoleByIdAndUpdate
-// 	);
+categoryRouter
+	.route("/")
+	.get(findCategories)
+	.post(createCategory)
+	.delete(deleteCategories);
+
+categoryRouter.get("/tree", getCategoryTree);
+categoryRouter.get("/parents/:id", getPossibleParents);
+
+categoryRouter.get("/order", orderCategories);
+
+categoryRouter
+	.route("/:id")
+	.get(findCategoryById)
+	.patch(findCategoryByIdAndUpdate);
 
 export default categoryRouter;

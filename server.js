@@ -13,7 +13,7 @@ import { constructWebmaster } from "./server/config/constructors.js";
 import API from "./util/API.js";
 
 import articleRouter from "./server/routers/articleRoutes.js";
-import categoryRouter from "./server/routers/categoryRoutes";
+import categoryRouter from "./server/routers/categoryRoutes.js";
 import systemMessageRouter from "./server/routers/systemMessageRoutes.js";
 import userRouter from "./server/routers/userRoutes.js";
 

@@ -239,28 +239,6 @@ export const findArticleById = async (req, res) => {
 };
 
 /**
- * Find a specific article by its alias.
- * @param {Express.Request} req The API request object.
- * @param {string} req.params.alias The alias of the article to find.
- */
-export const findArticleByAlias = async (req, res) => {
-	try {
-		const { alias } = req.params;
-
-		const article = await ArticleModel.findOne({ alias });
-
-		if (!article)
-			return res
-				.status(404)
-				.send(`No article found with alias "${alias}"`);
-
-		return res.status(200).json({ article });
-	} catch (error) {
-		return handleUnexpectedError(res, error);
-	}
-};
-
-/**
  * Find a specific article by its ID and update it.
  * @param {Express.Request} req The API request object.
  * @param {string} req.params.id The ID of the article to find.

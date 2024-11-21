@@ -54,3 +54,20 @@ export const authenticationMiddleware = async (req, res, next) => {
 		return handleUnexpectedError(res, error);
 	}
 };
+
+/**
+ * Ensure a user is verified before moving forward.
+ * @param {Object} req.users `authenticationMiddleware` must be used before `verificationMiddleware`.
+ */
+export const verificationMiddleware = async (req, res, next) => {
+	try {
+		if (!req.user)
+			return res.status(401).send("User is not authenticated.");
+
+		console.log(req.user);
+
+		next();
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};

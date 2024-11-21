@@ -17,7 +17,6 @@ import {
 	Trash2,
 	XCircle,
 } from "lucide-react";
-import styles from "./page.module.scss";
 import Link from "next/link";
 import { capitalizeWords, findById } from "@/util/display";
 import Filter from "../../components/Filter";
@@ -510,11 +509,7 @@ const Listings = () => {
 					actions: selection.length > 0 && actions,
 				}}
 			/>
-			{message && (
-				<div className={styles["--cms-message-container"]}>
-					{message}
-				</div>
-			)}
+			{message && <div className="--cms-padding">{message}</div>}
 			{loading || !articles ? (
 				<Loading />
 			) : (

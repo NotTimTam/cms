@@ -3,7 +3,6 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import styles from "./page.module.scss";
 import Tabs from "../../components/Tabs";
 import { capitalizeWords } from "@/util/display";
 import Message from "../../components/Message";

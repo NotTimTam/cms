@@ -9,7 +9,10 @@ export default async function Dashboard() {
 
 	return (
 		<div className={styles["--cms-dashboard"]}>
-			<SystemMessages token={token} />
+			<SystemMessages
+				token={token}
+				style={{ gridColumn: "1 / 3", padding: 0 }}
+			/>
 			<section className={styles["--cms-dashboard-section"]}>
 				<header className={styles["--cms-dashboard-section-header"]}>
 					<h2>Site</h2>

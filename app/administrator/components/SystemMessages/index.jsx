@@ -6,7 +6,7 @@ import Message from "../Message";
 import API from "@/util/API";
 import styles from "./index.module.scss";
 
-const SystemMessages = ({ token, fill }) => {
+const SystemMessages = ({ token, fill, style = {} }) => {
 	const [messages, setMessages] = useState(null);
 
 	const getSystemMessages = async () => {
@@ -44,15 +44,14 @@ const SystemMessages = ({ token, fill }) => {
 	if (messages && messages.length === 0) return null;
 
 	return (
-		<div className={styles["--cms-system-messages"]}>
+		<div style={style} className={styles["--cms-system-messages"]}>
 			{messages ? (
 				messages.map((message) => {
 					const { _id, content, createdAt, type } = message;
 
 					return (
 						<Message fill={fill} key={_id} type={type}>
-							<b>{new Date(createdAt).toLocaleString()}</b>{" "}
-							&mdash; <span>{content}</span>
+							<span>{content}</span>
 						</Message>
 					);
 				})

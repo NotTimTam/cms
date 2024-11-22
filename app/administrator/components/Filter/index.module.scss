@@ -138,6 +138,12 @@ form.--cms-filter-form {
 					width: 100%;
 
 					z-index: 2;
+
+					button.--cms-filter-option-results-item {
+						&[aria-selected] {
+							background-color: var(--background-color-7);
+						}
+					}
 				}
 
 				&[aria-expanded] {
@@ -146,7 +152,7 @@ form.--cms-filter-form {
 							border-bottom-left-radius: 0;
 						}
 
-						button {
+						button.--cms-filter-option-input-group-display-toggle {
 							border-bottom-right-radius: 0;
 							border-bottom: 1px solid var(--background-color);
 							svg {

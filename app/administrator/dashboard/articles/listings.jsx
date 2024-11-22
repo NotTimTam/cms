@@ -353,9 +353,14 @@ const Listings = () => {
 			getter: {
 				type: "static",
 				data: [
-					{ id: "normal", label: "\u2014 Clear \u2014" },
+					{
+						id: "normal",
+						ariaLabel: "Normal",
+						label: "Normal",
+					},
 					{
 						id: "published",
+						ariaLabel: "Published",
 						label: (
 							<>
 								<CheckCircle2 color="var(--success-color)" />{" "}
@@ -365,6 +370,7 @@ const Listings = () => {
 					},
 					{
 						id: "unpublished",
+						ariaLabel: "Unpublished",
 						label: (
 							<>
 								<XCircle color="var(--error-color)" />
@@ -374,6 +380,7 @@ const Listings = () => {
 					},
 					{
 						id: "trashed",
+						ariaLabel: "Trashed",
 						label: (
 							<>
 								<Trash2 color="var(--background-color-6)" />
@@ -383,6 +390,7 @@ const Listings = () => {
 					},
 					{
 						id: "archived",
+						ariaLabel: "Archived",
 						label: (
 							<>
 								<Archive color="var(--warning-color)" />

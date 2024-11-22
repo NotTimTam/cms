@@ -47,14 +47,19 @@ const Option = ({
 	const displayElement = (() => {
 		switch (optionType) {
 			case "select":
+				const currentItem =
+					data && data.find(({ id }) => id === option);
 				return (
 					<button
 						type="button"
 						aria-label={ariaLabel}
 						onClick={() => setExpanded(!expanded)}
+						style={currentItem && { color: "var(--text-color)" }}
 						className={!search ? styles["--cms-placeholder"] : null}
 					>
-						{search || ariaLabel}
+						{(currentItem &&
+							(currentItem.ariaLabel || currentItem.label)) ||
+							ariaLabel}
 					</button>
 				);
 			case "search":
@@ -86,7 +91,7 @@ const Option = ({
 					{displayElement}
 				</span>
 				<button
-					className="--cms-info"
+					className={`--cms-info ${styles["--cms-filter-option-input-group-display-toggle"]}`}
 					type="button"
 					aria-label={ariaLabel}
 					onClick={() => setExpanded(!expanded)}
@@ -103,9 +108,14 @@ const Option = ({
 							data.map((item, index) => (
 								<button
 									key={index}
-									aria-label={item.label}
+									aria-label={item.ariaLabel || item.label}
 									aria-selected={
 										option === item.id ? "true" : undefined
+									}
+									className={
+										styles[
+											"--cms-filter-option-results-item"
+										]
 									}
 									onClick={() => {
 										setOption(item.id);

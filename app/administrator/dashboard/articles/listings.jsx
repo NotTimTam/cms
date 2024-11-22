@@ -18,10 +18,9 @@ import {
 	XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { capitalizeWords, findById } from "@/util/display";
+import { findById } from "@/util/display";
 import Filter from "../../components/Filter";
 import { getToken } from "@/app/cookies";
-import { statusEnum } from "@/util/enum";
 
 let lastQuery;
 
@@ -353,11 +352,45 @@ const Listings = () => {
 			],
 			getter: {
 				type: "static",
-				clear: { label: "\u2014 Clear \u2014" },
-				data: statusEnum.map((item) => ({
-					id: item,
-					label: capitalizeWords(item),
-				})),
+				data: [
+					{ id: "normal", label: "\u2014 Clear \u2014" },
+					{
+						id: "published",
+						label: (
+							<>
+								<CheckCircle2 color="var(--success-color)" />{" "}
+								Published
+							</>
+						),
+					},
+					{
+						id: "unpublished",
+						label: (
+							<>
+								<XCircle color="var(--error-color)" />
+								Unpublished
+							</>
+						),
+					},
+					{
+						id: "trashed",
+						label: (
+							<>
+								<Trash2 color="var(--background-color-6)" />
+								Trashed
+							</>
+						),
+					},
+					{
+						id: "archived",
+						label: (
+							<>
+								<Archive color="var(--warning-color)" />
+								Archived
+							</>
+						),
+					},
+				],
 			},
 		},
 	];

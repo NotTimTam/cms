@@ -42,9 +42,7 @@ export const validateArticle = async (article) => {
 	else if (typeof article.name !== "string" || !nameRegex.test(article.name))
 		throw new ResError(400, "Invalid article name provided.");
 
-	if (!article.author)
-		throw new ResError(400, "No author ID provided to article.");
-	else {
+	if (article.author) {
 		const author = await UserModel.findById(article.author);
 
 		if (!author) article.author = null;
@@ -134,9 +132,7 @@ export const validateArticle = async (article) => {
  * @returns {Object} The category data, reformatted, if necessary.
  */
 export const validateCategory = async (category) => {
-	if (!category.author)
-		throw new ResError(400, "No author ID provided to category.");
-	else {
+	if (category.author) {
 		const author = await UserModel.findById(category.author);
 
 		if (!author) category.author = null;

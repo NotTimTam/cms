@@ -273,16 +273,29 @@ const Listings = () => {
 			ariaLabel: "Trash",
 			action: async () => await executeBatch({ status: "archived" }),
 		},
-		{
-			label: (
-				<>
-					<Trash2 color="var(--error-color)" />
-					Trash
-				</>
-			),
-			ariaLabel: "Trash",
-			action: async () => await executeBatch({ status: "trashed" }),
-		},
+		query.status && query.status === "trashed"
+			? {
+					label: (
+						<>
+							<Trash2 color="var(--error-color)" />
+							Delete Permanently
+						</>
+					),
+					ariaLabel: "Delete Permanently",
+					action: async () =>
+						await executeBatch({ status: "trashed" }),
+			  }
+			: {
+					label: (
+						<>
+							<Trash2 color="var(--error-color)" />
+							Trash
+						</>
+					),
+					ariaLabel: "Trash",
+					action: async () =>
+						await executeBatch({ status: "trashed" }),
+			  },
 	];
 
 	const filterOptions = [
@@ -550,10 +563,10 @@ const Listings = () => {
 		lastQuery = JSON.stringify(query);
 	}, [query]);
 
-	// Clear the selection only when the results of the search differ.
+	// Clear the selection only in certain situations.
 	useEffect(() => {
 		setSelection([]);
-	}, [query.search]);
+	}, [query.search, query.status]);
 
 	return (
 		<>

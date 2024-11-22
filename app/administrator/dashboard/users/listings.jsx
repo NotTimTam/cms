@@ -323,7 +323,7 @@ const UserListings = () => {
 
 					<List
 						items={users}
-						itemIdentifier="user"
+						itemIdentifier="users"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing }]) => ({
 								listing,

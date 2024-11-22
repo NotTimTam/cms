@@ -12,15 +12,13 @@ import { useRouter } from "next/navigation";
 import Loading from "../../components/Loading";
 import Editor from "../../components/Editor";
 
-const defaultArticle = {
-	status: "unpublished",
-	featured: false,
-	access: "public",
-	tags: [],
-	category: undefined,
-	notes: "",
+const defaultCategory = {
 	name: "",
 	alias: "",
+	description: "",
+	notes: "",
+	status: "unpublished",
+	tags: [],
 };
 
 const CategoryEditor = ({ id }) => {
@@ -29,7 +27,9 @@ const CategoryEditor = ({ id }) => {
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState(null);
 
-	const [article, setArticle] = useState(id ? { _id: id } : defaultArticle);
+	const [category, setCategory] = useState(
+		id ? { _id: id } : defaultCategory
+	);
 
 	/**
 	 * Unpublished
@@ -39,24 +39,24 @@ const CategoryEditor = ({ id }) => {
 	 */
 
 	// Functions
-	const getArticle = async () => {
+	const getCategory = async () => {
 		setMessage(null);
 
 		setLoading(true);
 
 		try {
-			if (!article._id) return;
+			if (!category._id) return;
 
 			const token = await getToken();
 
 			const {
-				data: { article: newArticle },
+				data: { category: newCategory },
 			} = await API.get(
-				API.createRouteURL(API.articles, id),
+				API.createRouteURL(API.categories, id),
 				API.createAuthorizationConfig(token)
 			);
 
-			setArticle(newArticle);
+			setCategory(newCategory);
 		} catch (error) {
 			console.error(error);
 
@@ -66,7 +66,7 @@ const CategoryEditor = ({ id }) => {
 		setLoading(false);
 	};
 
-	const saveArticle = async () => {
+	const saveCategory = async () => {
 		setLoading(true);
 		setMessage(null);
 
@@ -76,20 +76,20 @@ const CategoryEditor = ({ id }) => {
 			const token = await getToken();
 
 			const {
-				data: { article: newArticle },
-			} = article._id
+				data: { category: newCategory },
+			} = category._id
 				? await API.patch(
-						API.createRouteURL(API.articles, article._id),
-						article,
+						API.createRouteURL(API.categories, category._id),
+						category,
 						API.createAuthorizationConfig(token)
 				  )
 				: await API.post(
-						API.articles,
-						article,
+						API.categories,
+						category,
 						API.createAuthorizationConfig(token)
 				  );
 
-			setArticle(newArticle);
+			setCategory(newCategory);
 
 			ret = true;
 		} catch (error) {
@@ -106,7 +106,7 @@ const CategoryEditor = ({ id }) => {
 	};
 
 	useEffect(() => {
-		if (id) getArticle();
+		if (id) getCategory();
 	}, [id]);
 
 	if (loading) return <Loading />;
@@ -116,36 +116,49 @@ const CategoryEditor = ({ id }) => {
 			<Editor
 				{...{
 					message,
-					saveData: saveArticle,
+					saveData: saveCategory,
 					closeEditor: () =>
-						router.push("/administrator/dashboard/articles"),
+						router.push("/administrator/dashboard/categories"),
 					tabs: [
 						Tabs.Item(
-							"Content",
+							"Category",
 							<>
-								<aside
-									className={styles["--cms-editor-side-menu"]}
-								>
+								<Tabs.Item.Main>
 									<form
 										onSubmit={(e) => e.preventDefault()}
 										className="--cms-form"
 									>
+										<label htmlFor="description">
+											Description
+										</label>
+										<textarea
+											placeholder="What sort of content is in this category?"
+											value={category.description || ""}
+											onChange={({ target: { value } }) =>
+												setCategory((category) => ({
+													...category,
+													description: value,
+												}))
+											}
+											id="description"
+										></textarea>
+									</form>
+								</Tabs.Item.Main>
+								<Tabs.Item.Aside>
+									<form
+										onSubmit={(e) => e.preventDefault()}
+										className="--cms-form"
+									>
+										<label htmlFor="Parent">Parent</label>
+										Coming Soon (dropdown)
 										<label htmlFor="status">Status</label>
 										<button id="status">
-											{capitalizeWords(article.status) ||
+											{capitalizeWords(category.status) ||
 												"Unpublished"}
 											<ChevronDown />
 										</button>
-										<label htmlFor="category" required>
-											Category
-										</label>
-										Coming Soon (dropdown)
-										<label htmlFor="featured">
-											Featured
-										</label>
-										Coming Soon (toggle)
-										<label htmlFor="access">Access</label>
-										Coming Soon (dropdown)
+										{/* <label htmlFor="access">Access</label>
+										Coming Soon (dropdown) */}
 										<label htmlFor="tags">Tags</label>
 										Coming Soon
 										<label htmlFor="notes">Notes</label>
@@ -153,26 +166,44 @@ const CategoryEditor = ({ id }) => {
 											id="notes"
 											placeholder="Recent changes, help for other editors, etc..."
 											aria-label="Notes"
-											value={article.notes || ""}
+											value={category.notes || ""}
 											onChange={({ target: { value } }) =>
-												setArticle((article) => ({
-													...article,
+												setCategory((category) => ({
+													...category,
 													notes: value,
 												}))
 											}
 										></textarea>
+										<label htmlFor="version-note">
+											Version Note
+										</label>
+										Coming Soon
 									</form>
-								</aside>
+								</Tabs.Item.Aside>
 							</>,
 							"Content"
 						),
-						Tabs.Item("Metadata", <>Metadata</>, "Metadata"),
-						Tabs.Item("Options", <>Options</>, "Options"),
-						Tabs.Item("Publishing", <>Publishing</>, "Publishing"),
 						Tabs.Item(
-							"Configure Front-End Editor",
-							<>Configure Front-End Editor</>,
-							"Configure Front-End Editor"
+							"Options",
+							<>
+								(fieldset with legend) layout, image, image
+								description (alt text), no description
+								(checkbox) (decorative image - no description
+								required)
+							</>,
+							"Options"
+						),
+						Tabs.Item(
+							"Publishing",
+							<>
+								Two fieldsets, publishing and metadata. In
+								publishing: created date, created by, modified
+								date (readonly), modified by (readonly), hits
+								(readonly), id (readonly). In metadata: meta
+								description (300 chars), keywords, author,
+								robots option dropdown
+							</>,
+							"Publishing"
 						),
 						Tabs.Item(
 							"Permissions",
@@ -183,8 +214,10 @@ const CategoryEditor = ({ id }) => {
 				}}
 			>
 				<Editor.ContentIdentifierForm
-					data={article}
-					setData={setArticle}
+					data={category}
+					setData={setCategory}
+					namePlaceholder="My Category"
+					aliasPlaceholder="my-category"
 				/>
 			</Editor>
 		</>

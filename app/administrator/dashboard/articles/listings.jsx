@@ -21,6 +21,7 @@ import Link from "next/link";
 import { capitalizeWords, findById } from "@/util/display";
 import Filter from "../../components/Filter";
 import { getToken } from "@/app/cookies";
+import { statusEnum } from "@/util/enum";
 
 let lastQuery;
 
@@ -41,6 +42,13 @@ const Listings = () => {
 	const {
 		data: { articleQuery },
 	} = SessionStorage;
+
+	// States
+	const [selection, setSelection] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [articles, setArticles] = useState(null);
+	const [query, setQuery] = useState(articleQuery || defaultQuery);
+	const [message, setMessage] = useState(null);
 
 	// Data
 	const sortingOptions = {
@@ -162,11 +170,7 @@ const Listings = () => {
 
 				return (
 					<List.InfoBlock>
-						<b
-							className={
-								styles["--cms-article-listing-info-title"]
-							}
-						>
+						<b>
 							<Link
 								aria-label="Open Article"
 								href={`/administrator/dashboard/articles?layout=edit&id=${_id}`}
@@ -186,12 +190,12 @@ const Listings = () => {
 				);
 			}),
 		},
-		access: {
-			label: "Access",
-			listing: new List.Element((id) =>
-				capitalizeWords(findById(articles, id).access)
-			),
-		},
+		// access: {
+		// 	label: "Access",
+		// 	listing: new List.Element((id) =>
+		// 		capitalizeWords(findById(articles, id).access)
+		// 	),
+		// },
 		author: {
 			label: "Author",
 			listing: new List.Element((id) => {
@@ -340,14 +344,23 @@ const Listings = () => {
 		// {
 		// 	ariaLabel: "Max Levels", // For other dropdowns.
 		// },
+		{
+			ariaLabel: "Status",
+			type: "select",
+			state: [
+				query.status,
+				(status) => setQuery((query) => ({ ...query, status })),
+			],
+			getter: {
+				type: "static",
+				clear: { label: "\u2014 Clear \u2014" },
+				data: statusEnum.map((item) => ({
+					id: item,
+					label: capitalizeWords(item),
+				})),
+			},
+		},
 	];
-
-	// States
-	const [selection, setSelection] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const [articles, setArticles] = useState(null);
-	const [query, setQuery] = useState(articleQuery || defaultQuery);
-	const [message, setMessage] = useState(null);
 
 	// Functions
 	const executeQuery = async () => {
@@ -527,7 +540,7 @@ const Listings = () => {
 
 					<List
 						items={articles}
-						itemIdentifier="article"
+						itemIdentifier="articles"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing }]) => ({
 								listing,

@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../../util/regex.js";
+import { statusEnum } from "../../../util/enum.js";
 
 const CategorySchema = new mongoose.Schema(
 	{
 		author: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: [true, "You must provide the Category's author."],
+			required: false,
 		},
 		name: {
 			type: String,
@@ -19,6 +20,12 @@ const CategorySchema = new mongoose.Schema(
 			match: [aliasRegex, "Invalid alias provided to Category."],
 			unique: [true, "Category alias must be unique."],
 		},
+		notes: {
+			type: String,
+			required: false,
+			default: "",
+			select: false,
+		},
 		description: {
 			type: String,
 			required: false,
@@ -30,6 +37,13 @@ const CategorySchema = new mongoose.Schema(
 				"You must provide order placement for this UserRole.",
 			],
 			default: 0,
+		},
+		status: {
+			type: String,
+			enum: statusEnum,
+			select: false,
+			required: [true, "You must provide the Article's status."],
+			default: "unpublished",
 		},
 		parent: {
 			type: mongoose.Schema.Types.ObjectId,

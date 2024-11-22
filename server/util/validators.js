@@ -47,8 +47,7 @@ export const validateArticle = async (article) => {
 	else {
 		const author = await UserModel.findById(article.author);
 
-		if (!author)
-			throw new ResError(404, "No author user found with that ID.");
+		if (!author) article.author = null;
 	}
 
 	if (!article.alias) article.alias = nameToAlias(article.name);
@@ -140,8 +139,7 @@ export const validateCategory = async (category) => {
 	else {
 		const author = await UserModel.findById(category.author);
 
-		if (!author)
-			throw new ResError(404, "No author user found with that ID.");
+		if (!author) category.author = null;
 	}
 
 	if (!category.name) throw new ResError(400, "No role name provided.");
@@ -190,6 +188,13 @@ export const validateCategory = async (category) => {
 	if (category.description && typeof category.description !== "string")
 		throw new ResError(400, "Invalid description provided.");
 
+	if (!category.notes) article.notes = "";
+	else if (typeof category.notes !== "string")
+		throw new ResError(
+			400,
+			"Invalid category notes provided. Expected a string."
+		);
+
 	if (
 		category.order &&
 		(typeof category.order !== "number" ||
@@ -212,6 +217,13 @@ export const validateCategory = async (category) => {
 				);
 		}
 	}
+
+	if (!category.status) category.status = "unpublished";
+	else if (!statusEnum.includes(category.status))
+		throw new ResError(
+			400,
+			`Invalid category status provided. Expected one of: ${statusEnum}`
+		);
 
 	return userRole;
 };

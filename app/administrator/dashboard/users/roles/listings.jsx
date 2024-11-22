@@ -297,7 +297,7 @@ const RoleListings = () => {
 
 					<List
 						items={userRoles}
-						itemIdentifier="user role"
+						itemIdentifier="user roles"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing }]) => ({
 								listing,

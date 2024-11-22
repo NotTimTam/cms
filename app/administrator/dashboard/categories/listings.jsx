@@ -18,7 +18,7 @@ import {
 	XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { capitalizeWords, findById } from "@/util/display";
+import { findById } from "@/util/display";
 import Filter from "../../components/Filter";
 import { getToken } from "@/app/cookies";
 
@@ -162,11 +162,7 @@ const Listings = () => {
 
 				return (
 					<List.InfoBlock>
-						<b
-							className={
-								styles["--cms-category-listing-info-title"]
-							}
-						>
+						<b>
 							<Link
 								aria-label="Open Category"
 								href={`/administrator/dashboard/categories?layout=edit&id=${_id}`}
@@ -186,12 +182,12 @@ const Listings = () => {
 				);
 			}),
 		},
-		access: {
-			label: "Access",
-			listing: new List.Element((id) =>
-				capitalizeWords(findById(categories, id).access)
-			),
-		},
+		// access: {
+		// 	label: "Access",
+		// 	listing: new List.Element((id) =>
+		// 		capitalizeWords(findById(categories, id).access)
+		// 	),
+		// },
 		author: {
 			label: "Author",
 			listing: new List.Element((id) => {
@@ -527,7 +523,7 @@ const Listings = () => {
 
 					<List
 						items={categories}
-						itemIdentifier="category"
+						itemIdentifier="categories"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing }]) => ({
 								listing,

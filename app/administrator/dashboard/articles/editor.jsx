@@ -15,7 +15,6 @@ import Editor from "../../components/Editor";
 const defaultArticle = {
 	status: "unpublished",
 	featured: false,
-	access: "public",
 	tags: [],
 	category: undefined,
 	notes: "",
@@ -123,9 +122,8 @@ const ArticleEditor = ({ id }) => {
 						Tabs.Item(
 							"Content",
 							<>
-								<aside
-									className={styles["--cms-editor-side-menu"]}
-								>
+								<Tabs.Item.Main>Editor Here</Tabs.Item.Main>
+								<Tabs.Item.Aside>
 									<form
 										onSubmit={(e) => e.preventDefault()}
 										className="--cms-form"
@@ -162,7 +160,7 @@ const ArticleEditor = ({ id }) => {
 											}
 										></textarea>
 									</form>
-								</aside>
+								</Tabs.Item.Aside>
 							</>,
 							"Content"
 						),

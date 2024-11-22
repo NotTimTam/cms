@@ -264,7 +264,7 @@ const RoleEditor = ({ id }) => {
 											onSubmit={(e) => e.preventDefault()}
 										>
 											<label htmlFor="parent">
-												Parent Role
+												Parent
 											</label>
 											<select
 												id="parent"

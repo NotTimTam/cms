@@ -7,7 +7,7 @@ const ArticleSchema = new mongoose.Schema(
 		author: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: [true, "You must provide the Article's author."],
+			required: false,
 		},
 		name: {
 			type: String,
@@ -36,11 +36,10 @@ const ArticleSchema = new mongoose.Schema(
 			required: [true, "Article featured status not provided."],
 			default: false,
 		},
-		access: {
-			type: String,
-			required: [true, "You must provide the article access level."],
-			default: "public",
-		},
+		// access: [{
+		// 	type: mongoose.Schema.Types.ObjectId,
+		// 	ref
+		// }],
 		category: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Category",

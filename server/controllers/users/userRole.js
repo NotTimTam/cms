@@ -11,6 +11,8 @@ import {
 	validateUserRole,
 	ResError,
 	validateNestQuery,
+	validateGenericQuery,
+	stripQuery,
 } from "../../util/validators.js";
 import mongoose from "mongoose";
 
@@ -278,6 +280,14 @@ export const getPossibleParents = async (req, res) => {
  */
 export const deleteUserRoles = async (req, res) => {
 	try {
+		try {
+			req.query = await validateGenericQuery(req.query);
+		} catch (error) {
+			if (error instanceof ResError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
 		let { selection } = req.query;
 
 		if (!selection)
@@ -285,7 +295,9 @@ export const deleteUserRoles = async (req, res) => {
 				.status(400)
 				.send('No "selection" parameter provided in query.');
 
-		const userRoles = await UserRoleModel.find({}).lean();
+		const userRoles = await UserRoleModel.find(
+			stripQuery(req.query)
+		).lean();
 
 		if (selection === "all")
 			selection = userRoles

@@ -5,6 +5,7 @@ import {
 	validateArticle,
 	validateArticleQuery,
 	ResError,
+	stripQuery,
 } from "../../util/validators.js";
 
 /**
@@ -300,6 +301,42 @@ export const findArticleByIdAndDelete = async (req, res) => {
 		await ArticleModel.findByIdAndDelete(id);
 
 		return res.status(200).send("Article deleted successfully.");
+	} catch (error) {
+		return handleUnexpectedError(res, error);
+	}
+};
+
+/**
+ * Delete a selection of articles.
+ */
+export const deleteArticles = async (req, res) => {
+	try {
+		try {
+			req.query = await validateArticleQuery(req.query);
+		} catch (error) {
+			if (error instanceof ResError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
+		let { selection } = req.query;
+
+		if (!selection)
+			return res
+				.status(400)
+				.send('No "selection" parameter provided in query.');
+
+		if (selection === "all")
+			selection = (
+				await ArticleModel.find(stripQuery(req.query)).lean()
+			).map(({ _id }) => _id.toString());
+		else selection = selection.split(",");
+
+		await ArticleModel.deleteMany({
+			_id: { $in: selection },
+		});
+
+		return res.status(200).send("Articles deleted successfully.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

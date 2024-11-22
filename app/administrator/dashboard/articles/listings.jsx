@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import StorageInterface from "@/util/StorageInterface";
 import Message from "../../components/Message";
 import Curate from "../../components/Curate";
@@ -15,12 +15,15 @@ import {
 	Sparkle,
 	Sparkles,
 	Trash2,
+	X,
 	XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { findById } from "@/util/display";
 import Filter from "../../components/Filter";
 import { getToken } from "@/app/cookies";
+import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
+import Modal from "../../components/Modal";
 
 let lastQuery;
 
@@ -282,8 +285,40 @@ const Listings = () => {
 						</>
 					),
 					ariaLabel: "Delete Permanently",
-					action: async () =>
-						await executeBatch({ status: "trashed" }),
+					action: async () => {
+						const PopupContent = () => {
+							const closePopup = useContext(PopupContext);
+
+							return (
+								<Modal>
+									<h3>Delete selected roles permanently?</h3>
+									<p>This action cannot be undone.</p>
+									<Modal.Options>
+										<button
+											type="reset"
+											aria-label="Cancel"
+											className="--cms-success"
+											onClick={() => closePopup(false)}
+										>
+											<X /> Cancel
+										</button>
+										<button
+											type="submit"
+											aria-label="Delete"
+											className="--cms-error"
+											onClick={() => closePopup(true)}
+										>
+											<Trash2 /> Delete Permanently
+										</button>
+									</Modal.Options>
+								</Modal>
+							);
+						};
+
+						const res = await createHeadlessPopup(<PopupContent />);
+
+						if (res === true) await massDeleteArticles();
+					},
 			  }
 			: {
 					label: (
@@ -502,6 +537,35 @@ const Listings = () => {
 			);
 
 			await executeQuery();
+		} catch (error) {
+			console.error(error);
+			setMessage(<Message type="error">{error.data}</Message>);
+		}
+
+		setLoading(false);
+	};
+
+	const massDeleteArticles = async () => {
+		setLoading(true);
+		setMessage(null);
+
+		try {
+			const token = await getToken();
+
+			// Create search params.
+			const searchParams = API.createQueryString(query);
+
+			// Batch through userRoles.
+			await API.delete(
+				`${API.articles}?${searchParams.toString()}&selection=${
+					selection === "all" ? selection : selection.join(",")
+				}`,
+				API.createAuthorizationConfig(token)
+			);
+
+			await executeQuery();
+
+			setSelection([]);
 		} catch (error) {
 			console.error(error);
 			setMessage(<Message type="error">{error.data}</Message>);

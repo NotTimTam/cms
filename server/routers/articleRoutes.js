@@ -7,11 +7,16 @@ import {
 	findArticleByIdAndUpdate,
 	batchArticles,
 	orderArticles,
+	deleteArticles,
 } from "../controllers/content/article.js";
 
 const articleRouter = Router();
 
-articleRouter.route("/").get(findArticles).post(createArticle);
+articleRouter
+	.route("/")
+	.get(findArticles)
+	.post(createArticle)
+	.delete(deleteArticles);
 articleRouter.patch(
 	"/batch",
 

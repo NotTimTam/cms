@@ -479,3 +479,26 @@ export const validateArticleQuery = async (query) => {
 
 	return query;
 };
+
+export const stripQuery = (query) => {
+	console.log(query);
+
+	const newQuery = {};
+
+	if (query.status) {
+		newQuery.status = {
+			$in:
+				query.status === "normal"
+					? ["published", "unpublished"]
+					: [query.status],
+		};
+	}
+
+	if (query.search)
+		newQuery["$or"] = [
+			{ name: { $regex: query.search, $options: "i" } },
+			{ alias: { $regex: query.search, $options: "i" } },
+		];
+
+	return newQuery;
+};

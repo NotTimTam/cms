@@ -5,6 +5,7 @@ import { emailRegex, nameRegex } from "../../../util/regex.js";
 import { getPathToDocument } from "../..//util/database.js";
 import {
 	ResError,
+	stripQuery,
 	validateUser,
 	validateUserQuery,
 } from "../../util/validators.js";
@@ -234,6 +235,14 @@ export const findUserByIdAndDelete = async (req, res) => {
  */
 export const deleteUsers = async (req, res) => {
 	try {
+		try {
+			req.query = await validateUserQuery(req.query);
+		} catch (error) {
+			if (error instanceof ResError)
+				return res.status(error.code).send(error.message);
+			else throw error;
+		}
+
 		let { selection } = req.query;
 
 		if (!selection)
@@ -241,7 +250,7 @@ export const deleteUsers = async (req, res) => {
 				.status(400)
 				.send('No "selection" parameter provided in query.');
 
-		const users = await UserModel.find({}).lean();
+		const users = await UserModel.find(stripQuery(req.query)).lean();
 
 		if (selection === "all")
 			selection = users.map(({ _id }) => _id.toString());

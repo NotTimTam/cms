@@ -184,7 +184,7 @@ export const validateCategory = async (category) => {
 	if (category.description && typeof category.description !== "string")
 		throw new ResError(400, "Invalid description provided.");
 
-	if (!category.notes) article.notes = "";
+	if (!category.notes) category.notes = "";
 	else if (typeof category.notes !== "string")
 		throw new ResError(
 			400,

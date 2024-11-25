@@ -51,7 +51,7 @@ const Listings = () => {
 							{depthIndicator(depth)}
 							<Link
 								aria-label="Open Category"
-								href={`/administrator/dashboard/users?view=categories&layout=edit&id=${_id}`}
+								href={`/administrator/dashboard/categories?layout=edit&id=${_id}`}
 							>
 								{name}
 							</Link>
@@ -274,7 +274,7 @@ const Listings = () => {
 		<>
 			<Curate
 				{...{
-					new: "/administrator/dashboard/users?view=categories&layout=edit",
+					new: "/administrator/dashboard/categories?layout=edit",
 					actions: selection.length > 0 && actions,
 				}}
 			/>

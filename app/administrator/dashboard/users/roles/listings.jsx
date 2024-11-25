@@ -31,7 +31,7 @@ const defaultQuery = {
 	},
 };
 
-const RoleListings = () => {
+const Listings = () => {
 	// Hooks
 	const SessionStorage = new StorageInterface(window.sessionStorage);
 	const {
@@ -332,4 +332,4 @@ const RoleListings = () => {
 	);
 };
 
-export default RoleListings;
+export default Listings;

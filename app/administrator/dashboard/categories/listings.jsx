@@ -1,26 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import StorageInterface from "@/util/StorageInterface";
-import Message from "../../components/Message";
-import Curate from "../../components/Curate";
-import API from "@/util/API";
-import List from "../../components/List";
-import Loading from "../../components/Loading";
-import {
-	Archive,
-	CheckCircle2,
-	CircleHelp,
-	EllipsisVertical,
-	Sparkle,
-	Sparkles,
-	Trash2,
-	XCircle,
-} from "lucide-react";
-import Link from "next/link";
-import { findById } from "@/util/display";
-import Filter from "../../components/Filter";
+import Curate from "@/app/administrator/components/Curate";
+import Filter from "@/app/administrator/components/Filter";
+import List from "@/app/administrator/components/List";
+import Loading from "@/app/administrator/components/Loading";
+import Message from "@/app/administrator/components/Message";
+import Modal from "@/app/administrator/components/Modal";
 import { getToken } from "@/app/cookies";
+import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
+import API from "@/util/API";
+import {
+	depthIndicator,
+	findById,
+	unflattenDocumentTree,
+} from "@/util/display";
+import StorageInterface from "@/util/StorageInterface";
+import { EllipsisVertical, Trash2, X } from "lucide-react";
+import Link from "next/link";
+import { useContext, useEffect, useState } from "react";
 
 let lastQuery;
 
@@ -32,7 +29,6 @@ const defaultQuery = {
 		field: "createdAt",
 		dir: -1,
 	},
-	status: "normal",
 };
 
 const Listings = () => {
@@ -44,174 +40,31 @@ const Listings = () => {
 
 	// Data
 	const sortingOptions = {
-		featured: {
-			label: "Featured",
-			listing: new List.Toggle(
-				(id) =>
-					findById(categories, id).featured ? (
-						<Sparkles color="var(--warning-color)" />
-					) : (
-						<Sparkle color="var(--background-color-6)" />
-					),
-				async (id) => {
-					setLoading(true);
-
-					setMessage(null);
-
-					try {
-						const token = await getToken();
-
-						const category = findById(categories, id);
-
-						const {
-							data: { category: newCategory },
-						} = await API.patch(
-							API.createRouteURL(API.categories, category._id),
-							{ featured: !category.featured },
-							API.createAuthorizationConfig(token)
-						);
-
-						let newCategoryListings = [...categories];
-
-						newCategoryListings[index] = {
-							...category,
-							featured: newCategory.featured,
-						};
-
-						setCategories(newCategoryListings);
-					} catch (error) {
-						console.error(error.data);
-						setMessage(
-							<Message type="error">{error.data}</Message>
-						);
-					}
-
-					setLoading(false);
-				},
-				"Featured"
-			),
-		},
-		status: {
-			label: "Status",
-			listing: new List.Toggle(
-				(id) => {
-					const { status } = findById(categories, id);
-
-					switch (status) {
-						case "published":
-							return (
-								<CheckCircle2 color="var(--success-color)" />
-							);
-						case "unpublished":
-							return <XCircle color="var(--error-color)" />;
-						case "trashed":
-							return <Trash2 color="var(--background-color-6)" />;
-						case "archived":
-							return <Archive color="var(--warning-color)" />;
-						default:
-							return <CircleHelp />;
-					}
-				},
-				async (id) => {
-					setLoading(true);
-
-					setMessage(null);
-
-					try {
-						const token = await getToken();
-
-						const category = findById(categories, id);
-
-						const {
-							data: { category: newCategory },
-						} = await API.patch(
-							API.createRouteURL(API.categories, category._id),
-							{
-								status:
-									category.status === "published"
-										? "unpublished"
-										: "published",
-							},
-							API.createAuthorizationConfig(token)
-						);
-
-						let newCategoryListings = [...categories];
-
-						newCategoryListings[index] = {
-							...category,
-							status: newCategory.status,
-						};
-
-						setCategories(newCategoryListings);
-					} catch (error) {
-						console.error(error.data);
-						setMessage(
-							<Message type="error">{error.data}</Message>
-						);
-					}
-
-					setLoading(false);
-				},
-				"Status"
-			),
-		},
 		name: {
 			label: "Name",
-			listing: new List.Element((id) => {
-				const { name, alias, category, _id } = findById(categories, id);
+			listing: new List.Element((_id, items) => {
+				const { name, depth } = findById(items, _id);
 
 				return (
 					<List.InfoBlock>
-						<b>
+						<h3>
+							{depthIndicator(depth)}
 							<Link
 								aria-label="Open Category"
-								href={`/administrator/dashboard/categories?layout=edit&id=${_id}`}
+								href={`/administrator/dashboard/users?view=categories&layout=edit&id=${_id}`}
 							>
 								{name}
 							</Link>
-						</b>
-						<span>
-							<b>Alias:</b> {alias}
-						</span>
-						{category && (
-							<span>
-								<b>Category:</b> {category}
-							</span>
-						)}
+						</h3>
 					</List.InfoBlock>
-				);
-			}),
-		},
-		// access: {
-		// 	label: "Access",
-		// 	listing: new List.Element((id) =>
-		// 		capitalizeWords(findById(categories, id).access)
-		// 	),
-		// },
-		author: {
-			label: "Author",
-			listing: new List.Element((id) => {
-				const author = findById(categories, id).author;
-				return author ? (
-					<Link
-						href={`/administrator/dashboard/users?layout=edit&id=${author._id}`}
-					>
-						{author.name}
-					</Link>
-				) : (
-					<b>None</b>
 				);
 			}),
 		},
 		createdAt: {
 			label: "Date Created",
-			listing: new List.Element((id) =>
-				new Date(findById(categories, id).createdAt).toLocaleString()
+			listing: new List.Element((_id, items) =>
+				new Date(findById(items, _id).createdAt).toLocaleString()
 			),
-		},
-		hits: {
-			label: "Hits",
-			listing: new List.Element((id) => findById(categories, id).hits),
 		},
 	};
 
@@ -219,129 +72,52 @@ const Listings = () => {
 		{
 			label: (
 				<>
-					<Sparkles color="var(--warning-color)" />
-					Feature
-				</>
-			),
-			ariaLabel: "Feature",
-			action: async () => await executeBatch({ featured: true }),
-		},
-		{
-			label: (
-				<>
-					<Sparkle color="var(--background-color-6)" />
-					Unfeature
-				</>
-			),
-			ariaLabel: "Unfeature",
-			action: async () => await executeBatch({ featured: false }),
-		},
-		{
-			label: (
-				<>
-					<CheckCircle2 color="var(--success-color)" />
-					Publish
-				</>
-			),
-			ariaLabel: "Publish",
-			action: async () => await executeBatch({ status: "published" }),
-		},
-		{
-			label: (
-				<>
-					<XCircle color="var(--error-color)" />
-					Unpublish
-				</>
-			),
-			ariaLabel: "Unpublish",
-			action: async () => await executeBatch({ status: "unpublished" }),
-		},
-		{
-			label: (
-				<>
-					<Archive color="var(--warning-color)" />
-					Archive
-				</>
-			),
-			ariaLabel: "Trash",
-			action: async () => await executeBatch({ status: "archived" }),
-		},
-		{
-			label: (
-				<>
 					<Trash2 color="var(--error-color)" />
-					Trash
+					Delete Permanently
 				</>
 			),
 			ariaLabel: "Trash",
-			action: async () => await executeBatch({ status: "trashed" }),
-		},
-	];
+			action: async () => {
+				const PopupContent = () => {
+					const closePopup = useContext(PopupContext);
 
-	const filterOptions = [
-		/**
-		 * Select Featured
-		 * Select Status
-		 * Select Category
-		 * Select Access
-		 * Select Author
-		 * Select Tag
-		 * Select Max Levels
-		 *
-		 * group of dropdowns with darker background
-		 * each dropdown is both a text input for filtration, and a selection list. In the case of authors, the dropdown shows the word "None" and the top 5 authors on the site.
-		 */
-		// {
-		// 	ariaLabel: "Featured",
-		// 	getter: {
-		// 		type: "static",
-		// 		data: [
-		// 			{
-		// 				id: false,
-		// 				label: "Unfeatured",
-		// 			},
-		// 			{
-		// 				id: true,
-		// 				label: "Featured",
-		// 			},
-		// 		],
-		// 	},
-		// },
-		// {
-		// 	ariaLabel: "Status",
-		// 	getter: {
-		// 		type: "static",
-		// 		data: statusEnum.map((item) => ({
-		// 			id: item,
-		// 			label: capitalizeWords(item),
-		// 		})),
-		// 	},
-		// },
-		// {
-		// 	ariaLabel: "Category",
-		// 	getter: {},
-		// },
-		// {
-		// 	ariaLabel: "Access",
-		// 	getter: {},
-		// },
-		// {
-		// 	ariaLabel: "Author",
-		// 	getter: {},
-		// },
-		// {
-		// 	ariaLabel: "Tag",
-		// 	getter: {},
-		// },
-		// {
-		// 	ariaLabel: "Max Levels", // For other dropdowns.
-		// },
+					return (
+						<Modal>
+							<h3>Delete selected categories permanently?</h3>
+							<p>This action cannot be undone.</p>
+							<Modal.Options>
+								<button
+									type="reset"
+									aria-label="Cancel"
+									className="--cms-success"
+									onClick={() => closePopup(false)}
+								>
+									<X /> Cancel
+								</button>
+								<button
+									type="submit"
+									aria-label="Delete"
+									className="--cms-error"
+									onClick={() => closePopup(true)}
+								>
+									<Trash2 /> Delete Permanently
+								</button>
+							</Modal.Options>
+						</Modal>
+					);
+				};
+
+				const res = await createHeadlessPopup(<PopupContent />);
+
+				if (res === true) await massDeleteCategories();
+			},
+		},
 	];
 
 	// States
 	const [selection, setSelection] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [categories, setCategories] = useState(null);
+	const [categories, setCategories] = useState([]);
 	const [query, setQuery] = useState(categoryQuery || defaultQuery);
 	const [message, setMessage] = useState(null);
 
@@ -351,22 +127,21 @@ const Listings = () => {
 		setMessage(null);
 
 		try {
-			const token = await getToken();
-
 			SessionStorage.setItem("categoryQuery", query); // Remember this query.
 
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
 			// Get categories.
+			const token = await getToken();
 			const {
 				data: { categories, page: newPage, numPages },
 			} = await API.get(
-				`${API.categories}?${searchParams.toString()}`,
+				`${API.categories}/tree?${searchParams.toString()}`,
 				API.createAuthorizationConfig(token)
 			);
 
-			setCategories(categories);
+			setCategories(unflattenDocumentTree(categories));
 			setQuery((query) => ({
 				...query,
 				page: newPage,
@@ -380,7 +155,7 @@ const Listings = () => {
 		setLoading(false);
 	};
 
-	const reorderCategories = async (active, over, dir) => {
+	const reorderCategory = async (active, over, dir) => {
 		setLoading(true);
 		setMessage(null);
 
@@ -398,7 +173,7 @@ const Listings = () => {
 				API.createAuthorizationConfig(token)
 			);
 
-			// Reload user roles.
+			// Reload user categories.
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
@@ -408,7 +183,7 @@ const Listings = () => {
 		setLoading(false);
 	};
 
-	const executeBatch = async (patch) => {
+	const massDeleteCategories = async () => {
 		setLoading(true);
 		setMessage(null);
 
@@ -419,18 +194,16 @@ const Listings = () => {
 			const searchParams = API.createQueryString(query);
 
 			// Batch through categories.
-			await API.patch(
-				`${API.createRouteURL(
-					API.categories,
-					"batch"
-				)}?${searchParams.toString()}&selection=${
+			await API.delete(
+				`${API.categories}?${searchParams.toString()}&selection=${
 					selection === "all" ? selection : selection.join(",")
 				}`,
-				patch,
 				API.createAuthorizationConfig(token)
 			);
 
 			await executeQuery();
+
+			setSelection([]);
 		} catch (error) {
 			console.error(error);
 			setMessage(<Message type="error">{error.data}</Message>);
@@ -501,12 +274,14 @@ const Listings = () => {
 		<>
 			<Curate
 				{...{
-					new: "/administrator/dashboard/categories?layout=edit",
+					new: "/administrator/dashboard/users?view=categories&layout=edit",
 					actions: selection.length > 0 && actions,
 				}}
 			/>
-			{message && <div className="--cms-padding">{message}</div>}
-			{loading || !categories ? (
+			{message && (
+				<div style={{ padding: "var(--padding)" }}>{message}</div>
+			)}
+			{loading ? (
 				<Loading />
 			) : (
 				<>
@@ -516,14 +291,13 @@ const Listings = () => {
 							setQuery,
 							executeQuery,
 							sortingOptions,
-							filterOptions,
 							defaultQuery,
 						}}
 					/>
 
 					<List
 						items={categories}
-						itemIdentifier="categories"
+						itemIdentifier="user categories"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing }]) => ({
 								listing,
@@ -548,7 +322,7 @@ const Listings = () => {
 									!query.sort || query.sort.field !== "order",
 							},
 							swapItems: (active, over, dir) => {
-								reorderCategories(active, over, dir);
+								reorderCategory(active, over, dir);
 							},
 						}}
 					/>

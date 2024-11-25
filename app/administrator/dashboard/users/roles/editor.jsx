@@ -17,7 +17,7 @@ const defaultRole = {
 	parent: "",
 };
 
-const RoleEditor = ({ id }) => {
+const UserRoleEditor = ({ id }) => {
 	const router = useRouter();
 
 	const [loading, setLoading] = useState(false);
@@ -313,4 +313,4 @@ const RoleEditor = ({ id }) => {
 	);
 };
 
-export default RoleEditor;
+export default UserRoleEditor;

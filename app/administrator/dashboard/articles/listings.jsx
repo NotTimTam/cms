@@ -73,22 +73,13 @@ const Listings = () => {
 
 						const article = findById(articles, id);
 
-						const {
-							data: { article: newArticle },
-						} = await API.patch(
+						await API.patch(
 							API.createRouteURL(API.articles, article._id),
 							{ featured: !article.featured },
 							API.createAuthorizationConfig(token)
 						);
 
-						let newArticleListings = [...articles];
-
-						newArticleListings[index] = {
-							...article,
-							featured: newArticle.featured,
-						};
-
-						setArticles(newArticleListings);
+						await executeQuery();
 					} catch (error) {
 						console.error(error.data);
 						setMessage(
@@ -132,9 +123,7 @@ const Listings = () => {
 
 						const article = findById(articles, id);
 
-						const {
-							data: { article: newArticle },
-						} = await API.patch(
+						await API.patch(
 							API.createRouteURL(API.articles, article._id),
 							{
 								status:
@@ -145,14 +134,7 @@ const Listings = () => {
 							API.createAuthorizationConfig(token)
 						);
 
-						let newArticleListings = [...articles];
-
-						newArticleListings[index] = {
-							...article,
-							status: newArticle.status,
-						};
-
-						setArticles(newArticleListings);
+						await executeQuery();
 					} catch (error) {
 						console.error(error.data);
 						setMessage(

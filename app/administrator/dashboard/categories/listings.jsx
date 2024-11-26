@@ -69,23 +69,15 @@ const Listings = () => {
 
 						const category = findById(items, id);
 
-						const {
-							data: { category: newCategory },
-						} = await API.patch(
+						await API.patch(
 							API.createRouteURL(API.categories, category._id),
 							{ featured: !category.featured },
 							API.createAuthorizationConfig(token)
 						);
 
-						let newCategoryListings = [...categories];
-
-						newCategoryListings[index] = {
-							...category,
-							featured: newCategory.featured,
-						};
-
-						setCategories(newCategoryListings);
+						await executeQuery();
 					} catch (error) {
+						console.error(error);
 						console.error(error.data);
 						setMessage(
 							<Message type="error">{error.data}</Message>
@@ -128,9 +120,7 @@ const Listings = () => {
 
 						const category = findById(items, id);
 
-						const {
-							data: { category: newCategory },
-						} = await API.patch(
+						await API.patch(
 							API.createRouteURL(API.categories, category._id),
 							{
 								status:
@@ -141,14 +131,7 @@ const Listings = () => {
 							API.createAuthorizationConfig(token)
 						);
 
-						let newCategoryListings = [...categories];
-
-						newCategoryListings[index] = {
-							...category,
-							status: newCategory.status,
-						};
-
-						setCategories(newCategoryListings);
+						await executeQuery();
 					} catch (error) {
 						console.error(error.data);
 						setMessage(

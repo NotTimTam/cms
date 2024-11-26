@@ -470,8 +470,16 @@ div.--cms-popup-content {
 	}
 }
 
-a {
+a:not(.--cms-button) {
 	color: var(--info-color);
+
+	&:hover {
+		opacity: 0.75;
+	}
+
+	&:active {
+		opacity: 0.5;
+	}
 
 	&[disabled] {
 		color: var(--background-color-6);

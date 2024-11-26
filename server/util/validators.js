@@ -221,6 +221,16 @@ export const validateCategory = async (category) => {
 			`Invalid category status provided. Expected one of: ${statusEnum}`
 		);
 
+	if (!category.featured) category.featured = false;
+	else if (typeof category.featured !== "boolean")
+		throw new ResError(
+			400,
+			'Invalid category "featured" status provided. Expected a boolean.'
+		);
+
+	// Access
+	// Tags
+
 	return category;
 };
 

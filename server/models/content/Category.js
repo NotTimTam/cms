@@ -45,6 +45,18 @@ const CategorySchema = new mongoose.Schema(
 			required: [true, "You must provide the Article's status."],
 			default: "unpublished",
 		},
+		featured: {
+			type: Boolean,
+			required: [true, "Article featured status not provided."],
+			default: false,
+		},
+		tags: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Tag",
+				required: false,
+			},
+		],
 		parent: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Category",

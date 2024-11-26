@@ -15,7 +15,17 @@ import {
 	unflattenDocumentTree,
 } from "@/util/display";
 import StorageInterface from "@/util/StorageInterface";
-import { EllipsisVertical, Trash2, X } from "lucide-react";
+import {
+	Archive,
+	CheckCircle2,
+	CircleHelp,
+	EllipsisVertical,
+	Sparkle,
+	Sparkles,
+	Trash2,
+	X,
+	XCircle,
+} from "lucide-react";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
@@ -40,6 +50,117 @@ const Listings = () => {
 
 	// Data
 	const sortingOptions = {
+		featured: {
+			label: "Featured",
+			listing: new List.Toggle(
+				(id, items) =>
+					findById(items, id).featured ? (
+						<Sparkles color="var(--warning-color)" />
+					) : (
+						<Sparkle color="var(--background-color-6)" />
+					),
+				async (id, items) => {
+					setLoading(true);
+
+					setMessage(null);
+
+					try {
+						const token = await getToken();
+
+						const category = findById(items, id);
+
+						const {
+							data: { category: newCategory },
+						} = await API.patch(
+							API.createRouteURL(API.categories, category._id),
+							{ featured: !category.featured },
+							API.createAuthorizationConfig(token)
+						);
+
+						let newCategoryListings = [...categories];
+
+						newCategoryListings[index] = {
+							...category,
+							featured: newCategory.featured,
+						};
+
+						setCategories(newCategoryListings);
+					} catch (error) {
+						console.error(error.data);
+						setMessage(
+							<Message type="error">{error.data}</Message>
+						);
+					}
+
+					setLoading(false);
+				},
+				"Featured"
+			),
+		},
+		status: {
+			label: "Status",
+			listing: new List.Toggle(
+				(id, items) => {
+					const { status } = findById(items, id);
+
+					switch (status) {
+						case "published":
+							return (
+								<CheckCircle2 color="var(--success-color)" />
+							);
+						case "unpublished":
+							return <XCircle color="var(--error-color)" />;
+						case "trashed":
+							return <Trash2 color="var(--background-color-6)" />;
+						case "archived":
+							return <Archive color="var(--warning-color)" />;
+						default:
+							return <CircleHelp />;
+					}
+				},
+				async (id, items) => {
+					setLoading(true);
+
+					setMessage(null);
+
+					try {
+						const token = await getToken();
+
+						const category = findById(items, id);
+
+						const {
+							data: { category: newCategory },
+						} = await API.patch(
+							API.createRouteURL(API.categories, category._id),
+							{
+								status:
+									category.status === "published"
+										? "unpublished"
+										: "published",
+							},
+							API.createAuthorizationConfig(token)
+						);
+
+						let newCategoryListings = [...categories];
+
+						newCategoryListings[index] = {
+							...category,
+							status: newCategory.status,
+						};
+
+						setCategories(newCategoryListings);
+					} catch (error) {
+						console.error(error.data);
+						setMessage(
+							<Message type="error">{error.data}</Message>
+						);
+					}
+
+					setLoading(false);
+				},
+				"Status"
+			),
+		},
 		name: {
 			label: "Name",
 			listing: new List.Element((_id, items) => {

@@ -221,7 +221,7 @@ export const validateCategory = async (category) => {
 			`Invalid category status provided. Expected one of: ${statusEnum}`
 		);
 
-	return userRole;
+	return category;
 };
 
 /**

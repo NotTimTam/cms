@@ -304,7 +304,7 @@ export const validateTag = async (tag) => {
 
 	// Access
 
-	return category;
+	return tag;
 };
 
 /**

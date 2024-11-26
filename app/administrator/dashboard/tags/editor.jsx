@@ -184,45 +184,15 @@ const TagEditor = ({ id }) => {
 							</button>
 							{/* <label htmlFor="access">Access</label>
 										Coming Soon (dropdown) */}
-							<label htmlFor="tags">Tags</label>
-							Coming Soon
-							<label htmlFor="notes">Notes</label>
-							<textarea
-								id="notes"
-								placeholder="Recent changes, help for other editors, etc..."
-								aria-label="Notes"
-								value={tag.notes || ""}
-								onChange={({ target: { value } }) =>
-									setTag((tag) => ({
-										...tag,
-										notes: value,
-									}))
-								}
-							></textarea>
-							{/* <label htmlFor="version-note">
-											Version Note
-										</label>
-										Coming Soon */}
 						</form>,
 						"Content"
 					),
 					Tabs.Item(
-						"Options",
-						<>
-							(fieldset with legend) layout, image, image
-							description (alt text), no description (checkbox)
-							(decorative image - no description required)
-						</>,
-						"Options"
-					),
-					Tabs.Item(
 						"Publishing",
 						<>
-							Two fieldsets, publishing and metadata. In
-							publishing: created date, created by, modified date
-							(readonly), modified by (readonly), hits (readonly),
-							id (readonly). In metadata: meta description (300
-							chars), keywords, author, robots option dropdown
+							In publishing: created date, created by, modified
+							date (readonly), modified by (readonly), id
+							(readonly). In metadata: author
 						</>,
 						"Publishing"
 					),

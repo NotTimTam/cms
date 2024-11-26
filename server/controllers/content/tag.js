@@ -22,6 +22,12 @@ import mongoose from "mongoose";
  */
 export const createTag = async (req, res) => {
 	try {
+		const {
+			user: { _id: author },
+		} = req;
+
+		req.body.author = author;
+
 		const roleWithHighestOrder = await TagModel.findOne({}).sort({
 			order: -1,
 		});

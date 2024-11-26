@@ -83,6 +83,7 @@ export const findCategories = async (req, res) => {
 			.sort({ [sortField]: +sortDir })
 			.limit(+itemsPerPage)
 			.skip(page * +itemsPerPage)
+			.select("+status")
 			.lean();
 
 		for (const category of categories) {
@@ -147,12 +148,15 @@ export const getCategoryTree = async (req, res) => {
 			query.parent = { $exists: false }; // Filter to just root items.
 			categories = await CategoryModel.find(query)
 				.sort({ [sortField]: +sortDir })
+				.select("+status")
 				.lean();
 
 			delete query.parent;
 		} else {
 			query._id = root;
-			const rootCategory = await CategoryModel.findOne(query).lean();
+			const rootCategory = await CategoryModel.findOne(query)
+				.select("+status")
+				.lean();
 
 			if (rootCategory) categories = [rootCategory];
 
@@ -166,6 +170,7 @@ export const getCategoryTree = async (req, res) => {
 				CategoryModel,
 				query,
 				{ [sortField]: +sortDir },
+				"+status",
 				depth
 			);
 

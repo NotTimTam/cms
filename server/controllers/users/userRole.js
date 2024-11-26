@@ -176,6 +176,7 @@ export const getUserRoleTree = async (req, res) => {
 				UserRoleModel,
 				query,
 				{ [sortField]: +sortDir },
+				"",
 				depth
 			);
 

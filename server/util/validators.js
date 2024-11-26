@@ -1,5 +1,6 @@
 import ArticleModel from "../models/content/Article.js";
 import CategoryModel from "../models/content/Category.js";
+import TagModel from "../models/content/Tag.js";
 import UserModel from "../models/users/User.js";
 import UserRoleModel from "../models/users/UserRole.js";
 import { aliasRegex, emailRegex, nameRegex } from "../../util/regex.js";
@@ -138,7 +139,7 @@ export const validateCategory = async (category) => {
 		if (!author) category.author = null;
 	}
 
-	if (!category.name) throw new ResError(400, "No role name provided.");
+	if (!category.name) throw new ResError(400, "No category name provided.");
 	else {
 		if (typeof category.name !== "string" || !nameRegex.test(category.name))
 			throw new ResError(
@@ -230,6 +231,78 @@ export const validateCategory = async (category) => {
 
 	// Access
 	// Tags
+
+	return category;
+};
+
+/**
+ * Validate a Tag document.
+ * @param {Object} tag The tag data to validate.
+ * @throws {Error} An error is thrown if the tag is not valid.
+ * @returns {Object} The tag data, reformatted, if necessary.
+ */
+export const validateTag = async (tag) => {
+	if (tag.author) {
+		const author = await UserModel.findById(tag.author);
+
+		if (!author) tag.author = null;
+	}
+
+	if (!tag.name) throw new ResError(400, "No tag name provided.");
+	else {
+		if (typeof tag.name !== "string" || !nameRegex.test(tag.name))
+			throw new ResError(
+				400,
+				`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
+			);
+
+		const existing = await TagModel.findOne({ name: tag.name });
+
+		if (
+			existing &&
+			(!tag._id || existing._id.toString() !== tag._id.toString())
+		)
+			throw new ResError(422, "A tag already exists with that name.");
+	}
+
+	if (!tag.alias) tag.alias = nameToAlias(tag.name);
+	else {
+		if (typeof tag.alias !== "string" || !aliasRegex.test(tag.alias))
+			throw new ResError(
+				400,
+				`Invalid tag alias provided. Aliases must be 1-1024 characters of lowercase letters, numbers, underscores, and dashes only.`
+			);
+	}
+
+	const existsWithAlias = await TagModel.findOne({
+		alias: tag.alias,
+	});
+	if (
+		existsWithAlias &&
+		(!tag._id || existsWithAlias._id.toString() !== tag._id.toString())
+	)
+		throw new ResError(422, "A tag already exists with that alias.");
+
+	if (
+		tag.order &&
+		(typeof tag.order !== "number" || !Number.isInteger(tag.order))
+	)
+		throw new ResError(
+			400,
+			"Invalid order value provided. Expected an integer."
+		);
+
+	if (tag.hasOwnProperty("parent")) {
+		if (tag.parent === null) tag.parent = undefined;
+		else {
+			const parentRole = await TagModel.findById(tag.parent);
+
+			if (!parentRole)
+				throw new ResError(404, `No tag found with id "${tag.parent}"`);
+		}
+	}
+
+	// Access
 
 	return category;
 };

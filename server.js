@@ -16,6 +16,7 @@ import articleRouter from "./server/routers/articleRoutes.js";
 import categoryRouter from "./server/routers/categoryRoutes.js";
 import systemMessageRouter from "./server/routers/systemMessageRoutes.js";
 import userRouter from "./server/routers/userRoutes.js";
+import tagRouter from "./server/routers/tagRoutes.js";
 
 import {
 	authenticationMiddleware,
@@ -79,19 +80,20 @@ app.use(express.json(), cors(), rateLimiter);
 const apiRoute = `/api`;
 
 app.use(
-	API.createRouteURL(apiRoute, "articles"),
+	API.articles,
 	authenticationMiddleware,
 	verificationMiddleware,
 	articleRouter
 );
+app.use(API.tags, authenticationMiddleware, verificationMiddleware, tagRouter);
 app.use(
-	API.createRouteURL(apiRoute, "categories"),
+	API.categories,
 	authenticationMiddleware,
 	verificationMiddleware,
 	categoryRouter
 );
-app.use(API.createRouteURL(apiRoute, "messages"), systemMessageRouter);
-app.use(API.createRouteURL(apiRoute, "users"), userRouter);
+app.use(API.messages, systemMessageRouter);
+app.use(API.users, userRouter);
 
 nextJS.prepare().then(async () => {
 	log(`Staring ${name} version ${version}`);

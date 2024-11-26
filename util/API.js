@@ -19,6 +19,7 @@ export default class API {
 	static categories = API.createRouteURL(API.route, "categories");
 	static userRoles = API.createRouteURL(API.users, "roles");
 	static messages = API.createRouteURL(API.route, "messages");
+	static tags = API.createRouteURL(API.route, "tags");
 
 	/**
 	 * Create a query from a JS Object.

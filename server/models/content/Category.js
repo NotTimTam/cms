@@ -34,7 +34,7 @@ const CategorySchema = new mongoose.Schema(
 			type: Number,
 			required: [
 				true,
-				"You must provide order placement for this UserRole.",
+				"You must provide order placement for this Category.",
 			],
 			default: 0,
 		},
@@ -42,12 +42,12 @@ const CategorySchema = new mongoose.Schema(
 			type: String,
 			enum: statusEnum,
 			select: false,
-			required: [true, "You must provide the Article's status."],
+			required: [true, "You must provide the Category's status."],
 			default: "unpublished",
 		},
 		featured: {
 			type: Boolean,
-			required: [true, "Article featured status not provided."],
+			required: [true, "Category featured status not provided."],
 			default: false,
 		},
 		tags: [

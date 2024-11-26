@@ -45,7 +45,7 @@ const Listings = () => {
 	// Hooks
 	const SessionStorage = new StorageInterface(window.sessionStorage);
 	const {
-		data: { categoryQuery },
+		data: { tagQuery },
 	} = SessionStorage;
 
 	// Data
@@ -67,11 +67,11 @@ const Listings = () => {
 					try {
 						const token = await getToken();
 
-						const category = findById(items, id);
+						const tag = findById(items, id);
 
 						await API.patch(
-							API.createRouteURL(API.categories, category._id),
-							{ featured: !category.featured },
+							API.createRouteURL(API.tags, tag._id),
+							{ featured: !tag.featured },
 							API.createAuthorizationConfig(token)
 						);
 
@@ -118,13 +118,13 @@ const Listings = () => {
 					try {
 						const token = await getToken();
 
-						const category = findById(items, id);
+						const tag = findById(items, id);
 
 						await API.patch(
-							API.createRouteURL(API.categories, category._id),
+							API.createRouteURL(API.tags, tag._id),
 							{
 								status:
-									category.status === "published"
+									tag.status === "published"
 										? "unpublished"
 										: "published",
 							},
@@ -154,8 +154,8 @@ const Listings = () => {
 						<h3>
 							{depthIndicator(depth)}
 							<Link
-								aria-label="Open Category"
-								href={`/administrator/dashboard/categories?layout=edit&id=${_id}`}
+								aria-label="Open Tag"
+								href={`/administrator/dashboard/tags?layout=edit&id=${_id}`}
 							>
 								{name}
 							</Link>
@@ -187,7 +187,7 @@ const Listings = () => {
 
 					return (
 						<Modal>
-							<h3>Delete selected categories permanently?</h3>
+							<h3>Delete selected tags permanently?</h3>
 							<p>This action cannot be undone.</p>
 							<Modal.Options>
 								<button
@@ -213,7 +213,7 @@ const Listings = () => {
 
 				const res = await createHeadlessPopup(<PopupContent />);
 
-				if (res === true) await massDeleteCategories();
+				if (res === true) await massDeleteTags();
 			},
 		},
 	];
@@ -221,8 +221,8 @@ const Listings = () => {
 	// States
 	const [selection, setSelection] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [categories, setCategories] = useState([]);
-	const [query, setQuery] = useState(categoryQuery || defaultQuery);
+	const [tags, setTags] = useState([]);
+	const [query, setQuery] = useState(tagQuery || defaultQuery);
 	const [message, setMessage] = useState(null);
 
 	// Functions
@@ -231,21 +231,21 @@ const Listings = () => {
 		setMessage(null);
 
 		try {
-			SessionStorage.setItem("categoryQuery", query); // Remember this query.
+			SessionStorage.setItem("tagQuery", query); // Remember this query.
 
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Get categories.
+			// Get tags.
 			const token = await getToken();
 			const {
-				data: { categories, page: newPage, numPages },
+				data: { tags, page: newPage, numPages },
 			} = await API.get(
-				`${API.categories}/tree?${searchParams.toString()}`,
+				`${API.tags}/tree?${searchParams.toString()}`,
 				API.createAuthorizationConfig(token)
 			);
 
-			setCategories(unflattenDocumentTree(categories));
+			setTags(unflattenDocumentTree(tags));
 			setQuery((query) => ({
 				...query,
 				page: newPage,
@@ -259,7 +259,7 @@ const Listings = () => {
 		setLoading(false);
 	};
 
-	const reorderCategory = async (active, over, dir) => {
+	const reorderTag = async (active, over, dir) => {
 		setLoading(true);
 		setMessage(null);
 
@@ -270,14 +270,14 @@ const Listings = () => {
 
 			await API.patch(
 				`${API.createRouteURL(
-					API.categories,
+					API.tags,
 					"order"
 				)}?active=${active}&over=${over}&dir=${dir}`,
 				undefined,
 				API.createAuthorizationConfig(token)
 			);
 
-			// Reload categories.
+			// Reload tags.
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
@@ -287,7 +287,7 @@ const Listings = () => {
 		setLoading(false);
 	};
 
-	const massDeleteCategories = async () => {
+	const massDeleteTags = async () => {
 		setLoading(true);
 		setMessage(null);
 
@@ -297,9 +297,9 @@ const Listings = () => {
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Batch through categories.
+			// Batch through tags.
 			await API.delete(
-				`${API.categories}?${searchParams.toString()}&selection=${
+				`${API.tags}?${searchParams.toString()}&selection=${
 					selection === "all" ? selection : selection.join(",")
 				}`,
 				API.createAuthorizationConfig(token)
@@ -378,7 +378,7 @@ const Listings = () => {
 		<>
 			<Curate
 				{...{
-					new: "/administrator/dashboard/categories?layout=edit",
+					new: "/administrator/dashboard/tags?layout=edit",
 					actions: selection.length > 0 && actions,
 				}}
 			/>
@@ -400,8 +400,8 @@ const Listings = () => {
 					/>
 
 					<List
-						items={categories}
-						itemIdentifier="categories"
+						items={tags}
+						itemIdentifier="tags"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing }]) => ({
 								listing,
@@ -426,7 +426,7 @@ const Listings = () => {
 									!query.sort || query.sort.field !== "order",
 							},
 							swapItems: (active, over, dir) => {
-								reorderCategory(active, over, dir);
+								reorderTag(active, over, dir);
 							},
 						}}
 					/>

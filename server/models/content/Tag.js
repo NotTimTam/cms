@@ -24,6 +24,11 @@ const TagSchema = new mongoose.Schema(
 			ref: "Tag",
 			required: false,
 		},
+		order: {
+			type: Number,
+			required: [true, "You must provide order placement for this Tag."],
+			default: 0,
+		},
 	},
 	{ timestamps: true }
 );

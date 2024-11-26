@@ -66,7 +66,11 @@ export const findCategories = async (req, res) => {
 
 		const query = {};
 
-		if (search) query.name = { $regex: search, $options: "i" };
+		if (search)
+			query["$or"] = [
+				{ name: { $regex: search, $options: "i" } },
+				{ alias: { $regex: search, $options: "i" } },
+			];
 
 		const numRoles = await CategoryModel.countDocuments(query);
 
@@ -130,7 +134,11 @@ export const getCategoryTree = async (req, res) => {
 
 		const query = {};
 
-		if (search) query.name = { $regex: search, $options: "i" };
+		if (search)
+			query["$or"] = [
+				{ name: { $regex: search, $options: "i" } },
+				{ alias: { $regex: search, $options: "i" } },
+			];
 
 		const numRoles = await CategoryModel.countDocuments(query);
 

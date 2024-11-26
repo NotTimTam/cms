@@ -140,105 +140,70 @@ const TagEditor = ({ id }) => {
 				tabs: [
 					Tabs.Item(
 						"Tag",
-						<>
-							<Tabs.Item.Main>
-								<form
-									onSubmit={(e) => e.preventDefault()}
-									className="--cms-form"
-								>
-									<label htmlFor="description">
-										Description
-									</label>
-									<textarea
-										placeholder="What sort of content is in this tag?"
-										value={tag.description || ""}
-										onChange={({ target: { value } }) =>
+						<form
+							onSubmit={(e) => e.preventDefault()}
+							className="--cms-form"
+						>
+							{possibleParents ? (
+								<>
+									<label htmlFor="parent">Parent</label>
+									<select
+										id="parent"
+										value={
+											tag.parent === null
+												? ""
+												: tag.parent
+										}
+										onChange={(e) =>
 											setTag((tag) => ({
 												...tag,
-												description: value,
+												parent: e.target.value,
 											}))
 										}
-										id="description"
-									></textarea>
-								</form>
-							</Tabs.Item.Main>
-							<Tabs.Item.Aside>
-								<form
-									onSubmit={(e) => e.preventDefault()}
-									className="--cms-form"
-								>
-									{possibleParents ? (
-										<>
-											<label htmlFor="parent">
-												Parent
-											</label>
-											<select
-												id="parent"
-												value={
-													tag.parent === null
-														? ""
-														: tag.parent
-												}
-												onChange={(e) =>
-													setTag((tag) => ({
-														...tag,
-														parent: e.target.value,
-													}))
-												}
-											>
-												<option value="">
-													{"No Parent"}
+									>
+										<option value="">{"No Parent"}</option>
+										{possibleParents.map(
+											({ name, depth, _id }) => (
+												<option key={_id} value={_id}>
+													{depthIndicator(depth)}{" "}
+													{name}
 												</option>
-												{possibleParents.map(
-													({ name, depth, _id }) => (
-														<option
-															key={_id}
-															value={_id}
-														>
-															{depthIndicator(
-																depth
-															)}{" "}
-															{name}
-														</option>
-													)
-												)}
-											</select>
-										</>
-									) : (
-										<div className="--cms-padding">
-											<Loading />
-										</div>
-									)}
-									<label htmlFor="status">Status</label>
-									<button id="status">
-										{capitalizeWords(tag.status) ||
-											"Unpublished"}
-										<ChevronDown />
-									</button>
-									{/* <label htmlFor="access">Access</label>
+											)
+										)}
+									</select>
+								</>
+							) : (
+								<div className="--cms-padding">
+									<Loading />
+								</div>
+							)}
+							<label htmlFor="status">Status</label>
+							<button id="status">
+								{capitalizeWords(tag.status) || "Unpublished"}
+								<ChevronDown />
+							</button>
+							{/* <label htmlFor="access">Access</label>
 										Coming Soon (dropdown) */}
-									<label htmlFor="tags">Tags</label>
-									Coming Soon
-									<label htmlFor="notes">Notes</label>
-									<textarea
-										id="notes"
-										placeholder="Recent changes, help for other editors, etc..."
-										aria-label="Notes"
-										value={tag.notes || ""}
-										onChange={({ target: { value } }) =>
-											setTag((tag) => ({
-												...tag,
-												notes: value,
-											}))
-										}
-									></textarea>
-									{/* <label htmlFor="version-note">
+							<label htmlFor="tags">Tags</label>
+							Coming Soon
+							<label htmlFor="notes">Notes</label>
+							<textarea
+								id="notes"
+								placeholder="Recent changes, help for other editors, etc..."
+								aria-label="Notes"
+								value={tag.notes || ""}
+								onChange={({ target: { value } }) =>
+									setTag((tag) => ({
+										...tag,
+										notes: value,
+									}))
+								}
+							></textarea>
+							{/* <label htmlFor="version-note">
 											Version Note
 										</label>
 										Coming Soon */}
-								</form>
-							</Tabs.Item.Aside>
-						</>,
+						</form>,
 						"Content"
 					),
 					Tabs.Item(

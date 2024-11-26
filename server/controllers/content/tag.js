@@ -66,7 +66,11 @@ export const findTags = async (req, res) => {
 
 		const query = {};
 
-		if (search) query.name = { $regex: search, $options: "i" };
+		if (search)
+			query["$or"] = [
+				{ name: { $regex: search, $options: "i" } },
+				{ alias: { $regex: search, $options: "i" } },
+			];
 
 		const numRoles = await TagModel.countDocuments(query);
 
@@ -126,7 +130,11 @@ export const getTagTree = async (req, res) => {
 
 		const query = {};
 
-		if (search) query.name = { $regex: search, $options: "i" };
+		if (search)
+			query["$or"] = [
+				{ name: { $regex: search, $options: "i" } },
+				{ alias: { $regex: search, $options: "i" } },
+			];
 
 		const numRoles = await TagModel.countDocuments(query);
 
@@ -212,7 +220,10 @@ export const getPossibleParents = async (req, res) => {
 		const query = {};
 
 		if (req.query && req.query.search)
-			query.name = { $regex: req.query.search, $options: "i" };
+			query["$or"] = [
+				{ name: { $regex: req.query.search, $options: "i" } },
+				{ alias: { $regex: req.query.search, $options: "i" } },
+			];
 
 		if (id !== "all") {
 			const tag = await TagModel.findById(id);

@@ -93,7 +93,6 @@ export const findTags = async (req, res) => {
 			.sort({ [sortField]: +sortDir })
 			.limit(+itemsPerPage)
 			.skip(page * +itemsPerPage)
-			.select("+status")
 			.lean();
 
 		for (const tag of tags) {
@@ -158,15 +157,12 @@ export const getTagTree = async (req, res) => {
 			query.parent = { $exists: false }; // Filter to just root items.
 			tags = await TagModel.find(query)
 				.sort({ [sortField]: +sortDir })
-				.select("+status")
 				.lean();
 
 			delete query.parent;
 		} else {
 			query._id = root;
-			const rootTag = await TagModel.findOne(query)
-				.select("+status")
-				.lean();
+			const rootTag = await TagModel.findOne(query).lean();
 
 			if (rootTag) tags = [rootTag];
 
@@ -180,7 +176,7 @@ export const getTagTree = async (req, res) => {
 				TagModel,
 				query,
 				{ [sortField]: +sortDir },
-				"+status",
+				"",
 				depth
 			);
 

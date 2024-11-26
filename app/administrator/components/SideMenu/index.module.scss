@@ -108,6 +108,10 @@ aside.--cms-menu {
 					&[aria-selected] {
 						background-color: var(--background-color-6);
 					}
+
+					&:hover {
+						background-color: var(--border-color);
+					}
 				}
 
 				&:not(.--cms-quick-link) {

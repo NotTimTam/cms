@@ -104,6 +104,12 @@ aside.--cms-menu {
 					justify-content: center;
 				}
 
+				&.--cms-quick-link {
+					&[aria-selected] {
+						background-color: var(--background-color-6);
+					}
+				}
+
 				&:not(.--cms-quick-link) {
 					flex-grow: 2;
 				}

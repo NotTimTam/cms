@@ -1,5 +1,5 @@
 import UserModel from "../../models/users/User.js";
-import UserRoleModel from "../../models/users/UserRole.js";
+import RoleModel from "../../models/users/Role.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import { emailRegex, nameRegex } from "../../../util/regex.js";
 import { getPathToDocument, unlockedQuery } from "../..//util/database.js";
@@ -168,17 +168,15 @@ export const findUsers = async (req, res) => {
 			.lean();
 
 		if (role) {
-			const userRole = await UserRoleModel.findById(role);
+			const role = await RoleModel.findById(role);
 
-			if (!userRole)
-				return res
-					.status(404)
-					.send(`No user role found with id "${role}"`);
+			if (!role)
+				return res.status(404).send(`No role found with id "${role}"`);
 
 			const roleTree = await getPathToDocument(
-				userRole._id,
-				UserRoleModel,
-				"user role"
+				role._id,
+				RoleModel,
+				"role"
 			);
 
 			users = users.filter(({ roles }) =>

@@ -30,12 +30,12 @@ const UserEditor = ({ id }) => {
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState(null);
 
-	const [userRoles, setUserRoles] = useState(null);
+	const [roles, setRoles] = useState(null);
 	const [user, setUser] = useState(id ? { _id: id } : defaultUser);
 	const [tab, setTab] = useState(0);
 
 	// Functions
-	const getUserRoles = async () => {
+	const getRoles = async () => {
 		if (!currentUser.verified) return;
 
 		setMessage(null);
@@ -44,16 +44,16 @@ const UserEditor = ({ id }) => {
 			const token = await getToken();
 
 			const {
-				data: { userRoles },
+				data: { roles },
 			} = await API.get(
 				`${API.createRouteURL(
-					API.userRoles,
+					API.roles,
 					"tree"
 				)}?itemsPerPage=all&sortDir=1&sortField=order`,
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserRoles(userRoles);
+			setRoles(roles);
 		} catch (error) {
 			console.error(error);
 
@@ -162,7 +162,7 @@ const UserEditor = ({ id }) => {
 	}, [id]);
 
 	useEffect(() => {
-		getUserRoles();
+		getRoles();
 	}, []);
 
 	if (loading) return <Loading />;
@@ -362,7 +362,7 @@ const UserEditor = ({ id }) => {
 							)}
 						</form>
 					),
-					userRoles &&
+					roles &&
 						Tabs.Item(
 							<>
 								User Roles
@@ -371,11 +371,11 @@ const UserEditor = ({ id }) => {
 									` (${user.roles.length})`}
 							</>,
 							<div className="--cms-padding">
-								{userRoles &&
-									(userRoles.length > 0 ? (
+								{roles &&
+									(roles.length > 0 ? (
 										<Select
 											{...{
-												items: userRoles,
+												items: roles,
 												selection: user.roles,
 												setSelection: (selection) =>
 													setUser((user) => ({
@@ -386,9 +386,9 @@ const UserEditor = ({ id }) => {
 										/>
 									) : (
 										<Message type="info" fill>
-											No user roles have been defined.{" "}
+											No roles have been defined.{" "}
 											<Link href="/administrator/dashboard/users?view=roles">
-												Create a user role.
+												Create a role.
 											</Link>
 										</Message>
 									))}

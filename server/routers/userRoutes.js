@@ -10,15 +10,15 @@ import {
 	deleteUsers,
 } from "../controllers/users/user.js";
 import {
-	createUserRole,
-	deleteUserRoles,
-	orderUserRoles,
-	findUserRoles,
-	findUserRoleById,
-	findUserRoleByIdAndUpdate,
+	createRole,
+	deleteRoles,
+	orderRoles,
+	findRoles,
+	findRoleById,
+	findRoleByIdAndUpdate,
 	getPossibleParents,
-	getUserRoleTree,
-} from "../controllers/users/userRole.js";
+	getRoleTree,
+} from "../controllers/users/role.js";
 import {
 	authenticationMiddleware,
 	psuedoVerifiedMiddleware,
@@ -41,20 +41,20 @@ userRouter
 // Roles
 userRouter
 	.route("/roles")
-	.get(authenticationMiddleware, verificationMiddleware, findUserRoles)
-	.post(authenticationMiddleware, verificationMiddleware, createUserRole)
-	.delete(authenticationMiddleware, verificationMiddleware, deleteUserRoles);
+	.get(authenticationMiddleware, verificationMiddleware, findRoles)
+	.post(authenticationMiddleware, verificationMiddleware, createRole)
+	.delete(authenticationMiddleware, verificationMiddleware, deleteRoles);
 userRouter.patch(
 	"/roles/order",
 	authenticationMiddleware,
 	verificationMiddleware,
-	orderUserRoles
+	orderRoles
 );
 userRouter.get(
 	"/roles/tree",
 	authenticationMiddleware,
 	verificationMiddleware,
-	getUserRoleTree
+	getRoleTree
 );
 userRouter.get(
 	"/roles/parents/:id",
@@ -63,11 +63,11 @@ userRouter.get(
 );
 userRouter
 	.route("/roles/:id")
-	.get(authenticationMiddleware, verificationMiddleware, findUserRoleById)
+	.get(authenticationMiddleware, verificationMiddleware, findRoleById)
 	.patch(
 		authenticationMiddleware,
 		verificationMiddleware,
-		findUserRoleByIdAndUpdate
+		findRoleByIdAndUpdate
 	);
 
 // User-Specific Routes

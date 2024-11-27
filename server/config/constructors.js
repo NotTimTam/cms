@@ -1,6 +1,6 @@
 import { error, log, success, warn } from "@nottimtam/console.js";
 import bcrypt from "bcryptjs";
-import UserRoleModel from "../models/users/UserRole.js";
+import RoleModel from "../models/users/Role.js";
 import UserModel from "../models/users/User.js";
 import { generateRandomPassword } from "../../util/data.js";
 
@@ -11,19 +11,19 @@ export const constructWebmaster = async () => {
 	log("Checking for Webmaster...");
 
 	// Role
-	let webmasterRole = await UserRoleModel.findOne({ name: "Webmaster" });
+	let webmasterRole = await RoleModel.findOne({ name: "Webmaster" });
 
 	if (!webmasterRole) {
-		webmasterRole = new UserRoleModel({
+		webmasterRole = new RoleModel({
 			name: "Webmaster",
 			description:
-				"System-generated user role, reserved to the webmaster user.",
+				"System-generated role, reserved to the webmaster user.",
 			locked: true,
 		});
 
 		await webmasterRole.save();
 
-		success("Created Webmaster user role.");
+		success("Created Webmaster role.");
 	} else if (!webmasterRole.locked) {
 		webmasterRole.locked = true;
 		await webmasterRole.save();

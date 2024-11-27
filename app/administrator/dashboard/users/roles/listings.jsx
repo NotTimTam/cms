@@ -117,7 +117,7 @@ const Listings = () => {
 	// States
 	const [selection, setSelection] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [userRoles, setUserRoles] = useState([]);
+	const [roles, setRoles] = useState([]);
 	const [query, setQuery] = useState(roleQuery || defaultQuery);
 	const [message, setMessage] = useState(null);
 
@@ -127,21 +127,21 @@ const Listings = () => {
 		setMessage(null);
 
 		try {
-			SessionStorage.setItem("userRoleQuery", query); // Remember this query.
+			SessionStorage.setItem("roleQuery", query); // Remember this query.
 
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Get userRoles.
+			// Get roles.
 			const token = await getToken();
 			const {
-				data: { userRoles, page: newPage, numPages },
+				data: { roles, page: newPage, numPages },
 			} = await API.get(
-				`${API.userRoles}/tree?${searchParams.toString()}`,
+				`${API.roles}/tree?${searchParams.toString()}`,
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserRoles(unflattenDocumentTree(userRoles));
+			setRoles(unflattenDocumentTree(roles));
 			setQuery((query) => ({
 				...query,
 				page: newPage,
@@ -155,7 +155,7 @@ const Listings = () => {
 		setLoading(false);
 	};
 
-	const reorderUserRole = async (active, over, dir) => {
+	const reorderRole = async (active, over, dir) => {
 		setLoading(true);
 		setMessage(null);
 
@@ -166,14 +166,14 @@ const Listings = () => {
 
 			await API.patch(
 				`${API.createRouteURL(
-					API.userRoles,
+					API.roles,
 					"order"
 				)}?active=${active}&over=${over}&dir=${dir}`,
 				undefined,
 				API.createAuthorizationConfig(token)
 			);
 
-			// Reload user roles.
+			// Reload roles.
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
@@ -193,9 +193,9 @@ const Listings = () => {
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Batch through userRoles.
+			// Batch through roles.
 			await API.delete(
-				`${API.userRoles}?${searchParams.toString()}&selection=${
+				`${API.roles}?${searchParams.toString()}&selection=${
 					selection === "all" ? selection : selection.join(",")
 				}`,
 				API.createAuthorizationConfig(token)
@@ -296,8 +296,8 @@ const Listings = () => {
 					/>
 
 					<List
-						items={userRoles}
-						itemIdentifier="user roles"
+						items={roles}
+						itemIdentifier="roles"
 						fields={Object.entries(sortingOptions).map(
 							([field, { label, listing }]) => ({
 								listing,
@@ -322,7 +322,7 @@ const Listings = () => {
 									!query.sort || query.sort.field !== "order",
 							},
 							swapItems: (active, over, dir) => {
-								reorderUserRole(active, over, dir);
+								reorderRole(active, over, dir);
 							},
 						}}
 					/>

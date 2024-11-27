@@ -18,13 +18,13 @@ const defaultRole = {
 	parent: "",
 };
 
-const UserRoleEditor = ({ id }) => {
+const RoleEditor = ({ id }) => {
 	const router = useRouter();
 
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState(null);
 
-	const [userRole, setUserRole] = useState(id ? { _id: id } : defaultRole);
+	const [role, setRole] = useState(id ? { _id: id } : defaultRole);
 	const [possibleParents, setPossibleParents] = useState(null);
 
 	// Functions
@@ -39,13 +39,13 @@ const UserRoleEditor = ({ id }) => {
 			const token = await getToken();
 
 			const {
-				data: { userRole: newUserRole },
+				data: { role: newRole },
 			} = await API.get(
-				API.createRouteURL(API.userRoles, id),
+				API.createRouteURL(API.roles, id),
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserRole(newUserRole);
+			setRole(newRole);
 		} catch (error) {
 			console.error(error);
 
@@ -63,9 +63,9 @@ const UserRoleEditor = ({ id }) => {
 			const token = await getToken();
 
 			const {
-				data: { userRoles: possibleParents },
+				data: { roles: possibleParents },
 			} = await API.get(
-				`${API.createRouteURL(API.userRoles, "parents", id || "all")}`,
+				`${API.createRouteURL(API.roles, "parents", id || "all")}`,
 				API.createAuthorizationConfig(token)
 			);
 
@@ -91,30 +91,30 @@ const UserRoleEditor = ({ id }) => {
 
 			// The empty string used to signify "no selection" must be removed.
 			const submittableRole = {
-				...userRole,
-				parent: userRole.parent === "" ? null : userRole.parent,
+				...role,
+				parent: role.parent === "" ? null : role.parent,
 			};
 
 			const {
-				data: { userRole: newUserRole },
-			} = userRole._id
+				data: { role: newRole },
+			} = role._id
 				? await API.patch(
-						API.createRouteURL(API.userRoles, userRole._id),
+						API.createRouteURL(API.roles, role._id),
 						submittableRole,
 						API.createAuthorizationConfig(token)
 				  )
 				: await API.post(
-						API.userRoles,
+						API.roles,
 						submittableRole,
 						API.createAuthorizationConfig(token)
 				  );
 
 			if (!id && isolated)
 				router.push(
-					`/administrator/dashboard/users?view=roles&layout=edit&id=${newUserRole._id}`
+					`/administrator/dashboard/users?view=roles&layout=edit&id=${newRole._id}`
 				);
 			else {
-				setUserRole(newUserRole);
+				setRole(newRole);
 
 				ret = true;
 			}
@@ -134,7 +134,7 @@ const UserRoleEditor = ({ id }) => {
 	};
 
 	useEffect(() => {
-		if (!id) setUserRole(defaultRole);
+		if (!id) setRole(defaultRole);
 		else getRole();
 
 		getPossibleParents();
@@ -182,21 +182,21 @@ const UserRoleEditor = ({ id }) => {
 									const token = await getToken();
 
 									const {
-										data: { userRole: newUserRole },
+										data: { role: newRole },
 									} = await API.post(
-										API.userRoles,
+										API.roles,
 										{
 											name: `Copy of ${
-												userRole.name
+												role.name
 											} - ${new Date().toISOString()}`,
-											description: userRole.description,
-											parent: userRole.parent,
+											description: role.description,
+											parent: role.parent,
 										},
 										API.createAuthorizationConfig(token)
 									);
 
 									router.push(
-										`/administrator/dashboard/users?view=roles&layout=edit&id=${newUserRole._id}`
+										`/administrator/dashboard/users?view=roles&layout=edit&id=${newRole._id}`
 									);
 								} catch (error) {
 									setMessage(
@@ -226,10 +226,10 @@ const UserRoleEditor = ({ id }) => {
 										Name
 									</label>
 									<input
-										value={userRole.name || ""}
+										value={role.name || ""}
 										onChange={({ target: { value } }) =>
-											setUserRole({
-												...userRole,
+											setRole({
+												...role,
 												name: value,
 											})
 										}
@@ -242,10 +242,10 @@ const UserRoleEditor = ({ id }) => {
 										Description
 									</label>
 									<textarea
-										value={userRole.description || ""}
+										value={role.description || ""}
 										onChange={({ target: { value } }) =>
-											setUserRole({
-												...userRole,
+											setRole({
+												...role,
 												description: value,
 											})
 										}
@@ -264,13 +264,13 @@ const UserRoleEditor = ({ id }) => {
 										<select
 											id="parent"
 											value={
-												userRole.parent === null
+												role.parent === null
 													? ""
-													: userRole.parent
+													: role.parent
 											}
 											onChange={(e) =>
-												setUserRole((userRole) => ({
-													...userRole,
+												setRole((role) => ({
+													...role,
 													parent: e.target.value,
 												}))
 											}
@@ -305,11 +305,31 @@ const UserRoleEditor = ({ id }) => {
 							className="--cms-form"
 							onSubmit={(e) => e.preventDefault()}
 						>
+							<Message type="info">
+								Changes apply to this role and all child roles.
+								<ul>
+									<li>
+										<b>Inherited</b> &ndash; a Global
+										Configuration setting or higher level
+										setting is applied.
+									</li>
+									<li>
+										<b>Denied</b> always wins &ndash;
+										whatever is set at the Global or higher
+										level and applies to all child elements.
+									</li>
+									<li>
+										<b>Allowed</b> will enable the action
+										for this component unless overruled by a
+										Global Configuration setting.
+									</li>
+								</ul>
+							</Message>
 							<Permissions
-								permissions={userRole.permissions}
+								permissions={role.permissions}
 								setPermissions={(permissions) =>
-									setUserRole((userRole) => ({
-										...userRole,
+									setRole((role) => ({
+										...role,
 										permissions,
 									}))
 								}
@@ -322,4 +342,4 @@ const UserRoleEditor = ({ id }) => {
 	);
 };
 
-export default UserRoleEditor;
+export default RoleEditor;

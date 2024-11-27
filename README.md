@@ -76,9 +76,9 @@ The designations front-end, and back-end, refer not to application architecture 
     -   SEO Glossary
     -   Smart Search (built-in?)
 -   Require user password reset.
--   Global "permissions" config that determines what each user role can do, perhaps edit this on the role itself.
+-   Global "permissions" config that determines what each role can do, perhaps edit this on the role itself.
 -   Editor unsaved changes before exit warning.
--   Finish adding filtration options for user roles, users, articles, etc.
+-   Finish adding filtration options for roles, users, articles, etc.
 -   Add user/content custom fields.
 -   NO side menu on editor pages.
 -   Filter Options some are just dropdowns, some allow for "search" input, some allow for multiple selections and display them as little widgets in the text box.

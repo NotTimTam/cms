@@ -486,7 +486,7 @@ const Listings = () => {
 				API.createAuthorizationConfig(token)
 			);
 
-			// Reload user roles.
+			// Reload roles.
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
@@ -537,7 +537,7 @@ const Listings = () => {
 			// Create search params.
 			const searchParams = API.createQueryString(query);
 
-			// Batch through userRoles.
+			// Batch through roles.
 			await API.delete(
 				`${API.articles}?${searchParams.toString()}&selection=${
 					selection === "all" ? selection : selection.join(",")

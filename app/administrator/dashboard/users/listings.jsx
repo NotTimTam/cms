@@ -143,11 +143,9 @@ const UserListings = () => {
 						controllers.role = new AbortController();
 
 						const {
-							data: { userRoles },
+							data: { roles },
 						} = await API.get(
-							`${API.createRouteURL(
-								API.userRoles
-							)}?search=${search}`,
+							`${API.createRouteURL(API.roles)}?search=${search}`,
 							{
 								...API.createAuthorizationConfig(token),
 								signal: controllers.role.signal,
@@ -156,13 +154,13 @@ const UserListings = () => {
 
 						controllers.role = undefined;
 
-						return userRoles.map((userRole) => ({
-							id: userRole._id,
+						return roles.map((role) => ({
+							id: role._id,
 							label:
-								depthIndicator(userRole.depth, "\u2014") +
+								depthIndicator(role.depth, "\u2014") +
 								" " +
-								userRole.name,
-							search: userRole.name,
+								role.name,
+							search: role.name,
 						}));
 					} catch (error) {
 						if (error.name === "AbortError") return;

@@ -333,7 +333,7 @@ export const orderTags = async (req, res) => {
 
 		await orderDocuments(active, over, dir, TagModel, "tag");
 
-		return res.status(200).send("User role order change successful.");
+		return res.status(200).send("role order change successful.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

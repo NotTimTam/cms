@@ -2,7 +2,7 @@ import ArticleModel from "../models/content/Article.js";
 import CategoryModel from "../models/content/Category.js";
 import TagModel from "../models/content/Tag.js";
 import UserModel from "../models/users/User.js";
-import UserRoleModel from "../models/users/UserRole.js";
+import RoleModel from "../models/users/Role.js";
 import { aliasRegex, emailRegex, nameRegex } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
 import { sortEnum, statusEnum } from "../../util/enum.js";
@@ -308,66 +308,61 @@ export const validateTag = async (tag) => {
 };
 
 /**
- * Validate a UserRole document.
- * @param {Object} userRole The user role data to validate.
- * @throws {Error} An error is thrown if the user role is not valid.
- * @returns {Object} The user role data, reformatted, if necessary.
+ * Validate a Role document.
+ * @param {Object} role The role data to validate.
+ * @throws {Error} An error is thrown if the role is not valid.
+ * @returns {Object} The role data, reformatted, if necessary.
  */
-export const validateUserRole = async (userRole) => {
-	if (!userRole.name) throw new ResError(400, "No role name provided.");
+export const validateRole = async (role) => {
+	if (!role.name) throw new ResError(400, "No role name provided.");
 	else {
-		if (typeof userRole.name !== "string" || !nameRegex.test(userRole.name))
+		if (typeof role.name !== "string" || !nameRegex.test(role.name))
 			throw new ResError(
 				400,
 				`Invalid name provided. Expected a string between 1 and 1024 characters in length.`
 			);
 
-		const existing = await UserRoleModel.findOne({ name: userRole.name });
+		const existing = await RoleModel.findOne({ name: role.name });
 
 		if (
 			existing &&
-			(!userRole._id ||
-				existing._id.toString() !== userRole._id.toString())
+			(!role._id || existing._id.toString() !== role._id.toString())
 		)
-			throw new ResError(
-				422,
-				"A user role already exists with that name."
-			);
+			throw new ResError(422, "A role already exists with that name.");
 	}
 
-	if (userRole.description && typeof userRole.description !== "string")
+	if (role.description && typeof role.description !== "string")
 		throw new ResError(400, "Invalid description provided.");
 
 	if (
-		userRole.order &&
-		(typeof userRole.order !== "number" ||
-			!Number.isInteger(userRole.order))
+		role.order &&
+		(typeof role.order !== "number" || !Number.isInteger(role.order))
 	)
 		throw new ResError(
 			400,
 			"Invalid order value provided. Expected an integer."
 		);
 
-	if (userRole.locked && typeof userRole.locked !== "boolean")
+	if (role.locked && typeof role.locked !== "boolean")
 		throw new ResError(
 			400,
 			'Invalid "locked" state provided. Expected a boolean.'
 		);
 
-	if (userRole.hasOwnProperty("parent")) {
-		if (userRole.parent === null) userRole.parent = undefined;
+	if (role.hasOwnProperty("parent")) {
+		if (role.parent === null) role.parent = undefined;
 		else {
-			const parentRole = await UserRoleModel.findById(userRole.parent);
+			const parentRole = await RoleModel.findById(role.parent);
 
 			if (!parentRole)
 				throw new ResError(
 					404,
-					`No user role found with id "${userRole.parent}"`
+					`No role found with id "${role.parent}"`
 				);
 		}
 	}
 
-	return userRole;
+	return role;
 };
 
 /**
@@ -421,14 +416,13 @@ export const validateUser = async (user) => {
 		if (!(user.roles instanceof Array))
 			throw new ResError(
 				400,
-				"A user's role field must be an array of user role ids."
+				"A user's role field must be an array of role ids."
 			);
 
 		for (const id of user.roles) {
-			const userRole = await UserRoleModel.findById(id);
+			const role = await RoleModel.findById(id);
 
-			if (!userRole)
-				throw new ResError(404, `No user role found with id "${id}"`);
+			if (!role) throw new ResError(404, `No role found with id "${id}"`);
 		}
 	}
 

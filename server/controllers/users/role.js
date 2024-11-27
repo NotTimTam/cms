@@ -5,10 +5,10 @@ import {
 	orderDocuments,
 	unlockedQuery,
 } from "../../util/database.js";
-import UserRoleModel from "../../models/users/UserRole.js";
+import RoleModel from "../../models/users/Role.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
-	validateUserRole,
+	validateRole,
 	ResError,
 	validateNestQuery,
 	validateGenericQuery,
@@ -17,13 +17,13 @@ import {
 import mongoose from "mongoose";
 
 /**
- * Create a new UserRole document.
+ * Create a new Role document.
  * @param {Express.Request} req The API request object.
  * @param {Object} req.body The user creation object.
  */
-export const createUserRole = async (req, res) => {
+export const createRole = async (req, res) => {
 	try {
-		const roleWithHighestOrder = await UserRoleModel.findOne({}).sort({
+		const roleWithHighestOrder = await RoleModel.findOne({}).sort({
 			order: -1,
 		});
 
@@ -32,27 +32,27 @@ export const createUserRole = async (req, res) => {
 			: 0;
 
 		try {
-			req.body = await validateUserRole(req.body);
+			req.body = await validateRole(req.body);
 		} catch (error) {
 			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
 			else throw error;
 		}
 
-		const userRole = new UserRoleModel(req.body);
+		const role = new RoleModel(req.body);
 
-		await userRole.save();
+		await role.save();
 
-		return res.status(200).json({ userRole });
+		return res.status(200).json({ role });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
 };
 
 /**
- * Query user roles.
+ * Query roles.
  */
-export const findUserRoles = async (req, res) => {
+export const findRoles = async (req, res) => {
 	try {
 		try {
 			req.query = await validateNestQuery(req.query);
@@ -76,7 +76,7 @@ export const findUserRoles = async (req, res) => {
 
 		if (search) query.name = { $regex: search, $options: "i" };
 
-		const numRoles = await UserRoleModel.countDocuments(query);
+		const numRoles = await RoleModel.countDocuments(query);
 
 		itemsPerPage = itemsPerPage === "all" ? numRoles : +itemsPerPage;
 
@@ -87,25 +87,21 @@ export const findUserRoles = async (req, res) => {
 		if (page > numPages - 1) page = numPages - 1;
 		if (page < 0) page = 0;
 
-		const userRoles = await UserRoleModel.find(query)
+		const roles = await RoleModel.find(query)
 			.sort({ [sortField]: +sortDir })
 			.limit(+itemsPerPage)
 			.skip(page * +itemsPerPage)
 			.lean();
 
-		for (const userRole of userRoles) {
-			const path = await getPathToDocument(
-				userRole._id,
-				UserRoleModel,
-				"user role"
-			);
+		for (const role of roles) {
+			const path = await getPathToDocument(role._id, RoleModel, "role");
 			path.pop(); // Remove the id from the end of the array.
 
-			userRole.depth = path.length;
+			role.depth = path.length;
 		}
 
 		return res.status(200).json({
-			userRoles,
+			roles,
 			page,
 			numPages,
 		});
@@ -115,9 +111,9 @@ export const findUserRoles = async (req, res) => {
 };
 
 /**
- * Query user roles in a tree format.
+ * Query roles in a tree format.
  */
-export const getUserRoleTree = async (req, res) => {
+export const getRoleTree = async (req, res) => {
 	try {
 		try {
 			req.query = await validateNestQuery(req.query);
@@ -141,7 +137,7 @@ export const getUserRoleTree = async (req, res) => {
 
 		if (search) query.name = { $regex: search, $options: "i" };
 
-		const numRoles = await UserRoleModel.countDocuments(query);
+		const numRoles = await RoleModel.countDocuments(query);
 
 		itemsPerPage = itemsPerPage === "all" ? numRoles : +itemsPerPage;
 
@@ -152,28 +148,28 @@ export const getUserRoleTree = async (req, res) => {
 		if (page > numPages - 1) page = numPages - 1;
 		if (page < 0) page = 0;
 
-		let userRoles = [];
+		let roles = [];
 		if (!root) {
 			query.parent = { $exists: false }; // Filter to just root items.
-			userRoles = await UserRoleModel.find(query)
+			roles = await RoleModel.find(query)
 				.sort({ [sortField]: +sortDir })
 				.lean();
 
 			delete query.parent;
 		} else {
 			query._id = root;
-			const rootUserRole = await UserRoleModel.findOne(query).lean();
+			const rootRole = await RoleModel.findOne(query).lean();
 
-			if (rootUserRole) userRoles = [rootUserRole];
+			if (rootRole) roles = [rootRole];
 
 			delete query._id;
 		}
 
-		if (userRoles && userRoles.length > 0) {
+		if (roles && roles.length > 0) {
 			// Build document tree.
-			userRoles = await buildDocumentTree(
-				userRoles,
-				UserRoleModel,
+			roles = await buildDocumentTree(
+				roles,
+				RoleModel,
 				query,
 				{ [sortField]: +sortDir },
 				"",
@@ -181,14 +177,14 @@ export const getUserRoleTree = async (req, res) => {
 			);
 
 			// Flatten document tree.
-			userRoles = flattenDocumentTree(userRoles).slice(
+			roles = flattenDocumentTree(roles).slice(
 				page * itemsPerPage,
 				page * itemsPerPage + itemsPerPage
 			);
 		}
 
 		return res.status(200).json({
-			userRoles,
+			roles,
 			page,
 			numPages,
 		});
@@ -198,9 +194,9 @@ export const getUserRoleTree = async (req, res) => {
 };
 
 /**
- * Query user roles for possible parents.
+ * Query roles for possible parents.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the user role to find a parent for.
+ * @param {string} req.params.id The ID of the role to find a parent for.
  */
 export const getPossibleParents = async (req, res) => {
 	try {
@@ -217,7 +213,7 @@ export const getPossibleParents = async (req, res) => {
 		const { id } = req.params;
 
 		if (id !== "all" && !mongoose.Types.ObjectId.isValid(id))
-			return res.status(400).send("Invalid user role id provided.");
+			return res.status(400).send("Invalid role id provided.");
 
 		const query = { ...unlockedQuery };
 
@@ -225,12 +221,10 @@ export const getPossibleParents = async (req, res) => {
 			query.name = { $regex: req.query.search, $options: "i" };
 
 		if (id !== "all") {
-			const userRole = await UserRoleModel.findById(id);
+			const role = await RoleModel.findById(id);
 
-			if (!userRole)
-				return res
-					.status(400)
-					.send(`No user role found with id "${id}"`);
+			if (!role)
+				return res.status(400).send(`No role found with id "${id}"`);
 
 			query._id = { $ne: id };
 			query.$or = [
@@ -239,35 +233,35 @@ export const getPossibleParents = async (req, res) => {
 			];
 		}
 
-		// Get all user roles that are NOT this role, and NOT a direct child of it.
-		const userRoles = flattenDocumentTree(
-			await buildDocumentTree(undefined, UserRoleModel, query, {
+		// Get all roles that are NOT this role, and NOT a direct child of it.
+		const roles = flattenDocumentTree(
+			await buildDocumentTree(undefined, RoleModel, query, {
 				order: 1,
 			})
 		);
 
-		// Determine all "path-to-roots" for each user role and ensure that the selected role is NOT found in any of them.
+		// Determine all "path-to-roots" for each role and ensure that the selected role is NOT found in any of them.
 		let notReferenced = [];
 
 		if (id === "all") {
-			notReferenced = userRoles;
+			notReferenced = roles;
 		} else {
-			for (const userRole of userRoles) {
+			for (const role of roles) {
 				const path = await getPathToDocument(
-					userRole._id,
-					UserRoleModel,
-					"user role"
+					role._id,
+					RoleModel,
+					"role"
 				);
 				path.pop(); // Remove the id from the end of the array.
 
 				if (path.includes(id)) continue;
 
-				notReferenced.push(userRole);
+				notReferenced.push(role);
 			}
 		}
 
 		return res.status(200).json({
-			userRoles: notReferenced,
+			roles: notReferenced,
 		});
 	} catch (error) {
 		return handleUnexpectedError(res, error);
@@ -275,9 +269,9 @@ export const getPossibleParents = async (req, res) => {
 };
 
 /**
- * Delete a selection of user roles.
+ * Delete a selection of roles.
  */
-export const deleteUserRoles = async (req, res) => {
+export const deleteRoles = async (req, res) => {
 	try {
 		try {
 			req.query = await validateGenericQuery(req.query);
@@ -294,83 +288,80 @@ export const deleteUserRoles = async (req, res) => {
 				.status(400)
 				.send('No "selection" parameter provided in query.');
 
-		const userRoles = await UserRoleModel.find(
-			stripQuery(req.query)
-		).lean();
+		const roles = await RoleModel.find(stripQuery(req.query)).lean();
 
 		if (selection === "all")
-			selection = userRoles
+			selection = roles
 				.filter(({ locked }) => !locked)
 				.map(({ _id }) => _id.toString());
 		else selection = selection.split(",");
 
-		// Delete all descendants of userRole.
+		// Delete all descendants of role.
 		const itemsAndDescendants = flattenDocumentTree(
 			await buildDocumentTree(
-				await UserRoleModel.find({
+				await RoleModel.find({
 					_id: { $in: selection },
 				}).lean(),
-				UserRoleModel
+				RoleModel
 			)
 		).map(({ _id }) => _id.toString());
 
-		await UserRoleModel.deleteMany({
+		await RoleModel.deleteMany({
 			_id: { $in: itemsAndDescendants },
 		});
 
-		return res.status(200).send("User roles deleted successfully.");
+		return res.status(200).send("roles deleted successfully.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
 };
 
 /**
- * Find a specific user role by its ID and position it before another one in the order system.
+ * Find a specific role by its ID and position it before another one in the order system.
  * @param {Express.Request} req The API request object.
- * @param {string} req.query.active The ID of the user role to move.
- * @param {string} req.query.over The ID of the user role to move before.
+ * @param {string} req.query.active The ID of the role to move.
+ * @param {string} req.query.over The ID of the role to move before.
  * @param {1|-1} req.query.dir The direction to move in.
  */
-export const orderUserRoles = async (req, res) => {
+export const orderRoles = async (req, res) => {
 	try {
 		const { active, over } = req.query;
 		const dir = +req.query.dir || 1;
 
-		await orderDocuments(active, over, dir, UserRoleModel, "user role");
+		await orderDocuments(active, over, dir, RoleModel, "role");
 
-		return res.status(200).send("User role order change successful.");
+		return res.status(200).send("role order change successful.");
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
 };
 
 /**
- * Find a specific user role by its ID.
+ * Find a specific role by its ID.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the user role to find.
+ * @param {string} req.params.id The ID of the role to find.
  */
-export const findUserRoleById = async (req, res) => {
+export const findRoleById = async (req, res) => {
 	try {
 		const { id } = req.params;
 
-		const userRole = await UserRoleModel.findById(id);
+		const role = await RoleModel.findById(id);
 
-		if (!userRole)
-			return res.status(404).send(`No user role found with id "${id}"`);
+		if (!role) return res.status(404).send(`No role found with id "${id}"`);
 
-		return res.status(200).json({ userRole });
+		return res.status(200).json({ role });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}
 };
 
 /**
- * Find a specific user role by its ID and update it.
+ * Find a specific role by its ID and update it.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the user role to find.
- * @param {Object} req.body The user role update object.
+ * @param {string} req.params.id The ID of the role to find.
+ * @param {Object} req.body The role update object.
  */
-export const findUserRoleByIdAndUpdate = async (req, res) => {
+export const findRoleByIdAndUpdate = async (req, res) => {
 	try {
 		const { id } = req.params;
 
@@ -381,19 +372,18 @@ export const findUserRoleByIdAndUpdate = async (req, res) => {
 					'Request body "_id" parameter does not match request "_id" parameter.'
 				);
 
-		const userRole = await UserRoleModel.findById(id);
+		const role = await RoleModel.findById(id);
 
-		if (!userRole)
-			return res.status(404).send(`No user role found with id "${id}"`);
+		if (!role) return res.status(404).send(`No role found with id "${id}"`);
 
-		if (userRole.locked)
+		if (role.locked)
 			return res
 				.status(401)
-				.send("You are not authorized to edit locked user roles.");
+				.send("You are not authorized to edit locked roles.");
 
 		try {
-			req.body = await validateUserRole({
-				...(await UserRoleModel.findById(id).lean()),
+			req.body = await validateRole({
+				...(await RoleModel.findById(id).lean()),
 				...req.body,
 			});
 		} catch (error) {
@@ -404,12 +394,12 @@ export const findUserRoleByIdAndUpdate = async (req, res) => {
 
 		// Store new values.
 		for (const [key, value] of Object.entries(req.body)) {
-			userRole[key] = value;
+			role[key] = value;
 		}
 
-		await userRole.save();
+		await role.save();
 
-		return res.status(200).json({ userRole });
+		return res.status(200).json({ role });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

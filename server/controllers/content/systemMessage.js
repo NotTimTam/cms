@@ -1,6 +1,6 @@
 import { messageTypeEnum } from "../../../util/enum.js";
 import UserModel from "../../models/users/User.js";
-import UserRoleModel from "../../models/users/UserRole.js";
+import RoleModel from "../../models/users/Role.js";
 
 class SystemMessage {
 	constructor(type, content) {
@@ -27,7 +27,7 @@ export const getSystemMessages = async (req, res) => {
 		const systemMessages = [];
 
 		// Check webmaster.
-		const webmasterRole = await UserRoleModel.findOne({
+		const webmasterRole = await RoleModel.findOne({
 			name: "Webmaster",
 		});
 		const webmaster = await UserModel.findOne({

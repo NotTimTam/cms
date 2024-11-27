@@ -83,3 +83,5 @@ The designations front-end, and back-end, refer not to application architecture 
 -   NO side menu on editor pages.
 -   Filter Options some are just dropdowns, some allow for "search" input, some allow for multiple selections and display them as little widgets in the text box.
 -   Direct robots.txt access and control.
+-   Stamp data with cms version to indicate when outdated.
+-   Update menu/(potential autoupdate system) that tells you when version is outdated.

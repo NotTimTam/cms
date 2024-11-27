@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../util/regex.js";
+import PermissionSchema from "../schema/Permissions.js";
 
 const ModuleSchema = new mongoose.Schema(
 	{
@@ -13,6 +14,12 @@ const ModuleSchema = new mongoose.Schema(
 			required: [true, "No Module alias provided."],
 			match: [aliasRegex, "Invalid alias provided to Module."],
 		},
+		permissions: [
+			{
+				type: PermissionSchema,
+				required: false,
+			},
+		],
 	},
 	{ timestamps: true }
 );

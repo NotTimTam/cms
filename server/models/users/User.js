@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { emailRegex, nameRegex } from "../../../util/regex.js";
+import PermissionSchema from "../../schema/Permissions.js";
 
 const UserSchema = new mongoose.Schema(
 	{
@@ -50,6 +51,12 @@ const UserSchema = new mongoose.Schema(
 			type: Date,
 			required: false,
 		},
+		permissions: [
+			{
+				type: PermissionSchema,
+				required: false,
+			},
+		],
 	},
 	{ timestamps: true }
 );

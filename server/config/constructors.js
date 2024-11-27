@@ -19,6 +19,7 @@ export const constructWebmaster = async () => {
 			description:
 				"System-generated role, reserved to the webmaster user.",
 			locked: true,
+			permissions: [{ name: "all", status: true }],
 		});
 
 		await webmasterRole.save();
@@ -50,23 +51,29 @@ export const constructWebmaster = async () => {
 		warn("No webmaster user exists. One has been created.");
 	} else success("Webmaster exists.");
 
-	// If the user is not locked, we relock them.
-	if (!user.locked) {
-		user.locked = true;
-
-		await user.save();
-	}
-
 	// If the user is unverified, we reset their password.
 	if (!user.verified) {
 		const password = generateRandomPassword(12);
 		user.password = await bcrypt.hash(password, +process.env.SALT || 12);
 		user.jwtTimestamp = new Date().toISOString();
 
-		await user.save();
-
 		error(
 			`Webmaster credentials:\n\nUsername: ${user.username}\nPassword: ${password}\n\nLogin as webmaster and change the password immediately.`
 		);
+	}
+
+	// If the user is not locked, we relock them.
+	if (!user.locked) {
+		user.locked = true;
+	}
+
+	try {
+		await user.save();
+	} catch (err) {
+		error(
+			"A fatal error occured when attempting to save webmaster user. Potential database corruption may have caused this. Error info:"
+		);
+		console.error(err);
+		process.exit(1);
 	}
 };

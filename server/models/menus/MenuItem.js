@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../../util/regex.js";
+import PermissionSchema from "../../schema/Permissions.js";
 
 const MenuItemSchema = new mongoose.Schema(
 	{
@@ -23,6 +24,12 @@ const MenuItemSchema = new mongoose.Schema(
 			required: [true, "No MenuItem alias provided."],
 			match: [aliasRegex, "Invalid alias provided to MenuItem."],
 		},
+		permissions: [
+			{
+				type: PermissionSchema,
+				required: false,
+			},
+		],
 	},
 	{ timestamps: true }
 );

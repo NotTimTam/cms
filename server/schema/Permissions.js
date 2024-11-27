@@ -13,7 +13,7 @@ const PermissionSchema = new mongoose.Schema(
 			required: false,
 		},
 	},
-	{ timestamps: true }
+	{ timestamps: true, _id: false }
 );
 
 export default PermissionSchema;

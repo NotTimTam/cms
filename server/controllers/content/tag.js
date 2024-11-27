@@ -296,9 +296,7 @@ export const deleteTags = async (req, res) => {
 		const tags = await TagModel.find(stripQuery(req.query)).lean();
 
 		if (selection === "all")
-			selection = tags
-				.filter(({ locked }) => !locked)
-				.map(({ _id }) => _id.toString());
+			selection = tags.map(({ _id }) => _id.toString());
 		else selection = selection.split(",");
 
 		// Delete all descendants of tags.
@@ -380,11 +378,6 @@ export const findTagByIdAndUpdate = async (req, res) => {
 		const tag = await TagModel.findById(id);
 
 		if (!tag) return res.status(404).send(`No tag found with id "${id}"`);
-
-		if (tag.locked)
-			return res
-				.status(401)
-				.send("You are not authorized to edit locked tags.");
 
 		try {
 			req.body = await validateTag({

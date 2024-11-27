@@ -44,10 +44,18 @@ export const constructWebmaster = async () => {
 			username: "webmaster",
 			verified: false,
 			roles: [webmasterRole._id],
+			locked: true,
 		});
 
 		warn("No webmaster user exists. One has been created.");
 	} else success("Webmaster exists.");
+
+	// If the user is not locked, we relock them.
+	if (!user.locked) {
+		user.locked = true;
+
+		await user.save();
+	}
 
 	// If the user is unverified, we reset their password.
 	if (!user.verified) {

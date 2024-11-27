@@ -127,7 +127,7 @@ const Listings = () => {
 		setMessage(null);
 
 		try {
-			SessionStorage.setItem("roleQuery", query); // Remember this query.
+			SessionStorage.setItem("userRoleQuery", query); // Remember this query.
 
 			// Create search params.
 			const searchParams = API.createQueryString(query);

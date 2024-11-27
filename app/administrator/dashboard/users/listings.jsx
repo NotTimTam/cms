@@ -194,7 +194,7 @@ const UserListings = () => {
 				API.createAuthorizationConfig(token)
 			);
 
-			setUsers(users.filter(({ locked }) => !locked));
+			setUsers(users);
 			setQuery((query) => ({
 				...query,
 				page: newPage,

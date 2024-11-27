@@ -266,8 +266,6 @@ export const getPossibleParents = async (req, res) => {
 			}
 		}
 
-		console.log(req.query, userRoles);
-
 		return res.status(200).json({
 			userRoles: notReferenced,
 		});
@@ -306,20 +304,17 @@ export const deleteUserRoles = async (req, res) => {
 				.map(({ _id }) => _id.toString());
 		else selection = selection.split(",");
 
-		// Delete all descendants of roles.
+		// Delete all descendants of userRole.
 		const itemsAndDescendants = flattenDocumentTree(
 			await buildDocumentTree(
 				await UserRoleModel.find({
-					...unlockedQuery, // Locked roles cannot be deleted.
 					_id: { $in: selection },
 				}).lean(),
-				UserRoleModel,
-				{ ...unlockedQuery }
+				UserRoleModel
 			)
 		).map(({ _id }) => _id.toString());
 
 		await UserRoleModel.deleteMany({
-			...unlockedQuery, // Locked roles cannot be deleted.
 			_id: { $in: itemsAndDescendants },
 		});
 

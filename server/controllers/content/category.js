@@ -306,9 +306,7 @@ export const deleteCategories = async (req, res) => {
 		).lean();
 
 		if (selection === "all")
-			selection = categories
-				.filter(({ locked }) => !locked)
-				.map(({ _id }) => _id.toString());
+			selection = categories.map(({ _id }) => _id.toString());
 		else selection = selection.split(",");
 
 		// Delete all descendants of categories.
@@ -392,11 +390,6 @@ export const findCategoryByIdAndUpdate = async (req, res) => {
 
 		if (!category)
 			return res.status(404).send(`No category found with id "${id}"`);
-
-		if (category.locked)
-			return res
-				.status(401)
-				.send("You are not authorized to edit locked categories.");
 
 		try {
 			req.body = await validateCategory({

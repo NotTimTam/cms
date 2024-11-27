@@ -2,7 +2,7 @@ import UserModel from "../../models/users/User.js";
 import UserRoleModel from "../../models/users/UserRole.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import { emailRegex, nameRegex } from "../../../util/regex.js";
-import { getPathToDocument } from "../..//util/database.js";
+import { getPathToDocument, unlockedQuery } from "../..//util/database.js";
 import {
 	ResError,
 	stripQuery,
@@ -139,7 +139,9 @@ export const findUsers = async (req, res) => {
 		} = req.query;
 		let { page = "0", itemsPerPage = "20" } = req.query;
 
-		const query = {};
+		const query = {
+			...unlockedQuery,
+		};
 
 		if (search)
 			query["$or"] = [

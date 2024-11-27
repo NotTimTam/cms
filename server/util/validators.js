@@ -564,8 +564,6 @@ export const validateArticleQuery = async (query) => {
 };
 
 export const stripQuery = (query) => {
-	console.log(query);
-
 	const newQuery = {};
 
 	if (query.status) {

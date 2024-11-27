@@ -14,9 +14,17 @@ export class PermissionDefinition {
 }
 
 /**
- * Permissions configuration.
+ * Permission action configuration.
  */
 export const definitions = {
+	siteLogin: new PermissionDefinition(
+		"Site Login",
+		"This user can login on the site front-end."
+	),
+	adminLogin: new PermissionDefinition(
+		"Admin Login",
+		"This user can login on the administrative portal."
+	),
 	permissions: new PermissionDefinition(
 		"Change Permissions",
 		"Reconfigure permissions across accessible content."
@@ -29,14 +37,13 @@ export const definitions = {
 };
 
 const defaultDefinitions = ["create", "delete", "edit", "reorder"];
-const userDefinitions = ["permissions", "all"];
+const userDefinitions = ["permissions", "all", "siteLogin", "adminLogin"];
+
 /**
  * Permission arrangement.
  */
-export default {
-	category: defaultDefinitions,
-	tag: defaultDefinitions,
-	article: defaultDefinitions,
-	role: [...defaultDefinitions, ...userDefinitions],
-	user: [...defaultDefinitions, ...userDefinitions],
-};
+export const category = defaultDefinitions;
+export const tag = defaultDefinitions;
+export const article = defaultDefinitions;
+export const role = [...defaultDefinitions, ...userDefinitions];
+export const user = [...defaultDefinitions, ...userDefinitions];

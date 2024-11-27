@@ -274,7 +274,9 @@ const List = ({
 	return (
 		<section className={styles["--cms-listings"]}>
 			{!items || items.length === 0 ? (
-				<Message type="info">No {itemIdentifier} found.</Message>
+				<Message type="info">
+					<p>No {itemIdentifier} found.</p>
+				</Message>
 			) : (
 				<div className={styles["--cms-listings-table"]}>
 					<header

@@ -11,6 +11,7 @@ import { depthIndicator } from "@/util/display";
 import { FileInput, FilePlus2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { role as actions } from "@/util/permissions";
 
 const defaultRole = {
 	name: "",
@@ -49,7 +50,11 @@ const RoleEditor = ({ id }) => {
 		} catch (error) {
 			console.error(error);
 
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);
@@ -73,7 +78,11 @@ const RoleEditor = ({ id }) => {
 		} catch (error) {
 			console.error(error);
 
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);
@@ -123,7 +132,11 @@ const RoleEditor = ({ id }) => {
 
 			if (error.status === 404) router.push("/not-found");
 
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 
 			ret = false;
 		}
@@ -201,7 +214,7 @@ const RoleEditor = ({ id }) => {
 								} catch (error) {
 									setMessage(
 										<Message type="error">
-											{error.data}
+											<p>{error.data}</p>
 										</Message>
 									);
 								}
@@ -306,7 +319,10 @@ const RoleEditor = ({ id }) => {
 							onSubmit={(e) => e.preventDefault()}
 						>
 							<Message type="info">
-								Changes apply to this role and all child roles.
+								<p>
+									Changes apply to this role and all child
+									roles.
+								</p>
 								<ul>
 									<li>
 										<b>Inherited</b> &ndash; a Global
@@ -326,6 +342,7 @@ const RoleEditor = ({ id }) => {
 								</ul>
 							</Message>
 							<Permissions
+								actions={actions}
 								permissions={role.permissions}
 								setPermissions={(permissions) =>
 									setRole((role) => ({

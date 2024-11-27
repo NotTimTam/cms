@@ -51,7 +51,7 @@ const SystemMessages = ({ token, fill, style = {} }) => {
 
 					return (
 						<Message fill={fill} key={key} type={type}>
-							<span>{content}</span>
+							<p>{content}</p>
 						</Message>
 					);
 				})

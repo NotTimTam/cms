@@ -165,7 +165,7 @@ const Filter = ({
 	if (!query)
 		return (
 			<Message type="error">
-				No query attribute passed to Filter component.
+				<p>No query attribute passed to Filter component.</p>
 			</Message>
 		);
 

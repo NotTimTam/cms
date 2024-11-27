@@ -23,7 +23,7 @@ const Message = ({ type = "info", fill, children }) => {
 			fill={fill ? "true" : undefined}
 		>
 			{icon}
-			<p className={styles["--cms-message-content"]}>{children}</p>
+			<div className={styles["--cms-message-content"]}>{children}</div>
 		</div>
 	);
 };

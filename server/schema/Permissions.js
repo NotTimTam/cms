@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { definitions } from "../util/permissions.js";
+import { definitions } from "../../util/permissions.js";
 
 const PermissionSchema = new mongoose.Schema(
 	{

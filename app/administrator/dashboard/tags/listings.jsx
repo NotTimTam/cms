@@ -159,7 +159,11 @@ const Listings = () => {
 			}));
 		} catch (error) {
 			console.error(error);
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);
@@ -187,7 +191,11 @@ const Listings = () => {
 			await executeQuery();
 		} catch (error) {
 			console.error(error);
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);
@@ -216,7 +224,11 @@ const Listings = () => {
 			setSelection([]);
 		} catch (error) {
 			console.error(error);
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);

@@ -200,7 +200,11 @@ const UserListings = () => {
 			}));
 		} catch (error) {
 			console.error(error);
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);
@@ -229,7 +233,11 @@ const UserListings = () => {
 			setSelection([]);
 		} catch (error) {
 			console.error(error);
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);

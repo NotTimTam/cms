@@ -57,7 +57,11 @@ const UserEditor = ({ id }) => {
 		} catch (error) {
 			console.error(error);
 
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 	};
 
@@ -86,7 +90,11 @@ const UserEditor = ({ id }) => {
 
 			if (error.status === 404) router.push("/not-found");
 
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);
@@ -141,7 +149,11 @@ const UserEditor = ({ id }) => {
 		} catch (error) {
 			console.error(error);
 
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 
 			ret = false;
 		}
@@ -227,7 +239,7 @@ const UserEditor = ({ id }) => {
 								} catch (error) {
 									setMessage(
 										<Message type="error">
-											{error.data}
+											<p>{error.data}</p>
 										</Message>
 									);
 								}
@@ -331,12 +343,14 @@ const UserEditor = ({ id }) => {
 
 							{me && !user.verified && (
 								<Message type="info" fill>
-									Enter a new password into the {'"Password"'}{" "}
-									and
-									{' "Repeat Password"'} inputs and hit{" "}
-									{'"Save"'} to verify yourself. You will be
-									prompted to log back in with your new
-									credentials.
+									<p>
+										Enter a new password into the{" "}
+										{'"Password"'} and
+										{' "Repeat Password"'} inputs and hit{" "}
+										{'"Save"'} to verify yourself. You will
+										be prompted to log back in with your new
+										credentials.
+									</p>
 								</Message>
 							)}
 
@@ -345,17 +359,20 @@ const UserEditor = ({ id }) => {
 									<label>Verification Status</label>
 									{user.verified ? (
 										<Message type="success" fill>
-											This user has been verified.
+											<p>This user has been verified.</p>
 										</Message>
 									) : (
 										<Message type="warning" fill>
-											This user has not been verified. A
-											user must log in and change their
-											password once to verify themselves.
-											An unverified user cannot access any
-											other portions of the administrative
-											dashboard until they have verified
-											themselves.
+											<p>
+												This user has not been verified.
+												A user must log in and change
+												their password once to verify
+												themselves. An unverified user
+												cannot access any other portions
+												of the administrative dashboard
+												until they have verified
+												themselves.
+											</p>
 										</Message>
 									)}
 								</>
@@ -386,10 +403,12 @@ const UserEditor = ({ id }) => {
 										/>
 									) : (
 										<Message type="info" fill>
-											No roles have been defined.{" "}
-											<Link href="/administrator/dashboard/users?view=roles">
-												Create a role.
-											</Link>
+											<p>
+												No roles have been defined.{" "}
+												<Link href="/administrator/dashboard/users?view=roles">
+													Create a role.
+												</Link>
+											</p>
 										</Message>
 									))}
 							</div>

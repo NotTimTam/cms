@@ -59,7 +59,11 @@ const ArticleEditor = ({ id }) => {
 		} catch (error) {
 			console.error(error);
 
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 		}
 
 		setLoading(false);
@@ -94,7 +98,11 @@ const ArticleEditor = ({ id }) => {
 		} catch (error) {
 			console.error(error);
 
-			setMessage(<Message type="error">{error.data}</Message>);
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
 
 			ret = false;
 		}

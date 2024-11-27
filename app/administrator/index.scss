@@ -398,6 +398,21 @@ form.--cms-form {
 		}
 	}
 
+	fieldset {
+		display: block;
+		margin-left: var(--gap);
+		margin-right: var(--gap);
+		padding-top: var(--padding);
+		padding-bottom: var(--padding);
+		padding-left: var(--margin);
+		padding-right: var(--margin);
+		border: 1px solid var(--background-color-6);
+
+		legend {
+			font-weight: bold;
+		}
+	}
+
 	input,
 	textarea,
 	select {

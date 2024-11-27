@@ -3,6 +3,7 @@
 import Editor from "@/app/administrator/components/Editor";
 import Loading from "@/app/administrator/components/Loading";
 import Message from "@/app/administrator/components/Message";
+import Permissions from "@/app/administrator/components/Permissions";
 import Tabs from "@/app/administrator/components/Tabs";
 import { getToken } from "@/app/cookies";
 import API from "@/util/API";
@@ -142,174 +143,182 @@ const UserRoleEditor = ({ id }) => {
 	if (loading) return <Loading />;
 
 	return (
-		<>
-			<Editor
-				{...{
-					message,
-					saveData: saveRole,
-					saveOptions: [
-						{
-							label: (
-								<>
-									<FilePlus2 /> Save & New
-								</>
-							),
-							ariaLabel: "Save & New",
-							callback: async () => {
-								const savedSuccessfully = await saveRole(false);
-
-								if (savedSuccessfully)
-									router.push(
-										"/administrator/dashboard/users?view=roles&layout=edit"
-									);
-							},
-						},
-						{
-							label: (
-								<>
-									<FileInput /> Save & Copy
-								</>
-							),
-							ariaLabel: "Save & Copy",
-							callback: async () => {
-								const savedSuccessfully = await saveRole(false);
-
-								if (savedSuccessfully) {
-									setLoading(true);
-									setMessage(null);
-
-									try {
-										const token = await getToken();
-
-										const {
-											data: { userRole: newUserRole },
-										} = await API.post(
-											API.userRoles,
-											{
-												name: `Copy of ${
-													userRole.name
-												} - ${new Date().toISOString()}`,
-												description:
-													userRole.description,
-												parent: userRole.parent,
-											},
-											API.createAuthorizationConfig(token)
-										);
-
-										router.push(
-											`/administrator/dashboard/users?view=roles&layout=edit&id=${newUserRole._id}`
-										);
-									} catch (error) {
-										setMessage(
-											<Message type="error">
-												{error.data}
-											</Message>
-										);
-									}
-								}
-
-								setLoading(false);
-							},
-						},
-					],
-					closeEditor: () =>
-						router.push(
-							"/administrator/dashboard/users?view=roles"
-						),
-					tabs: [
-						Tabs.Item(
-							"Content",
+		<Editor
+			{...{
+				message,
+				saveData: saveRole,
+				saveOptions: [
+					{
+						label: (
 							<>
-								<Tabs.Item.Main>
+								<FilePlus2 /> Save & New
+							</>
+						),
+						ariaLabel: "Save & New",
+						callback: async () => {
+							const savedSuccessfully = await saveRole(false);
+
+							if (savedSuccessfully)
+								router.push(
+									"/administrator/dashboard/users?view=roles&layout=edit"
+								);
+						},
+					},
+					{
+						label: (
+							<>
+								<FileInput /> Save & Copy
+							</>
+						),
+						ariaLabel: "Save & Copy",
+						callback: async () => {
+							const savedSuccessfully = await saveRole(false);
+
+							if (savedSuccessfully) {
+								setLoading(true);
+								setMessage(null);
+
+								try {
+									const token = await getToken();
+
+									const {
+										data: { userRole: newUserRole },
+									} = await API.post(
+										API.userRoles,
+										{
+											name: `Copy of ${
+												userRole.name
+											} - ${new Date().toISOString()}`,
+											description: userRole.description,
+											parent: userRole.parent,
+										},
+										API.createAuthorizationConfig(token)
+									);
+
+									router.push(
+										`/administrator/dashboard/users?view=roles&layout=edit&id=${newUserRole._id}`
+									);
+								} catch (error) {
+									setMessage(
+										<Message type="error">
+											{error.data}
+										</Message>
+									);
+								}
+							}
+
+							setLoading(false);
+						},
+					},
+				],
+				closeEditor: () =>
+					router.push("/administrator/dashboard/users?view=roles"),
+				tabs: [
+					Tabs.Item(
+						"Content",
+						<>
+							<Tabs.Item.Main>
+								<form
+									className="--cms-form"
+									onSubmit={(e) => e.preventDefault()}
+								>
+									<label htmlFor="name" required>
+										Name
+									</label>
+									<input
+										value={userRole.name || ""}
+										onChange={({ target: { value } }) =>
+											setUserRole({
+												...userRole,
+												name: value,
+											})
+										}
+										type="text"
+										id="name"
+										placeholder="Article Editor, Website Manager, Etc."
+									/>
+
+									<label htmlFor="description">
+										Description
+									</label>
+									<textarea
+										value={userRole.description || ""}
+										onChange={({ target: { value } }) =>
+											setUserRole({
+												...userRole,
+												description: value,
+											})
+										}
+										id="description"
+										placeholder="What is the purpose of this role?"
+									></textarea>
+								</form>
+							</Tabs.Item.Main>
+							<Tabs.Item.Aside>
+								{possibleParents ? (
 									<form
 										className="--cms-form"
 										onSubmit={(e) => e.preventDefault()}
 									>
-										<label htmlFor="name" required>
-											Name
-										</label>
-										<input
-											value={userRole.name || ""}
-											onChange={({ target: { value } }) =>
-												setUserRole({
-													...userRole,
-													name: value,
-												})
+										<label htmlFor="parent">Parent</label>
+										<select
+											id="parent"
+											value={
+												userRole.parent === null
+													? ""
+													: userRole.parent
 											}
-											type="text"
-											id="name"
-											placeholder="Article Editor, Website Manager, Etc."
-										/>
-
-										<label htmlFor="description">
-											Description
-										</label>
-										<textarea
-											value={userRole.description || ""}
-											onChange={({ target: { value } }) =>
-												setUserRole({
+											onChange={(e) =>
+												setUserRole((userRole) => ({
 													...userRole,
-													description: value,
-												})
+													parent: e.target.value,
+												}))
 											}
-											id="description"
-											placeholder="What is the purpose of this role?"
-										></textarea>
-									</form>
-								</Tabs.Item.Main>
-								<Tabs.Item.Aside>
-									{possibleParents ? (
-										<form
-											className="--cms-form"
-											onSubmit={(e) => e.preventDefault()}
 										>
-											<label htmlFor="parent">
-												Parent
-											</label>
-											<select
-												id="parent"
-												value={
-													userRole.parent === null
-														? ""
-														: userRole.parent
-												}
-												onChange={(e) =>
-													setUserRole((userRole) => ({
-														...userRole,
-														parent: e.target.value,
-													}))
-												}
-											>
-												<option value="">
-													{"No Parent"}
-												</option>
-												{possibleParents.map(
-													({ name, depth, _id }) => (
-														<option
-															key={_id}
-															value={_id}
-														>
-															{depthIndicator(
-																depth
-															)}{" "}
-															{name}
-														</option>
-													)
-												)}
-											</select>
-										</form>
-									) : (
-										<div className="--cms-padding">
-											<Loading />
-										</div>
-									)}
-								</Tabs.Item.Aside>
-							</>
-						),
-					],
-				}}
-			/>
-		</>
+											<option value="">
+												{"No Parent"}
+											</option>
+											{possibleParents.map(
+												({ name, depth, _id }) => (
+													<option
+														key={_id}
+														value={_id}
+													>
+														{depthIndicator(depth)}{" "}
+														{name}
+													</option>
+												)
+											)}
+										</select>
+									</form>
+								) : (
+									<div className="--cms-padding">
+										<Loading />
+									</div>
+								)}
+							</Tabs.Item.Aside>
+						</>
+					),
+					Tabs.Item(
+						"Permissions",
+						<form
+							className="--cms-form"
+							onSubmit={(e) => e.preventDefault()}
+						>
+							<Permissions
+								permissions={userRole.permissions}
+								setPermissions={(permissions) =>
+									setUserRole((userRole) => ({
+										...userRole,
+										permissions,
+									}))
+								}
+							/>
+						</form>
+					),
+				],
+			}}
+		/>
 	);
 };
 

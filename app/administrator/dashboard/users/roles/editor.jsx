@@ -11,7 +11,7 @@ import { depthIndicator } from "@/util/display";
 import { FileInput, FilePlus2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { role as actions } from "@/util/permissions";
+import actions from "@/util/permissions";
 
 const defaultRole = {
 	name: "",
@@ -314,11 +314,13 @@ const RoleEditor = ({ id }) => {
 					),
 					Tabs.Item(
 						"Permissions",
-						<form
-							className="--cms-form"
-							onSubmit={(e) => e.preventDefault()}
-						>
-							<Message type="info">
+						<>
+							<Message
+								type="info"
+								style={{
+									margin: "var(--margin) var(--margin) 0 var(--margin)",
+								}}
+							>
 								<p>
 									Changes apply to this role and all child
 									roles.
@@ -341,17 +343,26 @@ const RoleEditor = ({ id }) => {
 									</li>
 								</ul>
 							</Message>
-							<Permissions
-								actions={actions}
-								permissions={role.permissions}
-								setPermissions={(permissions) =>
-									setRole((role) => ({
-										...role,
-										permissions,
-									}))
-								}
-							/>
-						</form>
+							<form
+								className="--cms-form"
+								style={{
+									width: "max-content",
+									maxWidth: "unset",
+								}}
+								onSubmit={(e) => e.preventDefault()}
+							>
+								<Permissions
+									actions={actions}
+									permissions={role.permissions}
+									setPermissions={(permissions) =>
+										setRole((role) => ({
+											...role,
+											permissions,
+										}))
+									}
+								/>
+							</form>
+						</>
 					),
 				],
 			}}

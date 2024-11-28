@@ -1,5 +1,5 @@
 /**
- * Methods for defining permissions.
+ * Class for defining permissions.
  */
 export class PermissionDefinition {
 	/**
@@ -10,6 +10,21 @@ export class PermissionDefinition {
 	constructor(name, description) {
 		this.name = name;
 		this.description = description;
+	}
+}
+
+/**
+ * Class for defining what permissions a component needs.
+ */
+export class ComponentPermissions {
+	/**
+	 * Create a new `ComponentPermissions` instance.
+	 * @param {string} name The display name of the component.
+	 * @param {string[]} definitions An array of the string indentifiers for `PermissionDefinition` instances in the `definitions` object.
+	 */
+	constructor(name, definitions) {
+		this.name = name;
+		this.definitions = definitions;
 	}
 }
 
@@ -42,8 +57,16 @@ const userDefinitions = ["permissions", "all", "siteLogin", "adminLogin"];
 /**
  * Permission arrangement.
  */
-export const category = defaultDefinitions;
-export const tag = defaultDefinitions;
-export const article = defaultDefinitions;
-export const role = [...defaultDefinitions, ...userDefinitions];
-export const user = [...defaultDefinitions, ...userDefinitions];
+export default {
+	role: new ComponentPermissions("Role", [
+		...defaultDefinitions,
+		...userDefinitions,
+	]),
+	user: new ComponentPermissions("User", [
+		...defaultDefinitions,
+		...userDefinitions,
+	]),
+	article: new ComponentPermissions("Article", defaultDefinitions),
+	tag: new ComponentPermissions("Tag", defaultDefinitions),
+	category: new ComponentPermissions("Category", defaultDefinitions),
+};

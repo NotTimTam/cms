@@ -23,6 +23,7 @@ Core styles for administrator pages.
 	--success-color: hsl(123, 43%, 39%);
 	--success-color-2: hsl(123, 43%, 46%);
 	--success-color-3: hsl(123, 43%, 54%);
+	--info-color-0: hsl(207, 90%, 35%);
 	--info-color: hsl(207, 90%, 61%);
 	--info-color-2: hsl(207, 90%, 68%);
 	--info-color-3: hsl(207, 90%, 74%);
@@ -400,8 +401,6 @@ form.--cms-form {
 
 	fieldset {
 		display: block;
-		margin-left: var(--gap);
-		margin-right: var(--gap);
 		padding-top: var(--padding);
 		padding-bottom: var(--padding);
 		padding-left: var(--margin);

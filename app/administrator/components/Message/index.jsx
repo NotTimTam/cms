@@ -1,7 +1,7 @@
 import { CircleCheck, Info, OctagonAlert, TriangleAlert } from "lucide-react";
 import styles from "./index.module.scss";
 
-const Message = ({ type = "info", fill, children }) => {
+const Message = ({ type = "info", fill, children, style }) => {
 	const icon = (() => {
 		switch (type) {
 			case "error":
@@ -20,6 +20,7 @@ const Message = ({ type = "info", fill, children }) => {
 			type={type}
 			aria-errormessage={type === "error" ? "true" : undefined}
 			className={styles["--cms-message"]}
+			style={style}
 			fill={fill ? "true" : undefined}
 		>
 			{icon}

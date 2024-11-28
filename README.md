@@ -27,7 +27,6 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Fix article refresh editor. Basically if you refresh the article editor after saving a brand new article, since the url doesnt include the ID, refreshing does not open to that article.
 -   Include Lucide license in administrative portal.
 -   Articles built in markdown, html, maybe modes for the editor.
--   Headless popups.
 -   Customizable admin dashboard.
 -   Git-like versioning on articles?
 -   Article version history.
@@ -45,10 +44,9 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Global template and templates for specific menu items.
 -   User management as well as role and permission definitions.
 -   Plugin installer.
--   Front-end icon pack support?
+-   Front-end icon pack support? (should be template level)
 -   Global Configuration, can be used to define password validation regex, and user experience on the back-end/front-end.
 -   Favicon/Metadata control. Perhaps at template level.
--   Bcrypt Salt Length in env.
 -   Modules/Plugins
     -   User feedback module.
     -   Form module.
@@ -58,7 +56,6 @@ The designations front-end, and back-end, refer not to application architecture 
     -   Directory module.
     -   Captcha module.
     -   App event logging (probably build as an internal tool)
-    -   Stop robots from mapping administrator routes.
     -   Create notices about not storing confidential data within CMS.
     -   Create notices about not pasting JavaScript from the web.
     -   Can plugins add custom data to your database?
@@ -75,8 +72,6 @@ The designations front-end, and back-end, refer not to application architecture 
     -   PWT ACL
     -   SEO Glossary
     -   Smart Search (built-in?)
--   Require user password reset.
--   Global "permissions" config that determines what each role can do, perhaps edit this on the role itself.
 -   Editor unsaved changes before exit warning.
 -   Finish adding filtration options for roles, users, articles, etc.
 -   Add user/content custom fields.

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../../util/regex.js";
 import { statusEnum } from "../../../util/enum.js";
-import PermissionSchema from "../../schema/Permissions.js";
+import RolePermissionGroupsSchema from "../../schema/RolePermissionGroups.js";
 
 const ArticleSchema = new mongoose.Schema(
 	{
@@ -79,7 +79,7 @@ const ArticleSchema = new mongoose.Schema(
 		},
 		permissions: [
 			{
-				type: PermissionSchema,
+				type: RolePermissionGroupsSchema,
 				required: false,
 			},
 		],

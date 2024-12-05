@@ -19,11 +19,13 @@ export class PermissionDefinition {
 export class ComponentPermissions {
 	/**
 	 * Create a new `ComponentPermissions` instance.
-	 * @param {string} name The display name of the component.
+	 * @param {string} name The name of the component.
+	 * @param {string} label The display label of the component.
 	 * @param {string[]} definitions An array of the string indentifiers for `PermissionDefinition` instances in the `definitions` object.
 	 */
-	constructor(name, definitions) {
+	constructor(name, label, definitions) {
 		this.name = name;
+		this.label = label;
 		this.definitions = definitions;
 	}
 }
@@ -55,18 +57,23 @@ const defaultDefinitions = ["create", "delete", "edit", "reorder"];
 const userDefinitions = ["permissions", "all", "siteLogin", "adminLogin"];
 
 /**
- * Permission arrangement.
+ * Component groups.
  */
-export default {
-	role: new ComponentPermissions("Role", [
+const componentPermissions = [
+	new ComponentPermissions("role", "Role", [
 		...defaultDefinitions,
 		...userDefinitions,
 	]),
-	user: new ComponentPermissions("User", [
+	new ComponentPermissions("user", "User", [
 		...defaultDefinitions,
 		...userDefinitions,
 	]),
-	article: new ComponentPermissions("Article", defaultDefinitions),
-	tag: new ComponentPermissions("Tag", defaultDefinitions),
-	category: new ComponentPermissions("Category", defaultDefinitions),
-};
+	new ComponentPermissions("article", "Article", defaultDefinitions),
+	new ComponentPermissions("tag", "Tag", defaultDefinitions),
+	new ComponentPermissions("category", "Category", defaultDefinitions),
+];
+
+export const getComponentPermissions = (component) =>
+	componentPermissions.find(({ name }) => name === component);
+
+export default componentPermissions;

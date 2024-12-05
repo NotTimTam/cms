@@ -2,6 +2,7 @@ import Message from "../Message";
 import { ComponentPermissions, definitions } from "@/util/permissions";
 import styles from "./index.module.scss";
 import { useState } from "react";
+import { isBoolean } from "@/util/data";
 
 const PermissionSelect = ({ value, setValue }) => {
 	return (
@@ -40,57 +41,102 @@ const PermissionSelect = ({ value, setValue }) => {
 	);
 };
 
-const Permissions = ({ actions, permissions = {}, setPermissions }) => {
-	if (!actions)
-		throw new Error("No actions provided to Permissions component.");
+const Permissions = ({ permissions, configuration = [], setConfiguration }) => {
+	if (!permissions)
+		throw new Error("No permissions provided to Permissions component.");
 
 	const singleComponentPermissionsObject =
-		actions instanceof ComponentPermissions;
+		permissions instanceof ComponentPermissions;
 
 	const [active, setActive] = useState(
-		singleComponentPermissionsObject ? null : Object.keys(actions)[0]
+		singleComponentPermissionsObject ? null : Object.keys(permissions)[0]
 	);
 
-	const mapActions = (actions) =>
-		actions.map((action, index) => {
+	const getPermissionConfiguration = (permission) =>
+		configuration.find(({ name }) => name === permission);
+
+	const setPermissionConfiguration = (permission, status) => {
+		const exists = getPermissionConfiguration(permission);
+
+		if (!exists)
+			setConfiguration((configuration) => [
+				...configuration,
+				{
+					name: permission,
+					status: status,
+				},
+			]);
+		else {
+			const index = configuration.indexOf(exists);
+
+			if (index === -1)
+				throw new Error(
+					"That permission was not found in the configuration."
+				);
+
+			let newConfiguration = [...configuration];
+			newConfiguration[index] = {
+				...configuration[index],
+				status,
+			};
+
+			setConfiguration(newConfiguration);
+		}
+	};
+
+	const mapPermissions = (permissions) =>
+		permissions.map((action, index) => {
 			const definition = definitions[action];
 
 			if (!definition) return null;
 
 			const { name, description } = definition;
 
+			const value = singleComponentPermissionsObject
+				? configuration[action]
+				: configuration[active] && configuration[active][action];
+
 			return (
 				<tr key={index}>
 					<td title={description}>{name}</td>
 					<td>
 						<PermissionSelect
-							value={permissions[action]}
+							value={value}
 							setValue={(value) =>
-								setPermissions({
-									...permissions,
-									[action]: value,
-								})
+								singleComponentPermissionsObject
+									? setConfiguration({
+											...configuration,
+											[action]: value,
+									  })
+									: setConfiguration({
+											...configuration,
+											[active]: {
+												...(configuration[active] ||
+													{}),
+												[action]: value,
+											},
+									  })
 							}
 						/>
 					</td>
 					<td>
 						<Message
 							type={(() => {
-								switch (permissions[action]) {
+								switch (value) {
 									case true:
 										return "success";
 									case false:
 										return "error";
 									case null:
 									default:
-										return "info";
+										return "";
 								}
 							})()}
-							fill
+							fill={isBoolean(value)}
 						>
 							<p>
 								{(() => {
-									switch (permissions[action]) {
+									switch (value) {
 										case true:
 											return "Allowed";
 										case false:
@@ -114,8 +160,8 @@ const Permissions = ({ actions, permissions = {}, setPermissions }) => {
 			{!singleComponentPermissionsObject && (
 				<aside className={styles["--cms-permissions-aside"]}>
 					<nav>
-						{Object.entries(actions).map(
-							([component, { name }], index) => (
+						{Object.entries(permissions).map(
+							([component, { label }], index) => (
 								<button
 									aria-selected={
 										active === component
@@ -126,7 +172,7 @@ const Permissions = ({ actions, permissions = {}, setPermissions }) => {
 									key={index}
 									onClick={() => setActive(component)}
 								>
-									{name}
+									{label}
 								</button>
 							)
 						)}
@@ -144,9 +190,9 @@ const Permissions = ({ actions, permissions = {}, setPermissions }) => {
 				</thead>
 				<tbody>
 					{singleComponentPermissionsObject
-						? mapActions(actions.definitions)
-						: actions[active] &&
-						  mapActions(actions[active].definitions)}
+						? mapPermissions(permissions.definitions)
+						: permissions[active] &&
+						  mapPermissions(permissions[active].definitions)}
 				</tbody>
 			</table>
 		</fieldset>

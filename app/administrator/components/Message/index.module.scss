@@ -1,5 +1,8 @@
 div.--cms-message {
-	--color: var(--info-color);
+	--color: var(--background-color-6);
+	&[type="info"] {
+		--color: var(--info-color);
+	}
 	&[type="error"] {
 		--color: var(--error-color);
 	}

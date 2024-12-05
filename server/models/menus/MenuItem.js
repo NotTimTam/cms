@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../../util/regex.js";
-import RolePermissionGroupsSchema from "../../schema/RolePermissionGroups.js";
+import ComponentPermissionGroupsSchema from "../../schema/ComponentPermissionGroups.js";
 
 const MenuItemSchema = new mongoose.Schema(
 	{
@@ -26,7 +26,7 @@ const MenuItemSchema = new mongoose.Schema(
 		},
 		permissions: [
 			{
-				type: RolePermissionGroupsSchema,
+				type: ComponentPermissionGroupsSchema,
 				required: false,
 			},
 		],

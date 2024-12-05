@@ -271,8 +271,6 @@ export const getPossibleParents = async (req, res) => {
 			}
 		}
 
-		console.log(req.query, categories);
-
 		return res.status(200).json({
 			categories: notReferenced,
 		});

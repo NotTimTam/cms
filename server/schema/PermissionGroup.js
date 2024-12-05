@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
-import actions from "../../util/permissions.js";
-import PermissionSchema from "./Permissions.js";
+import ComponentPermissions from "../../util/permissions.js";
+import PermissionSchema from "./Permission.js";
 
 const PermissionGroupSchema = new mongoose.Schema(
 	{
 		name: {
 			type: String,
 			required: [true, "No Permission Group name provided."],
-			enum: Object.keys(actions),
+			enum: ComponentPermissions.map(
+				(componentPermission) => componentPermission.name
+			),
 		},
 		permissions: [
 			{

@@ -263,8 +263,6 @@ export const getPossibleParents = async (req, res) => {
 			}
 		}
 
-		console.log(req.query, tags);
-
 		return res.status(200).json({
 			tags: notReferenced,
 		});

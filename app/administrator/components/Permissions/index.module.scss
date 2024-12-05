@@ -41,5 +41,9 @@ fieldset.--cms-permissions-fieldset {
 	table.--cms-permissions-table {
 		grid-column: 2 / 3;
 		margin: var(--gap);
+
+		select {
+			width: 100%;
+		}
 	}
 }

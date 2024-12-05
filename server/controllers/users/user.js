@@ -103,8 +103,6 @@ export const createUser = async (req, res) => {
 			+process.env.SALT || 12
 		);
 
-		console.log(req.body);
-
 		const user = new UserModel(req.body);
 
 		await user.save();

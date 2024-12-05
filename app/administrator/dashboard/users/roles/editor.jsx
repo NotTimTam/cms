@@ -11,7 +11,7 @@ import { depthIndicator } from "@/util/display";
 import { FileInput, FilePlus2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import actions from "@/util/permissions";
+import componentPermissions from "@/util/permissions";
 
 const defaultRole = {
 	name: "",
@@ -152,6 +152,10 @@ const RoleEditor = ({ id }) => {
 
 		getPossibleParents();
 	}, [id]);
+
+	useEffect(() => {
+		console.log(role);
+	}, [role]);
 
 	if (loading) return <Loading />;
 
@@ -334,7 +338,8 @@ const RoleEditor = ({ id }) => {
 									<li>
 										<b>Denied</b> always wins &ndash;
 										whatever is set at the Global or higher
-										level and applies to all child elements.
+										level is ignored and this selection
+										cascades to all child elements.
 									</li>
 									<li>
 										<b>Allowed</b> will enable the action
@@ -352,9 +357,9 @@ const RoleEditor = ({ id }) => {
 								onSubmit={(e) => e.preventDefault()}
 							>
 								<Permissions
-									actions={actions}
-									permissions={role.permissions}
-									setPermissions={(permissions) =>
+									permissions={componentPermissions}
+									configuration={role.permissions}
+									setConfiguration={(permissions) =>
 										setRole((role) => ({
 											...role,
 											permissions,

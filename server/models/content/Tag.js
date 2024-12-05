@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../../util/regex.js";
-import RolePermissionGroupsSchema from "../../schema/RolePermissionGroups.js";
+import ComponentPermissionGroupsSchema from "../../schema/ComponentPermissionGroups.js";
 
 const TagSchema = new mongoose.Schema(
 	{
@@ -32,7 +32,7 @@ const TagSchema = new mongoose.Schema(
 		},
 		permissions: [
 			{
-				type: RolePermissionGroupsSchema,
+				type: ComponentPermissionGroupsSchema,
 				required: false,
 			},
 		],

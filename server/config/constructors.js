@@ -8,8 +8,6 @@ import { generateRandomPassword } from "../../util/data.js";
  * Ensure that a webmaster exists, and create one if it does not.
  */
 export const constructWebmaster = async () => {
-	log("Checking for Webmaster...");
-
 	// Role
 	let webmasterRole = await RoleModel.findOne({ name: "Webmaster" });
 
@@ -49,7 +47,7 @@ export const constructWebmaster = async () => {
 		});
 
 		warn("No webmaster user exists. One has been created.");
-	} else success("Webmaster exists.");
+	} else success("Webmaster validated");
 
 	// If the user is unverified, we reset their password.
 	if (!user.verified) {

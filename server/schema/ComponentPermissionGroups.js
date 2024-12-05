@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import PermissionGroupSchema from "./PermissionGroup.js";
 
-const RolePermissionGroupsSchema = new mongoose.Schema(
+const ComponentPermissionGroupsSchema = new mongoose.Schema(
 	{
 		role: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -17,4 +17,4 @@ const RolePermissionGroupsSchema = new mongoose.Schema(
 	{ timestamps: true, _id: false }
 );
 
-export default RolePermissionGroupsSchema;
+export default ComponentPermissionGroupsSchema;

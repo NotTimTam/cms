@@ -75,8 +75,6 @@ const UserEditor = ({ id }) => {
 		try {
 			const token = await getToken();
 
-			console.log(id);
-
 			const {
 				data: { user: newUser },
 			} = await API.get(
@@ -101,8 +99,6 @@ const UserEditor = ({ id }) => {
 	};
 
 	const saveUser = async (isolated = true) => {
-		console.log("SAVE USER CALLED");
-
 		setMessage(null);
 
 		setLoading(true);

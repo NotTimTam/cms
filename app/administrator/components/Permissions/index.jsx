@@ -52,32 +52,62 @@ const Permissions = ({ permissions, configuration = [], setConfiguration }) => {
 		singleComponentPermissionsObject ? null : Object.keys(permissions)[0]
 	);
 
-	const getPermissionConfiguration = (permission) =>
-		configuration.find(({ name }) => name === permission);
+	const getPermissionConfiguration = (permission) => {
+		const config = singleComponentPermissionsObject
+			? configuration
+			: configuration.find(({ name }) => name === active);
+
+		return (
+			config && config.permissions.find(({ name }) => name === permission)
+		);
+	};
 
 	const setPermissionConfiguration = (permission, status) => {
 		const exists = getPermissionConfiguration(permission);
 
-		if (!exists)
-			setConfiguration((configuration) => [
-				...configuration,
-				{
-					name: permission,
-					status: status,
-				},
-			]);
+		let newConfigurationArray;
+
+		if (singleComponentPermissionsObject)
+			newConfigurationArray = configuration;
 		else {
-			const index = configuration.indexOf(exists);
+			const config = configuration.find(
+				({ name }) => name === active
+			) || { permissions: [] };
+
+			newConfigurationArray = config.permissions;
+		}
+
+		if (!exists)
+			newConfigurationArray.push({
+				name: permission,
+				status: status,
+			});
+		else {
+			const index = newConfigurationArray.indexOf(exists);
 
 			if (index === -1)
 				throw new Error(
 					"That permission was not found in the configuration."
 				);
 
-			let newConfiguration = [...configuration];
-			newConfiguration[index] = {
-				...configuration[index],
+			newConfigurationArray[index] = {
+				...newConfigurationArray[index],
 				status,
+			};
+		}
+
+		if (singleComponentPermissionsObject)
+			setConfiguration(newConfigurationArray);
+		else {
+			const config = configuration.find(({ name }) => name === active);
+
+			const index = config ? configuration.indexOf(config) : -1;
+
+			let newConfiguration = [...configuration];
+
+			newConfiguration[index] = {
+				...(config || { name: active }),
+				permissions: newConfigurationArray,
 			};
 
 			setConfiguration(newConfiguration);
@@ -92,9 +122,7 @@ const Permissions = ({ permissions, configuration = [], setConfiguration }) => {
 
 			const { name, description } = definition;
 
-			const value = singleComponentPermissionsObject
-				? configuration[action]
-				: configuration[active] && configuration[active][action];
+			const value = getPermissionConfiguration(action);
 
 			return (
 				<tr key={index}>
@@ -103,19 +131,7 @@ const Permissions = ({ permissions, configuration = [], setConfiguration }) => {
 						<PermissionSelect
 							value={value}
 							setValue={(value) =>
-								singleComponentPermissionsObject
-									? setConfiguration({
-											...configuration,
-											[action]: value,
-									  })
-									: setConfiguration({
-											...configuration,
-											[active]: {
-												...(configuration[active] ||
-													{}),
-												[action]: value,
-											},
-									  })
+								setPermissionConfiguration(action, value)
 							}
 						/>
 					</td>

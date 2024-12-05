@@ -17,6 +17,7 @@ const defaultRole = {
 	name: "",
 	description: "",
 	parent: "",
+	permissions: [],
 };
 
 const RoleEditor = ({ id }) => {

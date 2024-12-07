@@ -54,27 +54,30 @@ export const definitions = {
 };
 
 const defaultDefinitions = ["create", "delete", "edit", "reorder"];
-const userDefinitions = ["permissions", "all", "siteLogin", "adminLogin"];
+const systemDefinitions = ["permissions", "siteLogin", "adminLogin"];
 
 /**
  * Component groups.
  */
-const componentPermissions = [
-	new ComponentPermissions("all", ":Root::All_Permissions", ["all"]),
-	new ComponentPermissions("role", "Role", [
-		...defaultDefinitions,
-		...userDefinitions,
-	]),
-	new ComponentPermissions("user", "User", [
-		...defaultDefinitions,
-		...userDefinitions,
-	]),
-	new ComponentPermissions("article", "Article", defaultDefinitions),
-	new ComponentPermissions("tag", "Tag", defaultDefinitions),
-	new ComponentPermissions("category", "Category", defaultDefinitions),
+export const componentPermissions = [
+	new ComponentPermissions("role", "Roles", [...defaultDefinitions]),
+	new ComponentPermissions("user", "Users", [...defaultDefinitions]),
+	new ComponentPermissions("article", "Articles", defaultDefinitions),
+	new ComponentPermissions("tag", "Tags", defaultDefinitions),
+	new ComponentPermissions("category", "Categories", defaultDefinitions),
 ];
 
-export const getComponentPermissions = (component) =>
-	componentPermissions.find(({ name }) => name === component);
+/**
+ * System groups.
+ */
+export const systemPermissions = [
+	new ComponentPermissions("system", "System", [...systemDefinitions]),
+];
 
-export default componentPermissions;
+const allPermissions = [
+	new ComponentPermissions("all", ":Root::All_Permissions", ["all"]),
+	...componentPermissions,
+	...systemPermissions,
+];
+
+export default allPermissions;

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import ComponentPermissions from "../../util/permissions.js";
+import allPermissions from "../../util/permissions.js";
 import PermissionSchema from "./Permission.js";
 
 const PermissionGroupSchema = new mongoose.Schema(
@@ -7,9 +7,7 @@ const PermissionGroupSchema = new mongoose.Schema(
 		name: {
 			type: String,
 			required: [true, "No Permission Group name provided."],
-			enum: ComponentPermissions.map(
-				(componentPermission) => componentPermission.name
-			),
+			enum: allPermissions.map((permission) => permission.name),
 		},
 		permissions: [
 			{

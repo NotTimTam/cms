@@ -159,9 +159,7 @@ const PermissionGroups = ({
 	const indexInConfig = permissions.indexOf(currentConfig);
 
 	return (
-		<fieldset className={styles["--cms-permissions-fieldset"]}>
-			<legend>Permissions</legend>
-
+		<div className={styles["--cms-permissions"]}>
 			<aside className={styles["--cms-permissions-aside"]}>
 				<nav>
 					{targetDefinitions.map(({ label }, index) => (
@@ -197,7 +195,7 @@ const PermissionGroups = ({
 					}
 				}}
 			/>
-		</fieldset>
+		</div>
 	);
 };
 

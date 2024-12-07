@@ -10,7 +10,7 @@ import { depthIndicator } from "@/util/display";
 import { FileInput, FilePlus2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import componentPermissions from "@/util/permissions";
+import { componentPermissions, systemPermissions } from "@/util/permissions";
 import PermissionGroups from "@/app/administrator/components/Permissions";
 
 const defaultRole = {
@@ -358,7 +358,10 @@ const RoleEditor = ({ id }) => {
 								onSubmit={(e) => e.preventDefault()}
 							>
 								<PermissionGroups
-									definitions={componentPermissions}
+									definitions={[
+										...systemPermissions,
+										...componentPermissions,
+									]}
 									permissions={role.permissionGroups}
 									setPermissions={(value) =>
 										setRole((role) => ({

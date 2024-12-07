@@ -1,13 +1,16 @@
 @use "@/app/administrator/vars.scss" as *;
 
-fieldset.--cms-permissions-fieldset {
+div.--cms-permissions {
 	display: grid !important;
-	grid-template-columns: calc($mobile-s / 2) 1fr;
+	grid-template-columns: auto auto;
 
 	width: max-content;
 
 	aside.--cms-permissions-aside {
 		grid-column: 1 / 2;
+
+		width: max-content;
+		height: max-content;
 
 		border: 1px solid var(--background-color-6);
 

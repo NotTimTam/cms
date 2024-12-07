@@ -13,12 +13,15 @@ import { useContext, useEffect, useState } from "react";
 import Select from "../../components/Select";
 import { nameRegex } from "@/util/regex";
 import { AuthenticatedUserContext } from "@/components/AuthenticatedUserContext";
+import PermissionGroups from "../../components/Permissions";
+import { componentPermissions, systemPermissions } from "@/util/permissions";
 
 const defaultUser = {
 	name: "",
 	username: "",
 	password: "",
 	roles: [],
+	permissionGroups: [],
 };
 
 const UserEditor = ({ id }) => {
@@ -307,8 +310,11 @@ const UserEditor = ({ id }) => {
 								placeholder="john.doe@provider.com"
 							/>
 
-							<label htmlFor="password">Password</label>
+							<label htmlFor="password" required={!user._id}>
+								Password
+							</label>
 							<input
+								required={!user._id}
 								value={user.password || ""}
 								onChange={({ target: { value } }) =>
 									setUser({
@@ -321,10 +327,14 @@ const UserEditor = ({ id }) => {
 								autoComplete="new-password"
 							/>
 
-							<label htmlFor="repeat-password">
+							<label
+								htmlFor="repeat-password"
+								required={!user._id}
+							>
 								Repeat Password
 							</label>
 							<input
+								required={!user._id}
 								value={user.repeatPassword || ""}
 								onChange={({ target: { value } }) =>
 									setUser({
@@ -409,6 +419,62 @@ const UserEditor = ({ id }) => {
 									))}
 							</div>
 						),
+					Tabs.Item(
+						"Permissions",
+						<>
+							<Message
+								type="info"
+								style={{
+									margin: "var(--margin) var(--margin) 0 var(--margin)",
+								}}
+							>
+								<p>
+									Changes apply to this role and all child
+									roles.
+								</p>
+								<ul>
+									<li>
+										<b>Inherited</b> &ndash; a Global
+										Configuration setting or higher level
+										setting is applied.
+									</li>
+									<li>
+										<b>Denied</b> always wins &ndash;
+										whatever is set at the Global or higher
+										level is ignored and this selection
+										cascades to all child elements.
+									</li>
+									<li>
+										<b>Allowed</b> will enable the action
+										for this component unless overruled by a
+										Global Configuration setting.
+									</li>
+								</ul>
+							</Message>
+							<form
+								className="--cms-form"
+								style={{
+									width: "max-content",
+									maxWidth: "unset",
+								}}
+								onSubmit={(e) => e.preventDefault()}
+							>
+								<PermissionGroups
+									definitions={[
+										...systemPermissions,
+										...componentPermissions,
+									]}
+									permissions={user.permissionGroups}
+									setPermissions={(value) =>
+										setUser((user) => ({
+											...user,
+											permissionGroups: value,
+										}))
+									}
+								/>
+							</form>
+						</>
+					),
 				],
 			}}
 		/>

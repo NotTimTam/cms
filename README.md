@@ -34,6 +34,7 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Article listing toggle featured/status by tapping corresponding listing button.
 -   Fields
 -   A **GOOD** code editor.
+-   Per-component permissions so that specific users/groups can be prevented from editing a specific article without blocking all groups or all users in a group from editing it.
 -   Global theme and style control over every aspect of the site for one uniform design, article/module level style overrides.
 -   Similar to global styles, user-controllable global defaults for how links, video players, menus, etc operate.
 -   Automatic search archival.

@@ -3,7 +3,6 @@
 import Editor from "@/app/administrator/components/Editor";
 import Loading from "@/app/administrator/components/Loading";
 import Message from "@/app/administrator/components/Message";
-import Permissions from "@/app/administrator/components/Permissions";
 import Tabs from "@/app/administrator/components/Tabs";
 import { getToken } from "@/app/cookies";
 import API from "@/util/API";
@@ -12,12 +11,13 @@ import { FileInput, FilePlus2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import componentPermissions from "@/util/permissions";
+import PermissionGroups from "@/app/administrator/components/Permissions";
 
 const defaultRole = {
 	name: "",
 	description: "",
 	parent: "",
-	permissions: [],
+	permissionGroups: [],
 };
 
 const RoleEditor = ({ id }) => {
@@ -357,13 +357,13 @@ const RoleEditor = ({ id }) => {
 								}}
 								onSubmit={(e) => e.preventDefault()}
 							>
-								<Permissions
-									permissions={componentPermissions}
-									configuration={role.permissions}
-									setConfiguration={(permissions) =>
+								<PermissionGroups
+									definitions={componentPermissions}
+									permissions={role.permissionGroups}
+									setPermissions={(value) =>
 										setRole((role) => ({
 											...role,
-											permissions,
+											permissionGroups: value,
 										}))
 									}
 								/>

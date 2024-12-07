@@ -17,7 +17,9 @@ export const constructWebmaster = async () => {
 			description:
 				"System-generated role, reserved to the webmaster user.",
 			locked: true,
-			permissions: [{ name: "all", status: true }],
+			permissionGroups: [
+				{ name: "all", permissions: [{ name: "all", status: true }] },
+			],
 		});
 
 		await webmasterRole.save();
@@ -44,6 +46,7 @@ export const constructWebmaster = async () => {
 			verified: false,
 			roles: [webmasterRole._id],
 			locked: true,
+			permissionGroups: [],
 		});
 
 		warn("No webmaster user exists. One has been created.");

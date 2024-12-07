@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../../util/regex.js";
-import ComponentPermissionGroupsSchema from "../../schema/ComponentPermissionGroups.js";
 
 const TagSchema = new mongoose.Schema(
 	{
@@ -30,12 +29,6 @@ const TagSchema = new mongoose.Schema(
 			required: [true, "You must provide order placement for this Tag."],
 			default: 0,
 		},
-		permissions: [
-			{
-				type: ComponentPermissionGroupsSchema,
-				required: false,
-			},
-		],
 	},
 	{ timestamps: true }
 );

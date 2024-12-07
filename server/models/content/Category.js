@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../../util/regex.js";
 import { statusEnum } from "../../../util/enum.js";
-import ComponentPermissionGroupsSchema from "../../schema/ComponentPermissionGroups.js";
 
 const CategorySchema = new mongoose.Schema(
 	{
@@ -63,12 +62,6 @@ const CategorySchema = new mongoose.Schema(
 			ref: "Category",
 			required: false,
 		},
-		permissions: [
-			{
-				type: ComponentPermissionGroupsSchema,
-				required: false,
-			},
-		],
 	},
 	{ timestamps: true }
 );

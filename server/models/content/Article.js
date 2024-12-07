@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { aliasRegex, nameRegex } from "../../../util/regex.js";
 import { statusEnum } from "../../../util/enum.js";
-import ComponentPermissionGroupsSchema from "../../schema/ComponentPermissionGroups.js";
 
 const ArticleSchema = new mongoose.Schema(
 	{
@@ -37,10 +36,6 @@ const ArticleSchema = new mongoose.Schema(
 			required: [true, "Article featured status not provided."],
 			default: false,
 		},
-		// access: [{
-		// 	type: mongoose.Schema.Types.ObjectId,
-		// 	ref
-		// }],
 		category: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Category",
@@ -77,12 +72,6 @@ const ArticleSchema = new mongoose.Schema(
 			],
 			default: 0,
 		},
-		permissions: [
-			{
-				type: ComponentPermissionGroupsSchema,
-				required: false,
-			},
-		],
 	},
 	{ timestamps: true }
 );

@@ -1,218 +1,204 @@
 import Message from "../Message";
-import { ComponentPermissions, definitions } from "@/util/permissions";
+import { definitions } from "@/util/permissions";
 import styles from "./index.module.scss";
-import { useState } from "react";
 import { isBoolean } from "@/util/data";
+import { capitalizeWords } from "@/util/display";
+import { useState } from "react";
 
-const PermissionSelect = ({ value, setValue }) => {
+export const Permission = ({
+	permission: { name, description },
+	inherited,
+	value,
+	setValue,
+}) => {
+	const valueToString = (value) => {
+		switch (value) {
+			case true:
+				return "allowed";
+			case false:
+				return "denied";
+			case null:
+			default:
+				return "inherited";
+		}
+	};
+
+	const stringToValue = (string) => {
+		switch (string) {
+			case "allowed":
+				return true;
+			case "denied":
+				return false;
+			case "inherited":
+			default:
+				return null;
+		}
+	};
+
 	return (
-		<select
-			value={(() => {
-				switch (value) {
-					case true:
-						return "allowed";
-					case false:
-						return "denied";
-					case null:
-					default:
-						return "inherited";
-				}
-			})()}
-			onChange={({ target: { value } }) =>
-				setValue(
-					(() => {
-						switch (value) {
-							case "allowed":
-								return true;
-							case "denied":
-								return false;
-							case "inherited":
-							default:
-								return null;
-						}
-					})()
-				)
-			}
-		>
-			<option value="inherited">Inherited</option>
-			<option value="denied">Denied</option>
-			<option value="allowed">Allowed</option>
-		</select>
+		<tr>
+			<td title={description}>{name}</td>
+			<td>
+				<select
+					value={valueToString(value)}
+					onChange={({ target: { value } }) =>
+						setValue(stringToValue(value))
+					}
+				>
+					<option value="inherited">Inherited</option>
+					<option value="denied">Denied</option>
+					<option value="allowed">Allowed</option>
+				</select>
+			</td>
+			<td>
+				<Message
+					type={(() => {
+						const valueToMessageType = (value) => {
+							switch (value) {
+								case true:
+									return "success";
+								case false:
+									return "error";
+								case null:
+								default:
+									return "";
+							}
+						};
+						if (isBoolean(value)) return valueToMessageType(value);
+						else return valueToMessageType(inherited);
+					})()}
+					fill={isBoolean(value)}
+				>
+					<p>
+						{(() => {
+							switch (value) {
+								case true:
+									return "Allowed";
+								case false:
+									return "Not Allowed";
+								case null:
+									return "Inherited";
+								default:
+									return `${capitalizeWords(
+										valueToString(inherited)
+									)} (Inherited)`;
+							}
+						})()}
+					</p>
+				</Message>
+			</td>
+		</tr>
 	);
 };
 
-const Permissions = ({ permissions, configuration = [], setConfiguration }) => {
-	if (!permissions)
-		throw new Error("No permissions provided to Permissions component.");
-
-	const singleComponentPermissionsObject =
-		permissions instanceof ComponentPermissions;
-
-	const [active, setActive] = useState(
-		singleComponentPermissionsObject ? null : Object.keys(permissions)[0]
-	);
-
-	const getPermissionConfiguration = (permission) => {
-		const config = singleComponentPermissionsObject
-			? configuration
-			: configuration.find(({ name }) => name === active);
-
-		return (
-			config && config.permissions.find(({ name }) => name === permission)
-		);
-	};
-
-	const setPermissionConfiguration = (permission, status) => {
-		const exists = getPermissionConfiguration(permission);
-
-		let newConfigurationArray;
-
-		if (singleComponentPermissionsObject)
-			newConfigurationArray = configuration;
-		else {
-			const config = configuration.find(
-				({ name }) => name === active
-			) || { permissions: [] };
-
-			newConfigurationArray = config.permissions;
-		}
-
-		if (!exists)
-			newConfigurationArray.push({
-				name: permission,
-				status: status,
-			});
-		else {
-			const index = newConfigurationArray.indexOf(exists);
-
-			if (index === -1)
-				throw new Error(
-					"That permission was not found in the configuration."
-				);
-
-			newConfigurationArray[index] = {
-				...newConfigurationArray[index],
-				status,
-			};
-		}
-
-		if (singleComponentPermissionsObject)
-			setConfiguration(newConfigurationArray);
-		else {
-			const config = configuration.find(({ name }) => name === active);
-
-			const index = config ? configuration.indexOf(config) : -1;
-
-			let newConfiguration = [...configuration];
-
-			newConfiguration[index] = {
-				...(config || { name: active }),
-				permissions: newConfigurationArray,
-			};
-
-			setConfiguration(newConfiguration);
-		}
-	};
-
-	const mapPermissions = (permissions) =>
-		permissions.map((action, index) => {
-			const definition = definitions[action];
-
-			if (!definition) return null;
-
-			const { name, description } = definition;
-
-			const value = getPermissionConfiguration(action);
-
-			return (
-				<tr key={index}>
-					<td title={description}>{name}</td>
-					<td>
-						<PermissionSelect
-							value={value}
-							setValue={(value) =>
-								setPermissionConfiguration(action, value)
-							}
-						/>
-					</td>
-					<td>
-						<Message
-							type={(() => {
-								switch (value) {
-									case true:
-										return "success";
-									case false:
-										return "error";
-									case null:
-									default:
-										return "";
-								}
-							})()}
-							fill={isBoolean(value)}
-						>
-							<p>
-								{(() => {
-									switch (value) {
-										case true:
-											return "Allowed";
-										case false:
-											return "Not Allowed";
-										case null:
-										default:
-											return "<Loading> (Inherited)";
-									}
-								})()}
-							</p>
-						</Message>
-					</td>
+export const Permissions = ({
+	definitions: targetDefinitions,
+	permissions = [],
+	setPermissions,
+}) => {
+	return (
+		<table className={styles["--cms-permissions-table"]}>
+			<thead>
+				<tr>
+					<th>Action</th>
+					<th>Select New Setting</th>
+					<th>Calculated Setting</th>
 				</tr>
-			);
-		});
+			</thead>
+			<tbody>
+				{targetDefinitions.map((definition, index) => {
+					const permission = definitions[definition];
+
+					const currentConfig = permissions.find(
+						({ name }) => name === definition
+					) || { name: definition, status: null };
+
+					const indexInConfig = permissions.indexOf(currentConfig);
+
+					return (
+						<Permission
+							key={index}
+							permission={permission}
+							// inherited={null}
+							value={currentConfig.status}
+							setValue={(value) => {
+								// If this item has not been defined yet.
+								if (indexInConfig === -1)
+									setPermissions([
+										...permissions,
+										{ ...currentConfig, status: value },
+									]);
+								// If this item has been defined.
+								else {
+									let newArray = [...permissions];
+
+									newArray[indexInConfig].status = value;
+
+									setPermissions(newArray);
+								}
+							}}
+						/>
+					);
+				})}
+			</tbody>
+		</table>
+	);
+};
+
+const PermissionGroups = ({
+	definitions: targetDefinitions,
+	permissions = [],
+	setPermissions,
+}) => {
+	const [active, setActive] = useState(0);
+
+	const currentConfig = permissions.find(
+		({ name }) => name === targetDefinitions[active].name
+	) || { name: targetDefinitions[active].name, permissions: [] };
+
+	const indexInConfig = permissions.indexOf(currentConfig);
 
 	return (
 		<fieldset className={styles["--cms-permissions-fieldset"]}>
 			<legend>Permissions</legend>
 
-			{!singleComponentPermissionsObject && (
-				<aside className={styles["--cms-permissions-aside"]}>
-					<nav>
-						{Object.entries(permissions).map(
-							([component, { label }], index) => (
-								<button
-									aria-selected={
-										active === component
-											? "true"
-											: undefined
-									}
-									className="--cms-link"
-									key={index}
-									onClick={() => setActive(component)}
-								>
-									{label}
-								</button>
-							)
-						)}
-					</nav>
-				</aside>
-			)}
+			<aside className={styles["--cms-permissions-aside"]}>
+				<nav>
+					{targetDefinitions.map(({ label }, index) => (
+						<button
+							aria-selected={
+								active === index ? "true" : undefined
+							}
+							className="--cms-link"
+							key={index}
+							onClick={() => setActive(index)}
+						>
+							{label}
+						</button>
+					))}
+				</nav>
+			</aside>
 
-			<table className={styles["--cms-permissions-table"]}>
-				<thead>
-					<tr>
-						<th>Action</th>
-						<th>Select New Setting</th>
-						<th>Calculated Setting</th>
-					</tr>
-				</thead>
-				<tbody>
-					{singleComponentPermissionsObject
-						? mapPermissions(permissions.definitions)
-						: permissions[active] &&
-						  mapPermissions(permissions[active].definitions)}
-				</tbody>
-			</table>
+			<Permissions
+				definitions={targetDefinitions[active].definitions}
+				permissions={currentConfig.permissions}
+				setPermissions={(array) => {
+					// If this item has not been defined yet.
+					if (indexInConfig === -1)
+						setPermissions([
+							...permissions,
+							{ ...currentConfig, permissions: array },
+						]);
+					// If this item has been defined.
+					else {
+						let newArray = [...permissions];
+						newArray[indexInConfig].permissions = array;
+						setPermissions(newArray);
+					}
+				}}
+			/>
 		</fieldset>
 	);
 };
 
-export default Permissions;
+export default PermissionGroups;

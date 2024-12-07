@@ -60,6 +60,7 @@ const userDefinitions = ["permissions", "all", "siteLogin", "adminLogin"];
  * Component groups.
  */
 const componentPermissions = [
+	new ComponentPermissions("all", ":Root::All_Permissions", ["all"]),
 	new ComponentPermissions("role", "Role", [
 		...defaultDefinitions,
 		...userDefinitions,

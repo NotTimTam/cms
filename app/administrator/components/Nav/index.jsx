@@ -6,7 +6,6 @@ const Nav = ({ items, active, setActive }) => {
 			{items.map((item, index) => (
 				<button
 					aria-selected={active === index ? "true" : undefined}
-					className="--cms-link"
 					key={index}
 					onClick={() => setActive(index)}
 				>

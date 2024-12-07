@@ -11,34 +11,6 @@ div.--cms-permissions {
 
 		width: max-content;
 		height: max-content;
-
-		border: 1px solid var(--background-color-6);
-
-		button {
-			border: none;
-			border-radius: 0;
-			justify-content: flex-start;
-
-			width: 100%;
-
-			font-weight: 600;
-
-			border-left: var(--gap) solid transparent;
-
-			&:hover {
-				border-color: var(--info-color);
-			}
-
-			&[aria-selected] {
-				background-color: var(--info-color-0);
-				border-color: var(--info-color);
-
-				&:hover {
-					background-color: var(--info-color);
-					color: var(--text-color);
-				}
-			}
-		}
 	}
 
 	table.--cms-permissions-table {

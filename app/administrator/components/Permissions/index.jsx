@@ -4,6 +4,7 @@ import styles from "./index.module.scss";
 import { isBoolean } from "@/util/data";
 import { capitalizeWords } from "@/util/display";
 import { useState } from "react";
+import Nav from "../Nav";
 
 export const Permission = ({
 	permission: { name, description },
@@ -161,20 +162,11 @@ const PermissionGroups = ({
 	return (
 		<div className={styles["--cms-permissions"]}>
 			<aside className={styles["--cms-permissions-aside"]}>
-				<nav>
-					{targetDefinitions.map(({ label }, index) => (
-						<button
-							aria-selected={
-								active === index ? "true" : undefined
-							}
-							className="--cms-link"
-							key={index}
-							onClick={() => setActive(index)}
-						>
-							{label}
-						</button>
-					))}
-				</nav>
+				<Nav
+					items={targetDefinitions.map(({ label }) => label)}
+					active={active}
+					setActive={setActive}
+				/>
 			</aside>
 
 			<Permissions

@@ -70,6 +70,8 @@ const menus = [
 		menu: [
 			{
 				label: "Site",
+
+				// Site, Metadata
 			},
 			{
 				label: "System",
@@ -127,7 +129,7 @@ const menus = [
 	},
 ];
 
-export default function Editor() {
+export default function GlobalConfigurationEditor() {
 	const [active, setActive] = useState(0);
 
 	return (

@@ -15,7 +15,9 @@ import {
 	Package,
 	Parentheses,
 	Plus,
+	Settings,
 	SquareStack,
+	TableOfContents,
 	Tags,
 	TextCursorInput,
 	User,
@@ -43,20 +45,12 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "s",
 			title: "Content",
-			icon: (
-				<>
-					<FolderClosed />
-				</>
-			),
+			icon: <FolderClosed />,
 			content: [
 				{
 					type: "a",
 					title: "Articles",
-					icon: (
-						<>
-							<FileText />
-						</>
-					),
+					icon: <FileText />,
 					href: "/administrator/dashboard/articles",
 					quickLink: {
 						title: {
@@ -71,11 +65,7 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Categories",
-					icon: (
-						<>
-							<SquareStack />
-						</>
-					),
+					icon: <SquareStack />,
 					href: "/administrator/dashboard/categories",
 					quickLink: {
 						title: {
@@ -90,11 +80,7 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Tags",
-					icon: (
-						<>
-							<Tags />
-						</>
-					),
+					icon: <Tags />,
 					href: "/administrator/dashboard/tags",
 					quickLink: {
 						title: {
@@ -112,21 +98,13 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Fields",
-					icon: (
-						<>
-							<TextCursorInput />
-						</>
-					),
+					icon: <TextCursorInput />,
 					href: "/administrator/dashboard/fields",
 				},
 				{
 					type: "a",
 					title: "Field Groups",
-					icon: (
-						<>
-							<Parentheses />
-						</>
-					),
+					icon: <Parentheses />,
 					href: "/administrator/dashboard/fields?view=groups",
 				},
 				{
@@ -135,21 +113,13 @@ const menu = (siteMenus, sitePlugins) =>
 				{
 					type: "a",
 					title: "Media",
-					icon: (
-						<>
-							<Images />
-						</>
-					),
+					icon: <Images />,
 					href: "/administrator/dashboard/media",
 				},
 				{
 					type: "a",
 					title: "Modules",
-					icon: (
-						<>
-							<FileCode2 />
-						</>
-					),
+					icon: <FileCode2 />,
 					href: "/administrator/dashboard/modules",
 					quickLink: {
 						title: {
@@ -167,31 +137,19 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "s",
 			title: "Menus",
-			icon: (
-				<>
-					<Menu />
-				</>
-			),
+			icon: <Menu />,
 			content: [
 				{
 					type: "a",
 					title: "Manage",
 					alt: "Manage Menus",
-					icon: (
-						<>
-							<Logs />
-						</>
-					),
+					icon: <Logs />,
 					href: "/administrator/dashboard/menus",
 				},
 				{
 					type: "a",
 					title: "Menu Items",
-					icon: (
-						<>
-							<List />
-						</>
-					),
+					icon: <List />,
 					href: "/administrator/dashboard/menus?view=items",
 				},
 				...(siteMenus && siteMenus.length > 0
@@ -203,21 +161,13 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "s",
 			title: "Plugins",
-			icon: (
-				<>
-					<Blocks />
-				</>
-			),
+			icon: <Blocks />,
 			content: [
 				{
 					type: "a",
 					title: "Manage",
 					alt: "Manage Plugins",
-					icon: (
-						<>
-							<Package />
-						</>
-					),
+					icon: <Package />,
 					href: "/administrator/dashboard/plugins",
 				},
 			],
@@ -226,21 +176,13 @@ const menu = (siteMenus, sitePlugins) =>
 		{
 			type: "s",
 			title: "Users",
-			icon: (
-				<>
-					<Users />
-				</>
-			),
+			icon: <Users />,
 			content: [
 				{
 					type: "a",
 					title: "Manage",
 					alt: "Manage Users",
-					icon: (
-						<>
-							<User />
-						</>
-					),
+					icon: <User />,
 					href: "/administrator/dashboard/users",
 					quickLink: {
 						title: {
@@ -256,11 +198,7 @@ const menu = (siteMenus, sitePlugins) =>
 					type: "a",
 					title: "Roles",
 					alt: "User Roles",
-					icon: (
-						<>
-							<FileLock2 />
-						</>
-					),
+					icon: <FileLock2 />,
 					href: "/administrator/dashboard/users?view=roles",
 					quickLink: {
 						title: {
@@ -279,46 +217,44 @@ const menu = (siteMenus, sitePlugins) =>
 					type: "a",
 					title: "Fields",
 					alt: "User Fields",
-					icon: (
-						<>
-							<TextCursorInput />
-						</>
-					),
+					icon: <TextCursorInput />,
 					href: "/administrator/dashboard/users?view=fields",
 				},
 				{
 					type: "a",
 					title: "Field Groups",
 					alt: "User Field Groups",
-					icon: (
-						<>
-							<Parentheses />
-						</>
-					),
+					icon: <Parentheses />,
 					href: "/administrator/dashboard/users?view=fieldgroups",
 				},
 			],
 		},
 
 		{
-			type: "a",
+			type: "s",
 			title: "System",
-			icon: (
-				<>
-					<Wrench />
-				</>
-			),
-			href: "/administrator/dashboard/system",
+			icon: <Wrench />,
+			content: [
+				{
+					type: "a",
+					title: "Overview",
+					alt: "System",
+					icon: <TableOfContents />,
+					href: "/administrator/dashboard/system",
+				},
+				{
+					type: "a",
+					title: "Global Configuration",
+					icon: <Settings />,
+					href: "/administrator/dashboard/system/global",
+				},
+			],
 		},
 
 		{
 			type: "a",
 			title: "Help",
-			icon: (
-				<>
-					<CircleHelp />
-				</>
-			),
+			icon: <CircleHelp />,
 			href: "/administrator/dashboard/help",
 		},
 	].filter((menuItem) => menuItem);

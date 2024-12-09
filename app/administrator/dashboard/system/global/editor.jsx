@@ -1,5 +1,6 @@
 "use client";
 
+import Form from "@/app/administrator/components/Form";
 import Nav from "@/app/administrator/components/Nav";
 import { useState } from "react";
 
@@ -72,6 +73,26 @@ const menus = [
 				label: "Site",
 
 				// Site, Metadata
+				form: [
+					{
+						type: "group",
+						name: "site",
+						elements: [
+							{
+								type: "text",
+								name: "siteName",
+								placeholder: "My Website",
+								label: "Site Name",
+								required: true,
+							},
+						],
+					},
+					{
+						type: "group",
+						name: "metadata",
+						elements: [],
+					},
+				],
 			},
 			{
 				label: "System",
@@ -132,6 +153,18 @@ const menus = [
 export default function GlobalConfigurationEditor() {
 	const [active, setActive] = useState(0);
 
+	const [formData, setFormData] = useState({});
+
+	const currentMenu = menus.map(({ menu }) => menu).flat()[active];
+
+	const handleSubmit = async () => {
+		try {
+			console.log("Form submitted.");
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<div>
 			<aside>
@@ -157,10 +190,13 @@ export default function GlobalConfigurationEditor() {
 					);
 				})}
 			</aside>
-			<form
-				className="--cms-form"
-				onSubmit={(e) => e.preventDefault()}
-			></form>
+			{currentMenu && currentMenu.form && (
+				<Form
+					onSubmit={handleSubmit}
+					elements={currentMenu.form}
+					{...{ formData, setFormData }}
+				/>
+			)}
 		</div>
 	);
 }

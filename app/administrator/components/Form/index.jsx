@@ -18,6 +18,26 @@ function Form(props) {
 		return props;
 	};
 
+	const elementHandler = (element) => {
+		if (element instanceof Array)
+			return (
+				<section className={styles}>
+					{element.map(mapper(formData, setFormData))}
+				</section>
+			);
+		else if (element.type)
+			return (
+				<FormDataContext value={{ formData, setFormData }}>
+					{(handlers[element.type] || handlers.default)(
+						{ ...element },
+						formData,
+						setFormData
+					)}
+				</FormDataContext>
+			);
+		else return null;
+	};
+
 	const handlers = {
 		group: (props, formData, setFormData) => {
 			if (!props.name)
@@ -48,27 +68,36 @@ function Form(props) {
 
 	const mapper = (formData, setFormData) => (element, index) => {
 		if (!element) return null;
-		else if (element instanceof Array)
+
+		const display = elementHandler(element);
+
+		if (display)
 			return (
-				<section className={styles} key={index}>
-					{element.map(mapper(formData, setFormData))}
-				</section>
-			);
-		else if (element.type)
-			return (
-				<FormDataContext value={{ formData, setFormData }} key={index}>
-					{(handlers[element.type] || handlers.default)(
-						{ ...element },
-						formData,
-						setFormData
+				<Fragment key={index}>
+					{element.label && (
+						<label
+							htmlFor={element.name}
+							required={element.required}
+						>
+							{element.label}
+						</label>
 					)}
-				</FormDataContext>
+
+					{display}
+				</Fragment>
 			);
 		else return null;
 	};
 
 	return (
-		<form className={combineClassNames("--cms-form", className)}>
+		<form
+			onSubmit={(e) => {
+				e.preventDefault();
+
+				onSubmit(e);
+			}}
+			className={combineClassNames("--cms-form", className)}
+		>
 			{children}
 			{elements && elements.map(mapper(formData, setFormData))}
 		</form>

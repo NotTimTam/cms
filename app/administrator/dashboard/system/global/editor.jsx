@@ -2,7 +2,7 @@
 
 import Form from "@/app/administrator/components/Form";
 import Nav from "@/app/administrator/components/Nav";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Main Side Menu
@@ -79,11 +79,17 @@ const menus = [
 						name: "site",
 						elements: [
 							{
-								type: "text",
-								name: "siteName",
-								placeholder: "My Website",
-								label: "Site Name",
-								required: true,
+								type: "group",
+								name: "site",
+								elements: [
+									{
+										type: "text",
+										name: "siteName",
+										placeholder: "My Website",
+										label: "Site Name",
+										required: true,
+									},
+								],
 							},
 						],
 					},
@@ -164,6 +170,10 @@ export default function GlobalConfigurationEditor() {
 			console.error(err);
 		}
 	};
+
+	useEffect(() => {
+		console.log(formData);
+	}, [formData]);
 
 	return (
 		<div>

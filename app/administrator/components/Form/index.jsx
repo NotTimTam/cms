@@ -18,7 +18,7 @@ function Form(props) {
 		return props;
 	};
 
-	const elementHandler = (element) => {
+	const elementHandler = (element, formData, setFormData) => {
 		if (
 			React.isValidElement(element) ||
 			typeof element === "string" ||
@@ -75,7 +75,7 @@ function Form(props) {
 	const mapper = (formData, setFormData) => (element, index) => {
 		if (!element) return null;
 
-		const display = elementHandler(element);
+		const display = elementHandler(element, formData, setFormData);
 
 		if (display)
 			return (

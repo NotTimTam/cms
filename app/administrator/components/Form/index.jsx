@@ -1,7 +1,7 @@
 "use client";
 
 import { combineClassNames } from "@/util/display";
-import { createContext, Fragment } from "react";
+import React, { createContext, Fragment } from "react";
 
 import styles from "./index.module.scss";
 import Message from "../Message";
@@ -19,7 +19,13 @@ function Form(props) {
 	};
 
 	const elementHandler = (element) => {
-		if (element instanceof Array)
+		if (
+			React.isValidElement(element) ||
+			typeof element === "string" ||
+			typeof element === "number"
+		)
+			return element;
+		else if (element instanceof Array)
 			return (
 				<section className={styles}>
 					{element.map(mapper(formData, setFormData))}

@@ -130,3 +130,14 @@ export const unflattenDocumentTree = (documents) => {
  * @returns {Object|undefined} The found item, or undefined if one was not found.
  */
 export const findById = (array, _id) => array.find(({ _id: f }) => f === _id);
+
+/**
+ * Combine a series of class names into one that is valid string for class attributes.
+ * @param  {...string} classNames The class names to combine.
+ * @returns {string} A valid classlist string.
+ */
+export const combineClassNames = (...classNames) =>
+	classNames
+		.filter((className) => className)
+		.map((className) => className.trim())
+		.join(" ");

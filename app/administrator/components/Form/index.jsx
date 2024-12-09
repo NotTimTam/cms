@@ -44,6 +44,17 @@ function Form(props) {
 		else return null;
 	};
 
+	const valueControlHandler = (props, formData, setFormData) => {
+		props.value = formData[props.name] || "";
+		props.onChange = ({ target: { value } }) =>
+			setFormData({
+				...formData,
+				[props.name]: value,
+			});
+
+		return props;
+	};
+
 	const handlers = {
 		group: (props, formData, setFormData) => {
 			if (!props.name)
@@ -60,13 +71,13 @@ function Form(props) {
 				)
 			);
 		},
+		textarea: (props, formData, setFormData) => {
+			props = valueControlHandler(props, formData, setFormData);
+
+			return <textarea {...propHandler(props)} />;
+		},
 		default: (props, formData, setFormData) => {
-			props.value = formData[props.name] || "";
-			props.onChange = ({ target: { value } }) =>
-				setFormData({
-					...formData,
-					[props.name]: value,
-				});
+			props = valueControlHandler(props, formData, setFormData);
 
 			return <input {...propHandler(props)} />;
 		},

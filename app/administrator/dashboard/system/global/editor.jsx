@@ -71,32 +71,38 @@ const menus = [
 		menu: [
 			{
 				label: "Site",
-
-				// Site, Metadata
 				form: [
 					{
 						type: "group",
 						name: "site",
 						elements: [
 							{
-								type: "group",
-								name: "site",
-								elements: [
-									{
-										type: "text",
-										name: "siteName",
-										placeholder: "My Website",
-										label: "Site Name",
-										required: true,
-									},
-								],
+								type: "text",
+								name: "siteName",
+								placeholder: "My Website",
+								label: "Site Name",
+								required: true,
 							},
 						],
 					},
 					{
 						type: "group",
-						name: "metadata",
-						elements: [],
+						name: "site",
+						elements: [
+							{
+								type: "group",
+								name: "metadata",
+								elements: [
+									{
+										type: "textarea",
+										name: "siteMetaDescription",
+										label: "Site Meta Description",
+										placeholder:
+											"What is the purpose of this site...",
+									},
+								],
+							},
+						],
 					},
 				],
 			},

@@ -75,6 +75,7 @@ const menus = [
 					{
 						type: "group",
 						name: "site",
+						legend: "Site",
 						elements: [
 							{
 								type: "text",
@@ -92,6 +93,7 @@ const menus = [
 							{
 								type: "group",
 								name: "metadata",
+								legend: "Metadata",
 								elements: [
 									{
 										type: "textarea",

@@ -27,7 +27,7 @@ function Form(props) {
 			return element;
 		else if (element instanceof Array)
 			return (
-				<section className={styles}>
+				<section className={styles["--cms-form-input-group"]}>
 					{element.map(mapper(formData, setFormData))}
 				</section>
 			);
@@ -62,7 +62,7 @@ function Form(props) {
 					<Message type="error">No name provided to group.</Message>
 				);
 
-			return props.elements.map(
+			const content = props.elements.map(
 				mapper(formData[props.name] || {}, (newFormData) =>
 					setFormData({
 						...formData,
@@ -70,6 +70,15 @@ function Form(props) {
 					})
 				)
 			);
+
+			if (props.legend)
+				return (
+					<fieldset name={props.name}>
+						<legend>{props.legend}</legend>
+						{content}
+					</fieldset>
+				);
+			else return content;
 		},
 		textarea: (props, formData, setFormData) => {
 			props = valueControlHandler(props, formData, setFormData);
@@ -90,7 +99,10 @@ function Form(props) {
 
 		if (display)
 			return (
-				<Fragment key={index}>
+				<div
+					className={styles["--cms-form-input-container"]}
+					key={index}
+				>
 					{element.label && (
 						<label
 							htmlFor={element.name}
@@ -101,7 +113,7 @@ function Form(props) {
 					)}
 
 					{display}
-				</Fragment>
+				</div>
 			);
 		else return null;
 	};

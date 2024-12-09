@@ -1,0 +1,17 @@
+section.--cms-form-input-group {
+	display: flex;
+	flex-direction: row;
+	gap: var(--gap);
+	flex-wrap: wrap;
+
+	width: 100%;
+
+	div.--cms-form-input-container {
+		flex-grow: 2;
+	}
+}
+
+div.--cms-form-input-container {
+	display: flex;
+	flex-direction: column;
+}

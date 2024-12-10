@@ -14,4 +14,10 @@ section.--cms-form-input-group {
 div.--cms-form-input-container {
 	display: flex;
 	flex-direction: column;
+	gap: var(--gap);
+
+	&.--cms-form-input-container-row {
+		flex-direction: row;
+		gap: var(--padding);
+	}
 }

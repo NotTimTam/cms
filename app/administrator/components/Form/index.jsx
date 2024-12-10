@@ -13,6 +13,8 @@ function Form(props) {
 	const { children, className, elements, formData, setFormData, onSubmit } =
 		props;
 
+	const inputContainerAsRow = ["radio", "checkbox", "toggle"];
+
 	const propHandler = (props) => {
 		delete props.label;
 
@@ -86,7 +88,6 @@ function Form(props) {
 
 			return <textarea {...propHandler(props)} />;
 		},
-
 		toggle: (props, formData, setFormData) => (
 			<Toggle
 				{...{
@@ -115,7 +116,11 @@ function Form(props) {
 		if (display)
 			return (
 				<div
-					className={styles["--cms-form-input-container"]}
+					className={combineClassNames(
+						styles["--cms-form-input-container"],
+						inputContainerAsRow.includes(element.type) &&
+							styles["--cms-form-input-container-row"]
+					)}
 					key={index}
 				>
 					{element.label && (

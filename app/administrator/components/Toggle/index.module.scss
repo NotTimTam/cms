@@ -3,6 +3,7 @@ button.--cms-toggle {
 	padding: var(--gap);
 	height: calc(var(--margin) * 2);
 	width: calc(var(--margin) * 3);
+	border-radius: var(--margin);
 
 	position: relative;
 
@@ -10,7 +11,7 @@ button.--cms-toggle {
 		width: 50%;
 		height: calc(100% - var(--padding));
 
-		border: 1px solid var(--info-color);
+		background-color: var(--info-color);
 
 		position: absolute;
 
@@ -21,13 +22,6 @@ button.--cms-toggle {
 	&.--cms-toggled {
 		div.--cms-toggle-indicator {
 			left: calc(50% - var(--gap));
-			background-color: var(--info-color);
-		}
-	}
-
-	&:hover {
-		div.--cms-toggle-indicator {
-			background-color: var(--info-color-0);
 		}
 	}
 }

@@ -32,7 +32,8 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Article version history.
 -   Article editor exit without saving alert.
 -   Article listing toggle featured/status by tapping corresponding listing button.
--   Fix dnd-kit resizing.
+-   Fix dnd-kit resizing elements when hovering over larger elements.
+-   Site offline feature support.
 -   Fields
 -   A **GOOD** code editor.
 -   Per-component permissions so that specific users/groups can be prevented from editing a specific article without blocking all groups or all users in a group from editing it.

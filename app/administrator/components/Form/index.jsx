@@ -6,6 +6,7 @@ import React, { createContext, Fragment } from "react";
 import styles from "./index.module.scss";
 import Message from "../Message";
 import Toggle from "../Toggle";
+import Select from "../Select";
 
 const FormDataContext = createContext(null);
 
@@ -88,6 +89,19 @@ function Form(props) {
 
 			return <textarea {...propHandler(props)} />;
 		},
+		select: (props, formData, setFormData) => (
+			<Select
+				{...{
+					...propHandler(props),
+					value: formData[props.name],
+					setValue: (value) =>
+						setFormData({
+							...formData,
+							[props.name]: value,
+						}),
+				}}
+			/>
+		),
 		toggle: (props, formData, setFormData) => (
 			<Toggle
 				{...{

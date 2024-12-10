@@ -10,11 +10,11 @@ import { FileInput, FilePlus2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import Select from "../../components/Select";
 import { nameRegex } from "@/util/regex";
 import { AuthenticatedUserContext } from "@/components/AuthenticatedUserContext";
 import PermissionGroups from "../../components/Permissions";
 import { componentPermissions, systemPermissions } from "@/util/permissions";
+import HierarchicalCheckboxes from "../../components/HierarchicalCheckboxes";
 
 const defaultUser = {
 	name: "",
@@ -396,7 +396,7 @@ const UserEditor = ({ id }) => {
 							<div className="--cms-padding">
 								{roles &&
 									(roles.length > 0 ? (
-										<Select
+										<HierarchicalCheckboxes
 											{...{
 												items: roles,
 												selection: user.roles,

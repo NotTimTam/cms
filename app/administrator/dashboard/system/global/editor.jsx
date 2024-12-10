@@ -18,8 +18,6 @@ import { useEffect, useState } from "react";
  *          - Default List Limit (100, probably pagination)
  *          - Default Feed Limit (10, (5-30 by 5, 50, 100))
  *      - Metadata
- *          - Site Meta Description
- *          - Robots [(index, follow), (noindex, follow), (index, nofollow), (noindex, nofollow)]
  *          - Content Rights (Text area, google it)
  *          - Author Meta Tag (show/hide)
  *          - CMS Version (show/hide)
@@ -101,11 +99,48 @@ const menus = [
 								legend: "Metadata",
 								elements: [
 									{
+										type: "text",
+										name: "author",
+										label: "Author",
+										placeholder: "John Doe",
+									},
+									{
 										type: "textarea",
-										name: "siteMetaDescription",
-										label: "Site Meta Description",
+										name: "description",
+										label: "Description",
 										placeholder:
 											"What is the purpose of this site...",
+									},
+									{
+										type: "textarea",
+										name: "keywords",
+										label: "Keywords",
+										placeholder: "Genre, Keyword, Topic",
+									},
+									{
+										type: "select",
+										name: "robots",
+										label: "Robots",
+										placeholder:
+											"Select a configuration...",
+										options: [
+											{
+												id: "index, follow",
+												label: "index, follow",
+											},
+											{
+												id: "noindex, follow",
+												label: "noindex, follow",
+											},
+											{
+												id: "index, nofollow",
+												label: "index, nofollow",
+											},
+											{
+												id: "noindex, nofollow",
+												label: "noindex, nofollow",
+											},
+										],
 									},
 								],
 							},

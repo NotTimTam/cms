@@ -2,14 +2,14 @@ button.--cms-toggle {
 	border: 1px solid var(--text-color);
 	padding: var(--gap);
 	height: calc(var(--margin) * 2);
-	width: calc(var(--margin) * 3);
+	width: calc(var(--margin) * 3.5);
 	border-radius: var(--margin);
 
 	position: relative;
 
 	div.--cms-toggle-indicator {
-		width: 50%;
 		height: calc(100% - var(--padding));
+		aspect-ratio: 1 / 1;
 
 		background-color: var(--info-color);
 
@@ -21,7 +21,8 @@ button.--cms-toggle {
 
 	&.--cms-toggled {
 		div.--cms-toggle-indicator {
-			left: calc(50% - var(--gap));
+			right: var(--gap);
+			left: unset;
 		}
 	}
 }

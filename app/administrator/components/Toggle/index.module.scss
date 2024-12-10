@@ -1,0 +1,26 @@
+button.--cms-toggle {
+	border: 1px solid var(--text-color);
+	padding: var(--gap);
+	height: calc(var(--margin) * 2);
+	width: calc(var(--margin) * 3);
+
+	position: relative;
+
+	div.--cms-toggle-indicator {
+		width: 50%;
+		height: calc(100% - var(--padding));
+
+		background-color: var(--info-color);
+
+		position: absolute;
+
+		border-radius: inherit;
+		left: var(--gap);
+	}
+
+	&.--cms-toggled {
+		div.--cms-toggle-indicator {
+			left: calc(50% - var(--gap));
+		}
+	}
+}

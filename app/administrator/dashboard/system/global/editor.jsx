@@ -79,10 +79,15 @@ const menus = [
 						elements: [
 							{
 								type: "text",
-								name: "siteName",
+								name: "name",
 								placeholder: "My Website",
 								label: "Site Name",
 								required: true,
+							},
+							{
+								type: "toggle",
+								name: "offline",
+								label: "Site Offline",
 							},
 						],
 					},

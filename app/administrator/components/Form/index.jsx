@@ -5,6 +5,7 @@ import React, { createContext, Fragment } from "react";
 
 import styles from "./index.module.scss";
 import Message from "../Message";
+import Toggle from "../Toggle";
 
 const FormDataContext = createContext(null);
 
@@ -85,6 +86,20 @@ function Form(props) {
 
 			return <textarea {...propHandler(props)} />;
 		},
+
+		toggle: (props, formData, setFormData) => (
+			<Toggle
+				{...{
+					...propHandler(props),
+					toggled: formData[props.name] || false,
+					setToggled: (value) =>
+						setFormData({
+							...formData,
+							[props.name]: Boolean(value),
+						}),
+				}}
+			/>
+		),
 		default: (props, formData, setFormData) => {
 			props = valueControlHandler(props, formData, setFormData);
 

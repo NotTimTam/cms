@@ -15,3 +15,20 @@ export const generateRandomPassword = (length) =>
 		.map(() => Math.random().toString(36).slice(2, 8))
 		.join("")
 		.slice(0, length);
+
+/**
+ * Options for the number of items to show per page on a list.
+ */
+export const listLimitOptions = [
+	5,
+	10,
+	15,
+	20,
+	25,
+	30,
+	50,
+	100,
+	200,
+	500,
+	"all",
+];

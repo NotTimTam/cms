@@ -26,6 +26,9 @@ The designations front-end, and back-end, refer not to application architecture 
 -   SCSS/JS/HTML/SVG support.
 -   Fix article refresh editor. Basically if you refresh the article editor after saving a brand new article, since the url doesnt include the ID, refreshing does not open to that article.
 -   Include Lucide license in administrative portal.
+-   .env timezone support, allow for overwrite by global configuration.
+-   Allow backend reboot triggering. Include necessary warning messages about handling the site not loading during reboot or an issue stopping it.
+-   Replace select dropdown with a headless popup for consistency across browsers.
 -   Articles built in markdown, html, maybe modes for the editor.
 -   Customizable admin dashboard.
 -   Git-like versioning on articles?
@@ -34,6 +37,9 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Article listing toggle featured/status by tapping corresponding listing button.
 -   Fix dnd-kit resizing elements when hovering over larger elements.
 -   Site offline feature support.
+-   https/ssl support. Plus global config for forcing it.
+-   Add save options to article/tag/category and any other editors that don't have them.
+-   Save before exiting protection. Use SHA256 hashing of before/after.
 -   Fields
 -   A **GOOD** code editor.
 -   Per-component permissions so that specific users/groups can be prevented from editing a specific article without blocking all groups or all users in a group from editing it.

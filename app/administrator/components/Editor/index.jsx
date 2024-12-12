@@ -13,6 +13,7 @@ import Tabs from "../Tabs";
 import { aliasRegex, nameRegex } from "@/util/regex";
 import Link from "next/link";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
+import { combineClassNames } from "@/util/display";
 
 const Editor = ({
 	message,
@@ -44,143 +45,18 @@ const Editor = ({
 					{message}
 				</div>
 			)}
-			<nav className="--cms-nav">
-				<section>
-					<button
-						className="--cms-success"
-						aria-label="Save"
-						onClick={saveData}
-					>
-						<Save /> Save
-					</button>
-					<span>
-						<button
-							className="--cms-success"
-							aria-label="Save & Close"
-							onClick={async () => {
-								const savedSuccessfully = await saveData(false);
+			<Editor.Header
+				{...{
+					saveData,
+					saveOptions,
+					closeEditor,
 
-								if (savedSuccessfully) closeEditor();
-							}}
-						>
-							<Save /> Save & Close
-						</button>
-						{saveOptions && saveOptions.length > 0 && (
-							<button
-								className="--cms-success"
-								aria-label="More Save Options"
-								onClick={async (e) => {
-									const rect =
-										e.target.getBoundingClientRect();
-
-									const PopupContent = () => {
-										const closePopup =
-											useContext(PopupContext);
-
-										return (
-											<div
-												className="--cms-popup-content"
-												style={{ minWidth: rect.width }}
-											>
-												<nav className="--cms-popup-nav">
-													{saveOptions.map(
-														(
-															{
-																label,
-																ariaLabel,
-																callback,
-															},
-															index
-														) => (
-															<button
-																key={index}
-																type="button"
-																aria-label={
-																	ariaLabel
-																}
-																onClick={async () => {
-																	await callback();
-																	closePopup();
-																}}
-															>
-																{label}
-															</button>
-														)
-													)}
-												</nav>
-											</div>
-										);
-									};
-
-									await createHeadlessPopup(
-										<PopupContent />,
-										[rect.x, rect.bottom]
-									);
-								}}
-							>
-								<ChevronDown />
-							</button>
-						)}
-					</span>
-
-					<button
-						className="--cms-error"
-						aria-label="Close"
-						onClick={closeEditor}
-					>
-						<X /> Close
-					</button>
-				</section>
-
-				<section>
-					{versionsHref && (
-						<Link
-							className="--cms-button --cms-info"
-							aria-label="Versions"
-							href={versionsHref}
-							target="_blank"
-						>
-							<GitBranch />
-							Versions
-						</Link>
-					)}
-
-					{previewHref && (
-						<Link
-							className="--cms-button --cms-info"
-							aria-label="Preview"
-							href={previewHref}
-							target="_blank"
-						>
-							<Eye />
-							Preview
-						</Link>
-					)}
-
-					{accessiblityCheckHref && (
-						<Link
-							className="--cms-button --cms-info"
-							aria-label="Accessibility Check"
-							href={accessiblityCheckHref}
-							target="_blank"
-						>
-							<Accessibility />
-							Accessibility Check
-						</Link>
-					)}
-
-					{helpHref && (
-						<Link
-							className="--cms-button --cms-highlight"
-							aria-label="Help"
-							href={accessiblityCheckHref}
-							target="_blank"
-						>
-							<CircleHelp /> Help
-						</Link>
-					)}
-				</section>
-			</nav>
+					versionsHref,
+					previewHref,
+					accessiblityCheckHref,
+					helpHref,
+				}}
+			/>
 			<section className={styles["--cms-editor-content"]}>
 				{children}
 				<div className={styles["--cms-editor-tabs"]}>
@@ -249,6 +125,161 @@ Editor.ContentIdentifierForm = ({
 				/>
 			</section>
 		</form>
+	);
+};
+
+Editor.Header = ({
+	className,
+	style,
+
+	saveData,
+	saveOptions,
+	closeEditor,
+
+	versionsHref,
+	previewHref,
+	accessiblityCheckHref,
+	helpHref,
+}) => {
+	return (
+		<nav
+			style={style}
+			className={combineClassNames("--cms-nav", className)}
+		>
+			<section>
+				<button
+					className="--cms-success"
+					aria-label="Save"
+					onClick={saveData}
+				>
+					<Save /> Save
+				</button>
+				<span>
+					<button
+						className="--cms-success"
+						aria-label="Save & Close"
+						onClick={async () => {
+							const savedSuccessfully = await saveData(false);
+
+							if (savedSuccessfully) closeEditor();
+						}}
+					>
+						<Save /> Save & Close
+					</button>
+					{saveOptions && saveOptions.length > 0 && (
+						<button
+							className="--cms-success"
+							aria-label="More Save Options"
+							onClick={async (e) => {
+								const rect = e.target.getBoundingClientRect();
+
+								const PopupContent = () => {
+									const closePopup = useContext(PopupContext);
+
+									return (
+										<div
+											className="--cms-popup-content"
+											style={{ minWidth: rect.width }}
+										>
+											<nav className="--cms-popup-nav">
+												{saveOptions.map(
+													(
+														{
+															label,
+															ariaLabel,
+															callback,
+														},
+														index
+													) => (
+														<button
+															key={index}
+															type="button"
+															aria-label={
+																ariaLabel
+															}
+															onClick={async () => {
+																await callback();
+																closePopup();
+															}}
+														>
+															{label}
+														</button>
+													)
+												)}
+											</nav>
+										</div>
+									);
+								};
+
+								await createHeadlessPopup(<PopupContent />, [
+									rect.x,
+									rect.bottom,
+								]);
+							}}
+						>
+							<ChevronDown />
+						</button>
+					)}
+				</span>
+
+				<button
+					className="--cms-error"
+					aria-label="Close"
+					onClick={closeEditor}
+				>
+					<X /> Close
+				</button>
+			</section>
+
+			<section>
+				{versionsHref && (
+					<Link
+						className="--cms-button --cms-info"
+						aria-label="Versions"
+						href={versionsHref}
+						target="_blank"
+					>
+						<GitBranch />
+						Versions
+					</Link>
+				)}
+
+				{previewHref && (
+					<Link
+						className="--cms-button --cms-info"
+						aria-label="Preview"
+						href={previewHref}
+						target="_blank"
+					>
+						<Eye />
+						Preview
+					</Link>
+				)}
+
+				{accessiblityCheckHref && (
+					<Link
+						className="--cms-button --cms-info"
+						aria-label="Accessibility Check"
+						href={accessiblityCheckHref}
+						target="_blank"
+					>
+						<Accessibility />
+						Accessibility Check
+					</Link>
+				)}
+
+				{helpHref && (
+					<Link
+						className="--cms-button --cms-highlight"
+						aria-label="Help"
+						href={accessiblityCheckHref}
+						target="_blank"
+					>
+						<CircleHelp /> Help
+					</Link>
+				)}
+			</section>
+		</nav>
 	);
 };
 

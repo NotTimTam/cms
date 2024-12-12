@@ -4,9 +4,9 @@ import { combineClassNames } from "@/util/display";
 import React, { createContext, Fragment } from "react";
 
 import styles from "./index.module.scss";
-import Message from "../Message";
-import Toggle from "../Toggle";
-import Select from "../Select";
+import Message from "../../app/administrator/components/Message";
+import Toggle from "../../app/administrator/components/Toggle";
+import Select from "../../app/administrator/components/Select";
 
 const FormDataContext = createContext(null);
 
@@ -143,6 +143,11 @@ function Form(props) {
 							required={element.required}
 						>
 							{element.label}
+							{element.rebootRequired && (
+								<span style={{ color: "var(--info-color)" }}>
+									{"*"}
+								</span>
+							)}
 						</label>
 					)}
 

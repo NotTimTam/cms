@@ -4,6 +4,7 @@ button.--cms-toggle {
 	height: calc(var(--margin) * 2);
 	width: calc(var(--margin) * 3.5);
 	border-radius: var(--margin);
+	background-color: transparent;
 
 	position: relative;
 
@@ -20,6 +21,8 @@ button.--cms-toggle {
 	}
 
 	&.--cms-toggled {
+		background-color: var(--info-color-0);
+
 		div.--cms-toggle-indicator {
 			right: var(--gap);
 			left: unset;

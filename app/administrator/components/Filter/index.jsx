@@ -6,6 +6,7 @@ import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import { Fragment, useContext, useEffect, useState } from "react";
 import Message from "../Message";
 import Loading from "../Loading";
+import { listLimitOptions } from "@/util/data";
 
 const Option = ({
 	option: {
@@ -320,27 +321,13 @@ const Filter = ({
 						const PopupContent = () => {
 							const closePopup = useContext(PopupContext);
 
-							const potentialItemsPerPage = [
-								5,
-								10,
-								15,
-								20,
-								25,
-								30,
-								50,
-								100,
-								200,
-								500,
-								"all",
-							];
-
 							return (
 								<div
 									className="--cms-popup-content"
 									style={{ minWidth: rect.width }}
 								>
 									<nav className="--cms-popup-nav">
-										{potentialItemsPerPage.map(
+										{listLimitOptions.map(
 											(count, index) => (
 												<button
 													aria-selected={

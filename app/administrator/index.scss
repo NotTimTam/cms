@@ -400,7 +400,10 @@ form.--cms-form {
 	}
 
 	fieldset {
-		display: block;
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding);
+
 		padding-top: var(--padding);
 		padding-bottom: var(--padding);
 		padding-left: var(--margin);

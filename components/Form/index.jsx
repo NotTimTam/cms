@@ -18,6 +18,7 @@ function Form(props) {
 
 	const propHandler = (props) => {
 		delete props.label;
+		delete props.rebootRequired;
 
 		return props;
 	};

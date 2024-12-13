@@ -3,7 +3,7 @@ import express from "express";
 import next from "next";
 import cors from "cors";
 import { rateLimit } from "express-rate-limit";
-import { error, log, warn } from "@nottimtam/console.js";
+import { error, log, success, warn } from "@nottimtam/console.js";
 
 import nodePackage from "./package.json" assert { type: "json" };
 
@@ -12,6 +12,7 @@ import { constructWebmaster } from "./server/config/constructors.js";
 
 import API from "./util/API.js";
 
+import systemRouter from "./server/routers/systemRoutes.js";
 import articleRouter from "./server/routers/articleRoutes.js";
 import categoryRouter from "./server/routers/categoryRoutes.js";
 import systemMessageRouter from "./server/routers/systemMessageRoutes.js";
@@ -67,7 +68,7 @@ const standardHeaders = RATELIMIT_INFO_IN_HEADERS === "true";
 
 const rateLimiter = rateLimit({
 	windowMs: +RATELIMIT_INTERVAL,
-	max: +RATELIMIT_REQUESTS,
+	limit: +RATELIMIT_REQUESTS,
 	standardHeaders: standardHeaders,
 	legacyHeaders: !standardHeaders,
 });
@@ -77,8 +78,12 @@ app.disable("x-powered-by");
 app.use(express.json(), cors(), rateLimiter);
 
 // Load and configure API.
-const apiRoute = `/api`;
-
+app.use(
+	API.system,
+	authenticationMiddleware,
+	verificationMiddleware,
+	systemRouter
+);
 app.use(
 	API.articles,
 	authenticationMiddleware,

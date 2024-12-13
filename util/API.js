@@ -14,6 +14,7 @@ export default class API {
 			.join("/");
 
 	static route = "/api";
+	static system = API.createRouteURL(API.route, "system");
 	static users = API.createRouteURL(API.route, "users");
 	static articles = API.createRouteURL(API.route, "articles");
 	static categories = API.createRouteURL(API.route, "categories");

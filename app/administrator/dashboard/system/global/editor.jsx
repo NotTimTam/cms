@@ -3,11 +3,17 @@
 import Form from "@/components/Form";
 import Nav from "@/app/administrator/components/Nav";
 import { listLimitOptions } from "@/util/data";
-import { capitalizeWords } from "@/util/display";
-import { useEffect, useState } from "react";
-import styles from "./page.module.scss";
+import { capitalizeWords, combineClassNames } from "@/util/display";
+import { useContext, useEffect, useState } from "react";
+import styles from "./editor.module.scss";
 import Editor from "@/app/administrator/components/Editor";
-import { Power } from "lucide-react";
+import { Power, X } from "lucide-react";
+import Message from "@/app/administrator/components/Message";
+import Loading from "@/app/administrator/components/Loading";
+import { useRouter } from "next/navigation";
+import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
+import { getToken } from "@/app/cookies";
+import API from "@/util/API";
 
 /**
  * Main Side Menu
@@ -18,8 +24,6 @@ import { Power } from "lucide-react";
  *          - Frontend Editing (Modules, Modules & Menus, None)
  *          - Default Editor (what editor is used when editing content)
  *          - Default Access Level (User Group)
- *      - Metadata
- *          - Content Rights (Text area, google it)
  *  - System
  *      - Debug
  *          - Debug Language (toggle) yes/no
@@ -74,15 +78,21 @@ const defaultGlobalConfiguration = {
 		temp: "/tmp",
 		webServices: {
 			cors: true,
+			rateLimiter: { use: true, interval: 60000, requests: 5 },
 		},
 	},
 	permissions: {},
 };
 
 export default function GlobalConfigurationEditor() {
-	const [active, setActive] = useState(0);
+	const router = useRouter();
 
+	// const userRoles = useUserRoles();
+
+	const [active, setActive] = useState(0);
 	const [formData, setFormData] = useState(defaultGlobalConfiguration);
+	const [message, setMessage] = useState(null);
+	const [loading, setLoading] = useState(false);
 
 	const menus = [
 		{
@@ -279,6 +289,88 @@ export default function GlobalConfigurationEditor() {
 											label: "Enable CORS",
 											rebootRequired: true,
 										},
+										{
+											type: "group",
+											name: "rateLimiter",
+											legend: "Rate Limiter",
+											elements: [
+												{
+													type: "toggle",
+													name: "use",
+													label: "Use Rate Limiter",
+													rebootRequired: true,
+												},
+												{
+													type: "number",
+													name: "interval",
+													label: "Request Memory Interval",
+													placeholder: "60000",
+													rebootRequired: true,
+													required: true,
+												},
+												<p
+													style={{
+														color: "var(--background-color-6)",
+													}}
+												>
+													How long the system will
+													remember requests for.{" "}
+													{"(in milliseconds)"}
+												</p>,
+												{
+													type: "number",
+													name: "requests",
+													label: "Requests Per Interval",
+													placeholder: "5",
+													rebootRequired: true,
+													required: true,
+												},
+												<p
+													style={{
+														color: "var(--background-color-6)",
+													}}
+												>
+													How many requests can be
+													made per interval.
+												</p>,
+												<Message>
+													{formData.server.webServices
+														.rateLimiter.interval &&
+														formData.server
+															.webServices
+															.rateLimiter
+															.requests && (
+															<>
+																Current setting:{" "}
+																{
+																	formData
+																		.server
+																		.webServices
+																		.rateLimiter
+																		.requests
+																}{" "}
+																request{"(s)"}{" "}
+																every{" "}
+																{(
+																	formData
+																		.server
+																		.webServices
+																		.rateLimiter
+																		.interval /
+																	1000 /
+																	60
+																).toFixed(
+																	2
+																)}{" "}
+																minute{"(s)"}.
+															</>
+														)}
+												</Message>,
+											],
+										},
+										// RATELIMIT_INTERVAL
+										// RATELIMIT_REQUESTS
+										// RATELIMIT_INFO_IN_HEADERS
 									],
 								},
 							],
@@ -293,6 +385,45 @@ export default function GlobalConfigurationEditor() {
 				},
 				{
 					label: "Permissions",
+					form: [
+						[
+							<aside
+								className={styles["--cms-permissions-aside"]}
+							>
+								{/* <Nav
+									items={targetDefinitions.map(
+										({ label }) => label
+									)}
+									active={active}
+									setActive={setActive}
+								/> */}
+							</aside>,
+							// <Permissions
+							// 	definitions={
+							// 		targetDefinitions[active].definitions
+							// 	}
+							// 	permissions={currentConfig.permissions}
+							// 	setPermissions={(array) => {
+							// 		// If this item has not been defined yet.
+							// 		if (indexInConfig === -1)
+							// 			setPermissions([
+							// 				...permissions,
+							// 				{
+							// 					...currentConfig,
+							// 					permissions: array,
+							// 				},
+							// 			]);
+							// 		// If this item has been defined.
+							// 		else {
+							// 			let newArray = [...permissions];
+							// 			newArray[indexInConfig].permissions =
+							// 				array;
+							// 			setPermissions(newArray);
+							// 		}
+							// 	}}
+							// />,
+						],
+					],
 				},
 			],
 		},
@@ -401,73 +532,169 @@ export default function GlobalConfigurationEditor() {
 		return ret;
 	};
 
+	const requestShutdown = async () => {
+		try {
+			// make api request here.
+			const token = await getToken();
+
+			await API.get(
+				API.createRouteURL(API.system, "shutdown"),
+				API.createAuthorizationConfig(token)
+			);
+		} catch (error) {
+			console.error(error);
+
+			setMessage(
+				<Message type="error">
+					<p>{error.data}</p>
+				</Message>
+			);
+		}
+	};
+
 	useEffect(() => {
 		console.log(formData);
 	}, [formData]);
 
+	if (loading) return <Loading />;
+
 	return (
-		<div className={styles["--cms-global-configuration-editor"]}>
-			<Editor.Header
-				className={styles["--cms-global-configuration-header"]}
-				{...{
-					saveData: () => {},
-					closeEditor: () => {},
-
-					versionsHref: "",
-					previewHref: "",
-					accessiblityCheckHref: "",
-					helpHref: "",
-
-					saveOptions: [
-						{
-							label: (
-								<>
-									<Power /> Save & Reboot
-								</>
-							),
-							ariaLabel: "Save & Reboot",
-							callback: async () => {
-								const savedSuccessfully =
-									await saveGlobalConfiguration(false);
-
-								throw new Error(
-									"No logic to handle rebooting."
-								);
-							},
-						},
-					],
-				}}
-			/>
-			<aside className={styles["--cms-global-configuration-menus"]}>
-				{menus.map(({ label, menu }, index) => {
-					const baseIndex = menus
-						.filter((_, pIndex) => pIndex < index)
-						.map(({ menu }) => menu.length)
-						.reduce((a, b) => a + b, 0);
-
-					return (
-						<section key={index}>
-							<header>
-								<h3>{label}</h3>
-							</header>
-							<Nav
-								items={menu.map(({ label }) => label)}
-								active={active - baseIndex}
-								setActive={(newIndex) =>
-									setActive(baseIndex + newIndex)
-								}
-							/>
-						</section>
-					);
-				})}
-			</aside>
-			{currentMenu && currentMenu.form && (
-				<Form
-					onSubmit={saveGlobalConfiguration}
-					elements={currentMenu.form}
-					{...{ formData, setFormData }}
-				/>
+		<>
+			{message && (
+				<div
+					style={{
+						paddingTop: "var(--padding)",
+						paddingLeft: "var(--padding)",
+						paddingRight: "var(--padding)",
+					}}
+				>
+					{message}
+				</div>
 			)}
-		</div>
+			<div className={styles["--cms-global-configuration-editor"]}>
+				<Editor.Header
+					className={styles["--cms-global-configuration-header"]}
+					{...{
+						saveData: () => {},
+						closeEditor: () => {},
+
+						versionsHref: "",
+						previewHref: "",
+						accessiblityCheckHref: "",
+						helpHref: "",
+
+						saveOptions: [
+							{
+								label: (
+									<>
+										<Power /> Save & Shutdown
+									</>
+								),
+								ariaLabel: "Save & Shutdown",
+								callback: async () => {
+									const savedSuccessfully =
+										await saveGlobalConfiguration(false);
+
+									if (savedSuccessfully) {
+										const PopupContent = () => {
+											const closePopup =
+												useContext(PopupContext);
+
+											return (
+												<div
+													className={combineClassNames(
+														"--cms-popup-content --cms-popup-content-centered",
+														styles[
+															"--cms-popup-form"
+														]
+													)}
+												>
+													<Message type="error" fill>
+														Pressing {'"Shutdown"'}{" "}
+														will make the server
+														shut down. If your
+														server's container is
+														not configured to
+														automatically reboot it,
+														you will need to reboot
+														it manually. You must
+														also monitor the
+														server's logs to ensure
+														it boots up correctly.
+													</Message>
+
+													<div
+														className={
+															styles[
+																"--cms-popup-form-buttons"
+															]
+														}
+													>
+														<button
+															type="button"
+															className="--cms-success"
+															onClick={closePopup}
+														>
+															<X />
+															Cancel
+														</button>
+														<button
+															type="button"
+															className="--cms-error"
+															onClick={() => {
+																closePopup();
+																requestShutdown();
+															}}
+														>
+															<Power />
+															Shutdown
+														</button>
+													</div>
+												</div>
+											);
+										};
+
+										const res = await createHeadlessPopup(
+											<PopupContent />
+										);
+									}
+								},
+							},
+						],
+					}}
+				/>
+				<aside className={styles["--cms-global-configuration-menus"]}>
+					{menus.map(({ label, menu }, index) => {
+						const baseIndex = menus
+							.filter((_, pIndex) => pIndex < index)
+							.map(({ menu }) => menu.length)
+							.reduce((a, b) => a + b, 0);
+
+						return (
+							<section key={index}>
+								<header>
+									<h3>{label}</h3>
+								</header>
+								<Nav
+									items={menu.map(({ label }) => label)}
+									active={active - baseIndex}
+									setActive={(newIndex) =>
+										setActive(baseIndex + newIndex)
+									}
+								/>
+							</section>
+						);
+					})}
+				</aside>
+				{currentMenu && currentMenu.form && (
+					<Form
+						className={styles["--cms-global-configuration-form"]}
+						onSubmit={saveGlobalConfiguration}
+						elements={currentMenu.form}
+						{...{ formData, setFormData }}
+					/>
+				)}
+			</div>
+		</>
 	);
 }

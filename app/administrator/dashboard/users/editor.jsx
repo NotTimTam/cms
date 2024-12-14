@@ -52,7 +52,7 @@ const UserEditor = ({ id }) => {
 				`${API.createRouteURL(
 					API.roles,
 					"tree"
-				)}?itemsPerPage=all&sortDir=1&sortField=order`,
+				)}?itemsPerPage=all&sortDir=1&sortField=order&visible=true`,
 				API.createAuthorizationConfig(token)
 			);
 

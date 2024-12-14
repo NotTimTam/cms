@@ -2,7 +2,12 @@ import UserModel from "../../models/users/User.js";
 import RoleModel from "../../models/users/Role.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import { emailRegex, nameRegex } from "../../../util/regex.js";
-import { getPathToDocument, unlockedQuery } from "../..//util/database.js";
+import {
+	createSystemProtectionQuery,
+	getPathToDocument,
+	protectedQuery,
+	visibleQuery,
+} from "../..//util/database.js";
 import {
 	ResError,
 	stripQuery,
@@ -135,10 +140,23 @@ export const findUsers = async (req, res) => {
 			sortDir = "-1",
 			role,
 		} = req.query;
-		let { page = "0", itemsPerPage = "20" } = req.query;
+		let {
+			page = "0",
+			itemsPerPage = "20",
+			protected: protect,
+			visible,
+		} = req.query;
+
+		if (protect === "true") protect = true;
+		else if (protect === "false") protect = false;
+		else protect = null;
+
+		if (visible === "true") visible = true;
+		else if (visible === "false") visible = false;
+		else visible = null;
 
 		const query = {
-			...unlockedQuery,
+			...createSystemProtectionQuery({ protected: protect, visible }),
 		};
 
 		if (search)
@@ -283,6 +301,11 @@ export const findUserByIdAndUpdate = async (req, res) => {
 		const user = await UserModel.findById(id);
 
 		if (!user) return res.status(404).send(`No user found with id "${id}"`);
+
+		if (user.protected && req.user._id.toString() !== user._id.toString())
+			return res
+				.status(401)
+				.send("You are not authorized to edit protected users.");
 
 		let verifiedSelf = false;
 		if (req.body.password) {

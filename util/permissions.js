@@ -53,8 +53,8 @@ export const definitions = {
 	all: new PermissionDefinition("All", "Unrestricted control. (dangerous)"),
 };
 
-const defaultDefinitions = ["create", "delete", "edit", "reorder"];
-const systemDefinitions = ["permissions", "siteLogin", "adminLogin"];
+export const defaultDefinitions = ["create", "delete", "edit", "reorder"];
+export const systemDefinitions = ["permissions", "siteLogin", "adminLogin"];
 
 /**
  * Component groups.

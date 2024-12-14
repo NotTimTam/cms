@@ -174,8 +174,63 @@ export const flattenDocumentTree = (documents) => {
 };
 
 /**
- * A query object that will return only objects that are not "locked".
+ * A query object that will return only objects that are not "visible".
  */
-export const unlockedQuery = {
-	$or: [{ locked: { $exists: false } }, { locked: false }],
+export const invisibleQuery = {
+	$or: [{ visible: { $exists: false } }, { visible: false }],
+};
+
+/**
+ * A query object that will return only objects that are "visible".
+ */
+export const visibleQuery = {
+	visible: true,
+};
+
+/**
+ * A query object that will return only objects that are not "protected".
+ */
+export const unprotectedQuery = {
+	$or: [{ protected: { $exists: false } }, { protected: false }],
+};
+
+/**
+ * A query object that will return only objects that are "protected".
+ */
+export const protectedQuery = {
+	protected: true,
+};
+
+/**
+ * Generates a query object based on the values of `protected` and `visible`.
+ * @param {boolean | null | undefined} protected If true, adds `protectedQuery`, if false adds `unprotectedQuery`, if nullish adds nothing.
+ * @param {boolean | null | undefined} visible If true, adds `visibleQuery`, if false adds `invisibleQuery`, if nullish adds nothing.
+ * @returns {object} The combined query object based on the inputs.
+ */
+export const createSystemProtectionQuery = ({
+	protected: protectedValue,
+	visible: visibleValue,
+}) => {
+	const query = {};
+
+	// Handle 'protected' related query
+	if (protectedValue === true) {
+		query.$and = query.$and || [];
+		query.$and.push(protectedQuery);
+	} else if (protectedValue === false) {
+		query.$and = query.$and || [];
+		query.$and.push(unprotectedQuery);
+	}
+
+	// Handle 'visible' related query
+	if (visibleValue === true) {
+		query.$and = query.$and || [];
+		query.$and.push(visibleQuery);
+	} else if (visibleValue === false) {
+		query.$and = query.$and || [];
+		query.$and.push(invisibleQuery);
+	}
+
+	// If no conditions were added to the query, return an empty object
+	return query;
 };

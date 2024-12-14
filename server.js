@@ -8,7 +8,10 @@ import { error, log, success, warn } from "@nottimtam/console.js";
 import nodePackage from "./package.json" assert { type: "json" };
 
 import connectMongoDB from "./server/util/connectMongoDB.js";
-import { constructWebmaster } from "./server/config/constructors.js";
+import {
+	constructPublic,
+	constructWebmaster,
+} from "./server/config/constructors.js";
 
 import API from "./util/API.js";
 
@@ -105,6 +108,7 @@ nextJS.prepare().then(async () => {
 
 	await connectMongoDB();
 	await constructWebmaster();
+	await constructPublic();
 
 	app.all("*", (req, res) => nextJSRequestHandler(req, res));
 

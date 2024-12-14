@@ -3,7 +3,11 @@
 import Form from "@/components/Form";
 import Nav from "@/app/administrator/components/Nav";
 import { listLimitOptions } from "@/util/data";
-import { capitalizeWords, combineClassNames } from "@/util/display";
+import {
+	capitalizeWords,
+	combineClassNames,
+	depthIndicator,
+} from "@/util/display";
 import { useContext, useEffect, useState } from "react";
 import styles from "./editor.module.scss";
 import Editor from "@/app/administrator/components/Editor";
@@ -14,6 +18,13 @@ import { useRouter } from "next/navigation";
 import createHeadlessPopup, { PopupContext } from "@/components/HeadlessPopup";
 import { getToken } from "@/app/cookies";
 import API from "@/util/API";
+import useUserRoles from "@/app/administrator/hooks/useUserRoles";
+import PermissionGroups from "@/app/administrator/components/Permissions";
+import {
+	ComponentPermissions,
+	systemDefinitions,
+	defaultDefinitions,
+} from "@/util/permissions";
 
 /**
  * Main Side Menu
@@ -81,13 +92,14 @@ const defaultGlobalConfiguration = {
 			rateLimiter: { use: true, interval: 60000, requests: 5 },
 		},
 	},
-	permissions: {},
+	permissions: [],
+	options: [],
 };
 
 export default function GlobalConfigurationEditor() {
 	const router = useRouter();
 
-	// const userRoles = useUserRoles();
+	const userRoles = useUserRoles();
 
 	const [active, setActive] = useState(0);
 	const [formData, setFormData] = useState(defaultGlobalConfiguration);
@@ -385,44 +397,31 @@ export default function GlobalConfigurationEditor() {
 				},
 				{
 					label: "Permissions",
-					form: [
-						[
-							<aside
-								className={styles["--cms-permissions-aside"]}
-							>
-								{/* <Nav
-									items={targetDefinitions.map(
-										({ label }) => label
-									)}
-									active={active}
-									setActive={setActive}
-								/> */}
-							</aside>,
-							// <Permissions
-							// 	definitions={
-							// 		targetDefinitions[active].definitions
-							// 	}
-							// 	permissions={currentConfig.permissions}
-							// 	setPermissions={(array) => {
-							// 		// If this item has not been defined yet.
-							// 		if (indexInConfig === -1)
-							// 			setPermissions([
-							// 				...permissions,
-							// 				{
-							// 					...currentConfig,
-							// 					permissions: array,
-							// 				},
-							// 			]);
-							// 		// If this item has been defined.
-							// 		else {
-							// 			let newArray = [...permissions];
-							// 			newArray[indexInConfig].permissions =
-							// 				array;
-							// 			setPermissions(newArray);
-							// 		}
-							// 	}}
-							// />,
-						],
+					form: userRoles && [
+						<PermissionGroups
+							userRoles={true}
+							definitions={userRoles.map(
+								(userRole) =>
+									new ComponentPermissions(
+										userRole._id,
+										`${depthIndicator(
+											userRole.depth,
+											"\u2014"
+										)} ${userRole.name}`,
+										[
+											...systemDefinitions,
+											...defaultDefinitions,
+										]
+									)
+							)}
+							permissions={formData.permissions}
+							setPermissions={(permissions) =>
+								setFormData((formData) => ({
+									...formData,
+									permissions,
+								}))
+							}
+						/>,
 					],
 				},
 			],
@@ -556,7 +555,7 @@ export default function GlobalConfigurationEditor() {
 		console.log(formData);
 	}, [formData]);
 
-	if (loading) return <Loading />;
+	if (loading || !userRoles) return <Loading />;
 
 	return (
 		<>

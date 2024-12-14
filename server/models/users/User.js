@@ -42,10 +42,15 @@ const UserSchema = new mongoose.Schema(
 				"You must provide the User's verification status.",
 			],
 		},
-		locked: {
+		protected: {
 			type: Boolean,
 			required: false,
 			default: false,
+		},
+		visible: {
+			type: Boolean,
+			required: false,
+			default: true,
 		},
 		jwtTimestamp: {
 			type: Date,

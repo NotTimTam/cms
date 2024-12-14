@@ -150,12 +150,18 @@ const PermissionGroups = ({
 	definitions: targetDefinitions,
 	permissions = [],
 	setPermissions,
+	userRoles = false,
 }) => {
 	const [active, setActive] = useState(0);
 
 	const currentConfig = permissions.find(
-		({ name }) => name === targetDefinitions[active].name
-	) || { name: targetDefinitions[active].name, permissions: [] };
+		(permission) =>
+			permission[userRoles ? "userRoleId" : "name"] ===
+			targetDefinitions[active].name
+	) || {
+		[userRoles ? "userRoleId" : "name"]: targetDefinitions[active].name,
+		permissions: [],
+	};
 
 	const indexInConfig = permissions.indexOf(currentConfig);
 

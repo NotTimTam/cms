@@ -1,9 +1,10 @@
 import {
 	buildDocumentTree,
+	createSystemProtectionQuery,
 	flattenDocumentTree,
 	getPathToDocument,
 	orderDocuments,
-	unlockedQuery,
+	visibleQuery,
 } from "../../util/database.js";
 import RoleModel from "../../models/users/Role.js";
 import { handleUnexpectedError } from "../../util/controller.js";
@@ -62,16 +63,24 @@ export const findRoles = async (req, res) => {
 			else throw error;
 		}
 
-		const {
-			search,
-			sortField = "createdAt",
-			sortDir = "-1",
-			depth,
+		const { search, sortField = "createdAt", sortDir = "-1" } = req.query;
+		let {
+			page = "0",
+			itemsPerPage = "20",
+			protected: protect,
+			visible,
 		} = req.query;
-		let { page = "0", itemsPerPage = "20", root } = req.query;
+
+		if (protect === "true") protect = true;
+		else if (protect === "false") protect = false;
+		else protect = null;
+
+		if (visible === "true") visible = true;
+		else if (visible === "false") visible = false;
+		else visible = null;
 
 		const query = {
-			...unlockedQuery,
+			...createSystemProtectionQuery({ protected: protect, visible }),
 		};
 
 		if (search) query.name = { $regex: search, $options: "i" };
@@ -129,10 +138,24 @@ export const getRoleTree = async (req, res) => {
 			sortDir = "-1",
 			depth,
 		} = req.query;
-		let { page = "0", itemsPerPage = "20", root } = req.query;
+		let {
+			page = "0",
+			itemsPerPage = "20",
+			root,
+			protected: protect,
+			visible,
+		} = req.query;
+
+		if (protect === "true") protect = true;
+		else if (protect === "false") protect = false;
+		else protect = null;
+
+		if (visible === "true") visible = true;
+		else if (visible === "false") visible = false;
+		else visible = null;
 
 		const query = {
-			...unlockedQuery,
+			...createSystemProtectionQuery({ protected: protect, visible }),
 		};
 
 		if (search) query.name = { $regex: search, $options: "i" };
@@ -215,7 +238,19 @@ export const getPossibleParents = async (req, res) => {
 		if (id !== "all" && !mongoose.Types.ObjectId.isValid(id))
 			return res.status(400).send("Invalid role id provided.");
 
-		const query = { ...unlockedQuery };
+		let { protected: protect, visible } = req.query;
+
+		if (protect === "true") protect = true;
+		else if (protect === "false") protect = false;
+		else protect = null;
+
+		if (visible === "true") visible = true;
+		else if (visible === "false") visible = false;
+		else visible = null;
+
+		const query = {
+			...createSystemProtectionQuery({ protected: protect, visible }),
+		};
 
 		if (req.query && req.query.search)
 			query.name = { $regex: req.query.search, $options: "i" };
@@ -292,7 +327,7 @@ export const deleteRoles = async (req, res) => {
 
 		if (selection === "all")
 			selection = roles
-				.filter(({ locked }) => !locked)
+				.filter(({ visible }) => visible)
 				.map(({ _id }) => _id.toString());
 		else selection = selection.split(",");
 
@@ -376,10 +411,10 @@ export const findRoleByIdAndUpdate = async (req, res) => {
 
 		if (!role) return res.status(404).send(`No role found with id "${id}"`);
 
-		if (role.locked)
+		if (role.protected)
 			return res
 				.status(401)
-				.send("You are not authorized to edit locked roles.");
+				.send("You are not authorized to edit protected roles.");
 
 		try {
 			req.body = await validateRole({

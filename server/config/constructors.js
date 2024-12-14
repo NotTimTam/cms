@@ -16,7 +16,8 @@ export const constructWebmaster = async () => {
 			name: "Webmaster",
 			description:
 				"System-generated role, reserved to the webmaster user.",
-			locked: true,
+			protected: true,
+			visible: false,
 			permissionGroups: [
 				{ name: "all", permissions: [{ name: "all", status: true }] },
 			],
@@ -25,12 +26,12 @@ export const constructWebmaster = async () => {
 		await webmasterRole.save();
 
 		success("Created Webmaster role.");
-	} else if (!webmasterRole.locked) {
-		webmasterRole.locked = true;
+	} else if (!webmasterRole.protected) {
+		webmasterRole.protected = true;
 		await webmasterRole.save();
 
 		warn(
-			"Webmaster role was left unlocked, (editable) but has been relocked. While this is generally not a concern, the Webmaster role can only be unlocked through direct database manipulation. If you did not make this change, please verify your system is secure or contact your deployment's webmaster."
+			"Webmaster role was left unprotected, (editable) but has been made protected. While this is generally not a concern, the Webmaster role can only be modified through direct database manipulation. If you did not make this change, please verify your system is secure or contact your deployment's webmaster."
 		);
 	}
 
@@ -45,7 +46,8 @@ export const constructWebmaster = async () => {
 			username: "webmaster",
 			verified: false,
 			roles: [webmasterRole._id],
-			locked: true,
+			protected: true,
+			visible: false,
 			permissionGroups: [],
 		});
 
@@ -63,9 +65,13 @@ export const constructWebmaster = async () => {
 		);
 	}
 
-	// If the user is not locked, we relock them.
-	if (!user.locked) {
-		user.locked = true;
+	// If the user is visible, we make them invisible.
+	if (user.visible) {
+		user.visible = false;
+	}
+
+	if (!user.protected) {
+		user.protected = true;
 	}
 
 	try {
@@ -76,5 +82,36 @@ export const constructWebmaster = async () => {
 		);
 		console.error(err);
 		process.exit(1);
+	}
+};
+
+/**
+ * Ensure that the public user group exists, and create one if it does not.
+ */
+export const constructPublic = async () => {
+	// Role
+	let publicRole = await RoleModel.findOne({ name: "Public" });
+
+	if (!publicRole) {
+		publicRole = new RoleModel({
+			name: "Public",
+			description:
+				"System-generated role, reserved to unauthenticated users.",
+			protected: true,
+			visible: true,
+			permissionGroups: [],
+			order: 1,
+		});
+
+		await publicRole.save();
+
+		success("Created Public role.");
+	} else if (!publicRole.protected) {
+		publicRole.protected = true;
+		await publicRole.save();
+
+		warn(
+			"Public role was left unprotected, (editable) but has been made protected. While this is generally not a concern, the Public role can only be modified through direct database manipulation. If you did not make this change, please verify your system is secure or contact your deployment's webmaster."
+		);
 	}
 };

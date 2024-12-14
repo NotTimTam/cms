@@ -188,7 +188,9 @@ const UserListings = () => {
 			const {
 				data: { users, page: newPage, numPages },
 			} = await API.get(
-				`${API.users}?${searchParams.toString()}`,
+				`${
+					API.users
+				}?${searchParams.toString()}&protected=false&visible=true`,
 				API.createAuthorizationConfig(token)
 			);
 

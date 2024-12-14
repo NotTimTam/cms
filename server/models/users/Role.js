@@ -24,10 +24,15 @@ const RoleSchema = new mongoose.Schema(
 			ref: "Role",
 			required: false,
 		},
-		locked: {
+		protected: {
 			type: Boolean,
 			required: false,
 			default: false,
+		},
+		visible: {
+			type: Boolean,
+			required: false,
+			default: true,
 		},
 		permissionGroups: [
 			{

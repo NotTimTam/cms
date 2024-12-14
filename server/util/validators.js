@@ -343,10 +343,16 @@ export const validateRole = async (role) => {
 			"Invalid order value provided. Expected an integer."
 		);
 
-	if (role.locked && typeof role.locked !== "boolean")
+	if (role.visible && typeof role.visible !== "boolean")
 		throw new ResError(
 			400,
-			'Invalid "locked" state provided. Expected a boolean.'
+			'Invalid "visible" state provided. Expected a boolean.'
+		);
+
+	if (role.protected && typeof role.protected !== "boolean")
+		throw new ResError(
+			400,
+			'Invalid "protected" state provided. Expected a boolean.'
 		);
 
 	if (role.hasOwnProperty("parent")) {
@@ -436,6 +442,18 @@ export const validateUser = async (user) => {
 		isNaN(new Date(user.jwtTimestamp).getTime())
 	)
 		throw new ResError(400, 'Invalid "jwtTimestamp" provided.');
+
+	if (user.visible && typeof user.visible !== "boolean")
+		throw new ResError(
+			400,
+			'Invalid "visible" state provided. Expected a boolean.'
+		);
+
+	if (user.protected && typeof user.protected !== "boolean")
+		throw new ResError(
+			400,
+			'Invalid "protected" state provided. Expected a boolean.'
+		);
 
 	return user;
 };

@@ -137,7 +137,9 @@ const Listings = () => {
 			const {
 				data: { roles, page: newPage, numPages },
 			} = await API.get(
-				`${API.roles}/tree?${searchParams.toString()}`,
+				`${
+					API.roles
+				}/tree?${searchParams.toString()}&protected=false&visible=true`,
 				API.createAuthorizationConfig(token)
 			);
 

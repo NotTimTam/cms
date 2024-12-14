@@ -11,6 +11,7 @@ export const Permission = ({
 	inherited,
 	value,
 	setValue,
+	hideInheritance = false,
 }) => {
 	const valueToString = (value) => {
 		switch (value) {
@@ -46,48 +47,53 @@ export const Permission = ({
 						setValue(stringToValue(value))
 					}
 				>
-					<option value="inherited">Inherited</option>
+					<option value="inherited">
+						{hideInheritance ? "Undefined" : "Inherited"}
+					</option>
 					<option value="denied">Denied</option>
 					<option value="allowed">Allowed</option>
 				</select>
 			</td>
-			<td>
-				<Message
-					type={(() => {
-						const valueToMessageType = (value) => {
-							switch (value) {
-								case true:
-									return "success";
-								case false:
-									return "error";
-								case null:
-								default:
-									return "";
-							}
-						};
-						if (isBoolean(value)) return valueToMessageType(value);
-						else return valueToMessageType(inherited);
-					})()}
-					fill={isBoolean(value)}
-				>
-					<p>
-						{(() => {
-							switch (value) {
-								case true:
-									return "Allowed";
-								case false:
-									return "Not Allowed";
-								case null:
-									return "Inherited";
-								default:
-									return `${capitalizeWords(
-										valueToString(inherited)
-									)} (Inherited)`;
-							}
+			{!hideInheritance && (
+				<td>
+					<Message
+						type={(() => {
+							const valueToMessageType = (value) => {
+								switch (value) {
+									case true:
+										return "success";
+									case false:
+										return "error";
+									case null:
+									default:
+										return "";
+								}
+							};
+							if (isBoolean(value))
+								return valueToMessageType(value);
+							else return valueToMessageType(inherited);
 						})()}
-					</p>
-				</Message>
-			</td>
+						fill={isBoolean(value)}
+					>
+						<p>
+							{(() => {
+								switch (value) {
+									case true:
+										return "Allowed";
+									case false:
+										return "Not Allowed";
+									case null:
+										return "Inherited";
+									default:
+										return `${capitalizeWords(
+											valueToString(inherited)
+										)} (Inherited)`;
+								}
+							})()}
+						</p>
+					</Message>
+				</td>
+			)}
 		</tr>
 	);
 };
@@ -96,6 +102,8 @@ export const Permissions = ({
 	definitions: targetDefinitions,
 	permissions = [],
 	setPermissions,
+	inheritance,
+	hideInheritance = false,
 }) => {
 	return (
 		<table className={styles["--cms-permissions-table"]}>
@@ -103,7 +111,7 @@ export const Permissions = ({
 				<tr>
 					<th>Action</th>
 					<th>Select New Setting</th>
-					<th>Calculated Setting</th>
+					{!hideInheritance && <th>Calculated Setting</th>}
 				</tr>
 			</thead>
 			<tbody>
@@ -120,7 +128,8 @@ export const Permissions = ({
 						<Permission
 							key={index}
 							permission={permission}
-							// inherited={null}
+							inherited={inheritance && inheritance[definition]}
+							hideInheritance={hideInheritance}
 							value={currentConfig.status}
 							setValue={(value) => {
 								// If this item has not been defined yet.
@@ -151,6 +160,8 @@ const PermissionGroups = ({
 	permissions = [],
 	setPermissions,
 	userRoles = false,
+	inheritance,
+	hideInheritance = false,
 }) => {
 	const [active, setActive] = useState(0);
 
@@ -178,6 +189,8 @@ const PermissionGroups = ({
 			<Permissions
 				definitions={targetDefinitions[active].definitions}
 				permissions={currentConfig.permissions}
+				inheritance={inheritance}
+				hideInheritance={hideInheritance}
 				setPermissions={(array) => {
 					// If this item has not been defined yet.
 					if (indexInConfig === -1)

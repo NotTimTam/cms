@@ -399,7 +399,8 @@ export default function GlobalConfigurationEditor() {
 					label: "Permissions",
 					form: userRoles && [
 						<PermissionGroups
-							userRoles={true}
+							userRoles
+							hideInheritance
 							definitions={userRoles.map(
 								(userRole) =>
 									new ComponentPermissions(

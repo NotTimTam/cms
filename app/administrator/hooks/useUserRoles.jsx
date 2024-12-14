@@ -17,7 +17,7 @@ export default function useUserRoles() {
 			const {
 				data: { roles },
 			} = await API.get(
-				`${API.roles}/tree?itemsPerPage=all&sortDir=1&sortField=order`,
+				`${API.roles}/tree?itemsPerPage=all&sortDir=1&sortField=order&visible=true`,
 				API.createAuthorizationConfig(token)
 			);
 

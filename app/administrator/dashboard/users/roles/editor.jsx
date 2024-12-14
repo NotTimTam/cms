@@ -71,7 +71,11 @@ const RoleEditor = ({ id }) => {
 			const {
 				data: { roles: possibleParents },
 			} = await API.get(
-				`${API.createRouteURL(API.roles, "parents", id || "all")}`,
+				`${API.createRouteURL(
+					API.roles,
+					"parents",
+					id || "all"
+				)}?protected=false&visible=true`,
 				API.createAuthorizationConfig(token)
 			);
 

@@ -177,14 +177,14 @@ export const flattenDocumentTree = (documents) => {
  * A query object that will return only objects that are not "visible".
  */
 export const invisibleQuery = {
-	$or: [{ visible: { $exists: false } }, { visible: false }],
+	visible: false,
 };
 
 /**
  * A query object that will return only objects that are "visible".
  */
 export const visibleQuery = {
-	visible: true,
+	$or: [{ visible: { $exists: false } }, { visible: true }],
 };
 
 /**

@@ -1,8 +1,8 @@
-import ArticleModel from "../models/content/Article.js";
-import CategoryModel from "../models/content/Category.js";
-import TagModel from "../models/content/Tag.js";
-import UserModel from "../models/users/User.js";
-import RoleModel from "../models/users/Role.js";
+import ArticleModel from "../models/content/ArticleModel.js";
+import CategoryModel from "../models/content/CategoryModel.js";
+import TagModel from "../models/content/TagModel.js";
+import UserModel from "../models/users/UserModel.js";
+import RoleModel from "../models/users/RoleModel.js";
 import { aliasRegex, emailRegex, nameRegex } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
 import { sortEnum, statusEnum } from "../../util/enum.js";

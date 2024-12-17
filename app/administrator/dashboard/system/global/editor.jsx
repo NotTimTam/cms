@@ -78,7 +78,6 @@ const defaultGlobalConfiguration = {
 		},
 	},
 	permissions: [],
-	options: [],
 };
 
 export default function GlobalConfigurationEditor() {

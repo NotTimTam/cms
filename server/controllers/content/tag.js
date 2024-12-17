@@ -4,7 +4,7 @@ import {
 	getPathToDocument,
 	orderDocuments,
 } from "../../util/database.js";
-import TagModel from "../../models/content/Tag.js";
+import TagModel from "../../models/content/TagModel.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
 	validateTag,

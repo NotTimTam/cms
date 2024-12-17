@@ -6,7 +6,7 @@ import {
 	orderDocuments,
 	visibleQuery,
 } from "../../util/database.js";
-import RoleModel from "../../models/users/Role.js";
+import RoleModel from "../../models/users/RoleModel.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
 	validateRole,

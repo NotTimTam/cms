@@ -1,7 +1,7 @@
 import { error, log, success, warn } from "@nottimtam/console.js";
 import bcrypt from "bcryptjs";
-import RoleModel from "../models/users/Role.js";
-import UserModel from "../models/users/User.js";
+import RoleModel from "../models/users/RoleModel.js";
+import UserModel from "../models/users/UserModel.js";
 import { generateRandomPassword } from "../../util/data.js";
 
 /**

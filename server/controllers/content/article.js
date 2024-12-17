@@ -1,4 +1,4 @@
-import ArticleModel from "../../models/content/Article.js";
+import ArticleModel from "../../models/content/ArticleModel.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import { orderDocuments } from "../../util/database.js";
 import {

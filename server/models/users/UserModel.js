@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { emailRegex, nameRegex } from "../../../util/regex.js";
-import PermissionGroupSchema from "../../schema/PermissionGroup.js";
+import PermissionGroupSchema from "../../schema/PermissionGroupSchema.js";
 
 const UserSchema = new mongoose.Schema(
 	{

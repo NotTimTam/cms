@@ -1,5 +1,5 @@
-import UserModel from "../../models/users/User.js";
-import RoleModel from "../../models/users/Role.js";
+import UserModel from "../../models/users/UserModel.js";
+import RoleModel from "../../models/users/RoleModel.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import { emailRegex, nameRegex } from "../../../util/regex.js";
 import {

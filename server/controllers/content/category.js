@@ -4,7 +4,7 @@ import {
 	getPathToDocument,
 	orderDocuments,
 } from "../../util/database.js";
-import CategoryModel from "../../models/content/Category.js";
+import CategoryModel from "../../models/content/CategoryModel.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import {
 	validateCategory,

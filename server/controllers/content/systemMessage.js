@@ -1,6 +1,6 @@
 import { messageTypeEnum } from "../../../util/enum.js";
-import UserModel from "../../models/users/User.js";
-import RoleModel from "../../models/users/Role.js";
+import UserModel from "../../models/users/UserModel.js";
+import RoleModel from "../../models/users/RoleModel.js";
 
 class SystemMessage {
 	constructor(type, content) {

@@ -61,6 +61,11 @@ function Form(props) {
 	};
 
 	const handlers = {
+		message: (props) => (
+			<Message type={props.messageType} fill={props.fill}>
+				{props.content}
+			</Message>
+		),
 		group: (props, formData, setFormData) => {
 			if (!props.name)
 				return (

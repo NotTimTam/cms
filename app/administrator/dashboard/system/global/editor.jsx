@@ -53,21 +53,6 @@ import {
  *      - Proxy
  *          - Behind Load Balancer
  *          - Enable Outbound Proxy (necessary?)
- *  - Permissions
- *      - This is a permission config that determines the options for users overall, not for components.
- * FOR EACH USER GROUP:
- *      - Site Login, Admin Login, Web Services Login, Offline Access, Super User, Configure Options, Access Administration INterface, Create, Delete, Edit, Edit State, Edit Own Edit Custom Field Value
- * Options (shows all display options for each component, these are global defaults which can be overwritten in each item)
- *  (each item also has permissions to determine default permissions for editing this specific component)
- * - Articles
- * - Cache
- * - Check-in
- * - Media
- * - Menus
- * - Modules
- * - Tags
- * - Users
- * - also all extensions ones like Contacts and Events Booking, sorted alphabetically.
  */
 
 const defaultGlobalConfiguration = {
@@ -425,46 +410,6 @@ export default function GlobalConfigurationEditor() {
 						/>,
 					],
 				},
-			],
-		},
-		{
-			label: "Options",
-			menu: [
-				{
-					label: "Articles",
-				},
-				{
-					label: "Cache",
-				},
-				{
-					label: "Check-in",
-				},
-				{
-					label: "Media",
-				},
-				{
-					label: "Menus",
-				},
-				{
-					label: "Modules",
-				},
-				{
-					label: "Tags",
-				},
-				{
-					label: "Users",
-				},
-				/**
-				 * - Articles
-				 * - Cache
-				 * - Check-in
-				 * - Media
-				 * - Menus
-				 * - Modules
-				 * - Tags
-				 * - Users
-				 * - also all extensions ones like Contacts and Events Booking, sorted alphabetically.
-				 */
 			],
 		},
 	];

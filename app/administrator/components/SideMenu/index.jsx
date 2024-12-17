@@ -7,7 +7,7 @@ import { AdministratorContext } from "../AdministratorContext";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getCurrentMenu } from "@/util/display";
-import scssVars from "../../scssVars";
+import scssVars from "../../util/scssVars";
 import StorageInterface from "@/util/StorageInterface";
 import { AuthenticatedUserContext } from "@/components/AuthenticatedUserContext";
 

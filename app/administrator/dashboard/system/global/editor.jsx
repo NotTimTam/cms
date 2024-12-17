@@ -26,6 +26,7 @@ import {
 	defaultDefinitions,
 } from "@/util/permissions";
 import { robotsEnum } from "@/util/enum";
+import { relativePathRegex } from "@/util/regex";
 
 /**
  * Main Side Menu
@@ -206,6 +207,7 @@ export default function GlobalConfigurationEditor() {
 									label: "Path to Temp Folder",
 									placeholder: "/tmp",
 									required: true,
+									pattern: relativePathRegex,
 								},
 								<p
 									style={{
@@ -238,6 +240,7 @@ export default function GlobalConfigurationEditor() {
 											label: "Path to Cache Folder",
 											placeholder: "/cache",
 											required: true,
+											pattern: relativePathRegex,
 										},
 										<p
 											style={{
@@ -277,6 +280,7 @@ export default function GlobalConfigurationEditor() {
 													label: "Request Memory Interval",
 													placeholder: "60000",
 													rebootRequired: true,
+													min: 1,
 													required:
 														formData.server
 															.webServices
@@ -296,6 +300,7 @@ export default function GlobalConfigurationEditor() {
 													name: "requests",
 													label: "Requests Per Interval",
 													placeholder: "5",
+													min: 1,
 													rebootRequired: true,
 													required:
 														formData.server

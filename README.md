@@ -89,3 +89,45 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Direct robots.txt access and control.
 -   Stamp data with cms version to indicate when outdated.
 -   Update menu/(potential autoupdate system) that tells you when version is outdated.
+
+## Development Process
+
+### indev (indev-x versions)
+
+Goals:
+
+-   Model other popular CMS platforms in modern languages/frameworks/tools.
+
+Deadline: na
+
+### infdev (infdev-x versions)
+
+Goals:
+
+-   Testing, streamlining, and reconfiguring codebase.
+
+Deadline: na
+
+### alpha (0.0.x versions)
+
+Goals:
+
+-   Implement unique, original features, design, and software to make this CMS stand out.
+
+Deadline: na
+
+### beta (0.x.x versions)
+
+Goals:
+
+-   Deployment testing, bug fixing, and fine tuning.
+
+Deadline: na
+
+### LTS/Production (>1.x.x versions)
+
+Goals:
+
+-   Maintain dependencies, make improvements, add suggested features over time.
+
+Deadline: na

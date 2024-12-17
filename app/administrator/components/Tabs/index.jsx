@@ -18,6 +18,7 @@ const Tabs = ({ items, currentItem, setCurrentItem }) => {
 			<nav className={`--cms-nav ${styles["--cms-tabs-nav"]}`}>
 				{items.map(({ header, ariaLabel }, index) => (
 					<button
+						type="button"
 						key={index}
 						aria-label={ariaLabel}
 						onClick={() => setCurrentItem(index)}

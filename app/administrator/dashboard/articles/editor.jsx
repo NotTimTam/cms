@@ -137,7 +137,7 @@ const ArticleEditor = ({ id }) => {
 										className="--cms-form"
 									>
 										<label htmlFor="status">Status</label>
-										<button id="status">
+										<button id="status" type="button">
 											{capitalizeWords(article.status) ||
 												"Unpublished"}
 											<ChevronDown />

@@ -167,10 +167,10 @@ const PermissionGroups = ({
 
 	const currentConfig = permissions.find(
 		(permission) =>
-			permission[userRoles ? "userRoleId" : "name"] ===
+			permission[userRoles ? "role" : "name"] ===
 			targetDefinitions[active].name
 	) || {
-		[userRoles ? "userRoleId" : "name"]: targetDefinitions[active].name,
+		[userRoles ? "role" : "name"]: targetDefinitions[active].name,
 		permissions: [],
 	};
 

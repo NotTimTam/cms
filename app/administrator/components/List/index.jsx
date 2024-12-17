@@ -74,6 +74,7 @@ const SortableItem = (props) => {
 						}}
 					>
 						<button
+							type="button"
 							disabled={!order || order.disabled}
 							className={
 								styles["--cms-listings-table-body-drag-thumb"]
@@ -161,6 +162,7 @@ const Listings = ({
 									}}
 								>
 									<button
+										type="button"
 										aria-label="Select Article"
 										onClick={() => toggleSelected(_id)}
 									>
@@ -292,6 +294,7 @@ const List = ({
 							style={{ gridColumn: "1 / 2" }}
 						>
 							<button
+								type="button"
 								aria-label="Select All"
 								onClick={() =>
 									setSelection((selection) =>
@@ -397,6 +400,7 @@ List.Header = (item, query, setQuery) => {
 
 	return (
 		<button
+			type="button"
 			aria-label={label}
 			onClick={() => {
 				if (active) {
@@ -478,7 +482,11 @@ List.Toggle = class Toggle extends List.Item {
 		const { getIcon, toggle, ariaLabel } = this;
 
 		return (
-			<button aria-label={ariaLabel} onClick={() => toggle(_id, items)}>
+			<button
+				type="button"
+				aria-label={ariaLabel}
+				onClick={() => toggle(_id, items)}
+			>
 				{getIcon(_id, items)}
 			</button>
 		);

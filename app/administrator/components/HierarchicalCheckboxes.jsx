@@ -100,6 +100,7 @@ const HierarchicalCheckboxes = ({ items, selection, setSelection }) => {
 									</span>
 								))}
 						<button
+							type="button"
 							className="--cms-text-like"
 							disabled={parentSelected}
 							style={{

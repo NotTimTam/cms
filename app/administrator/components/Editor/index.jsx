@@ -148,6 +148,7 @@ Editor.Header = ({
 		>
 			<section>
 				<button
+					type="button"
 					className="--cms-success"
 					aria-label="Save"
 					onClick={saveData}
@@ -156,6 +157,7 @@ Editor.Header = ({
 				</button>
 				<span>
 					<button
+						type="button"
 						className="--cms-success"
 						aria-label="Save & Close"
 						onClick={async () => {
@@ -168,6 +170,7 @@ Editor.Header = ({
 					</button>
 					{saveOptions && saveOptions.length > 0 && (
 						<button
+							type="button"
 							className="--cms-success"
 							aria-label="More Save Options"
 							onClick={async (e) => {
@@ -223,6 +226,7 @@ Editor.Header = ({
 				</span>
 
 				<button
+					type="button"
 					className="--cms-error"
 					aria-label="Close"
 					onClick={closeEditor}

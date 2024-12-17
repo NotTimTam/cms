@@ -190,7 +190,7 @@ const TagEditor = ({ id }) => {
 								</div>
 							)}
 							<label htmlFor="status">Status</label>
-							<button id="status">
+							<button id="status" type="button">
 								{capitalizeWords(tag.status) || "Unpublished"}
 								<ChevronDown />
 							</button>

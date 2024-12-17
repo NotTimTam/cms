@@ -108,6 +108,7 @@ const Option = ({
 						{data ? (
 							data.map((item, index) => (
 								<button
+									type="button"
 									key={index}
 									aria-label={item.ariaLabel || item.label}
 									aria-selected={

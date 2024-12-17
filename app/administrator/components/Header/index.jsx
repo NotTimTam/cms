@@ -49,6 +49,7 @@ const Header = () => {
 				</Link>
 
 				<button
+					type="button"
 					onClick={async (e) => {
 						const rect = e.target.getBoundingClientRect();
 
@@ -70,6 +71,7 @@ const Header = () => {
 										</Link>
 
 										<button
+											type="button"
 											aria-label="Logout"
 											onClick={() => {
 												closePopup();

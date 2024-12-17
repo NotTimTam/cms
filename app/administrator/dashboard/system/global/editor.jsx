@@ -58,8 +58,6 @@ import {
 const defaultGlobalConfiguration = {
 	site: {
 		name: "Untitled Website",
-		defaultListLimit: 20,
-		defaultFeedLimit: 10,
 		metadata: {
 			robots: "noindex, nofollow",
 			showCMSVersion: true,
@@ -108,6 +106,8 @@ export default function GlobalConfigurationEditor() {
 									placeholder: "My Website",
 									label: "Site Name",
 									required: true,
+									minLength: 1,
+									maxLength: 256,
 								},
 								{
 									type: "toggle",
@@ -130,20 +130,6 @@ export default function GlobalConfigurationEditor() {
 													: listLimit,
 										})
 									),
-								},
-								{
-									type: "select",
-									name: "defaultFeedLimit",
-									required: true,
-									label: "Default Feed Limit",
-									placeholder:
-										"Select a default feed limit...",
-									options: [
-										5, 10, 15, 20, 25, 30, 50, 100,
-									].map((feedLimit) => ({
-										id: feedLimit,
-										label: feedLimit,
-									})),
 								},
 							],
 						},

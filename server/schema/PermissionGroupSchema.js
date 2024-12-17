@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import allPermissions from "../../util/permissions.js";
-import PermissionSchema from "./Permission.js";
+import PermissionSchema from "./PermissionSchema.js";
 
 const PermissionGroupSchema = new mongoose.Schema(
 	{

@@ -32,6 +32,7 @@ const Paginate = ({ query, setQuery }) => {
 		<nav className={styles["--cms-paginate"]}>
 			{page > 0 && numPages > 1 && !span.includes(0) && (
 				<button
+					type="button"
 					onClick={() =>
 						setQuery((query) => ({
 							...query,
@@ -55,6 +56,7 @@ const Paginate = ({ query, setQuery }) => {
 					</div>
 				) : (
 					<button
+						type="button"
 						key={pageButton}
 						onClick={() =>
 							setQuery((query) => ({
@@ -73,6 +75,7 @@ const Paginate = ({ query, setQuery }) => {
 				numPages > 1 &&
 				!span.includes(numPages - 1) && (
 					<button
+						type="button"
 						onClick={() =>
 							setQuery((query) => ({
 								...query,

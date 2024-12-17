@@ -46,6 +46,7 @@ const Curate = ({ new: newHref = "", actions, options = "", help = "" }) => {
 												index
 											) => (
 												<button
+													type="button"
 													onClick={async () => {
 														action &&
 															(await action());

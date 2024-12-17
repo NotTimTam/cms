@@ -14,6 +14,10 @@ export default class API {
 			.join("/");
 
 	static route = "/api";
+	static globalConfiguration = API.createRouteURL(
+		API.route,
+		"globalConfiguration"
+	);
 	static system = API.createRouteURL(API.route, "system");
 	static users = API.createRouteURL(API.route, "users");
 	static articles = API.createRouteURL(API.route, "articles");

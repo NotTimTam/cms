@@ -16,6 +16,7 @@ import {
 
 import API from "./util/API.js";
 
+import globalConfigurationRouter from "./server/routers/globalConfigurationRoutes.js";
 import systemRouter from "./server/routers/systemRoutes.js";
 import articleRouter from "./server/routers/articleRoutes.js";
 import categoryRouter from "./server/routers/categoryRoutes.js";
@@ -82,6 +83,12 @@ app.disable("x-powered-by");
 app.use(express.json(), cors(), rateLimiter);
 
 // Load and configure API.
+app.use(
+	API.globalConfiguration,
+	authenticationMiddleware,
+	verificationMiddleware,
+	globalConfigurationRouter
+);
 app.use(
 	API.system,
 	authenticationMiddleware,

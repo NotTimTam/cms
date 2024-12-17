@@ -25,6 +25,7 @@ import {
 	systemDefinitions,
 	defaultDefinitions,
 } from "@/util/permissions";
+import { robotsEnum } from "@/util/enum";
 
 /**
  * Main Side Menu
@@ -173,24 +174,12 @@ export default function GlobalConfigurationEditor() {
 											label: "Robots",
 											placeholder:
 												"Select a configuration...",
-											options: [
-												{
-													id: "index, follow",
-													label: "index, follow",
-												},
-												{
-													id: "noindex, follow",
-													label: "noindex, follow",
-												},
-												{
-													id: "index, nofollow",
-													label: "index, nofollow",
-												},
-												{
-													id: "noindex, nofollow",
-													label: "noindex, nofollow",
-												},
-											],
+											options: robotsEnum.map(
+												(config) => ({
+													id: config,
+													label: config,
+												})
+											),
 										},
 										{
 											type: "toggle",
@@ -288,7 +277,10 @@ export default function GlobalConfigurationEditor() {
 													label: "Request Memory Interval",
 													placeholder: "60000",
 													rebootRequired: true,
-													required: true,
+													required:
+														formData.server
+															.webServices
+															.rateLimiter.use,
 												},
 												<p
 													style={{
@@ -305,7 +297,10 @@ export default function GlobalConfigurationEditor() {
 													label: "Requests Per Interval",
 													placeholder: "5",
 													rebootRequired: true,
-													required: true,
+													required:
+														formData.server
+															.webServices
+															.rateLimiter.use,
 												},
 												<p
 													style={{

@@ -17,8 +17,8 @@ const SystemMessages = ({ token, fill, style = {} }) => {
 				data: { systemMessages },
 			} = await API.get(
 				token
-					? API.createRouteURL(API.messages, "confidential")
-					: API.messages,
+					? API.createRouteURL(API.system, "messages", "confidential")
+					: API.createRouteURL(API.system, "messages"),
 				token ? API.createAuthorizationConfig(token) : undefined
 			);
 

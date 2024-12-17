@@ -8,7 +8,7 @@ import {
 	batchArticles,
 	orderArticles,
 	deleteArticles,
-} from "../controllers/content/article.js";
+} from "../../controllers/content/article.js";
 
 const articleRouter = Router();
 

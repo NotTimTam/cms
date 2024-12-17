@@ -9,7 +9,7 @@ import {
 	orderTags,
 	findTagById,
 	findTagByIdAndUpdate,
-} from "../controllers/content/tag.js";
+} from "../../controllers/content/tag.js";
 
 const tagRouter = Router();
 

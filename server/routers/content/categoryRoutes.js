@@ -9,7 +9,7 @@ import {
 	orderCategories,
 	findCategoryById,
 	findCategoryByIdAndUpdate,
-} from "../controllers/content/category.js";
+} from "../../controllers/content/category.js";
 
 const categoryRouter = Router();
 

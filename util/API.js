@@ -23,7 +23,6 @@ export default class API {
 	static articles = API.createRouteURL(API.route, "articles");
 	static categories = API.createRouteURL(API.route, "categories");
 	static roles = API.createRouteURL(API.users, "roles");
-	static messages = API.createRouteURL(API.route, "messages");
 	static tags = API.createRouteURL(API.route, "tags");
 
 	/**

@@ -18,11 +18,10 @@ import API from "./util/API.js";
 
 import globalConfigurationRouter from "./server/routers/globalConfigurationRoutes.js";
 import systemRouter from "./server/routers/systemRoutes.js";
-import articleRouter from "./server/routers/articleRoutes.js";
-import categoryRouter from "./server/routers/categoryRoutes.js";
-import systemMessageRouter from "./server/routers/systemMessageRoutes.js";
-import userRouter from "./server/routers/userRoutes.js";
-import tagRouter from "./server/routers/tagRoutes.js";
+import articleRouter from "./server/routers/content/articleRoutes.js";
+import categoryRouter from "./server/routers/content/categoryRoutes.js";
+import tagRouter from "./server/routers/content/tagRoutes.js";
+import userRouter from "./server/routers/users/userRoutes.js";
 
 import {
 	authenticationMiddleware,
@@ -89,12 +88,7 @@ app.use(
 	verificationMiddleware,
 	globalConfigurationRouter
 );
-app.use(
-	API.system,
-	authenticationMiddleware,
-	verificationMiddleware,
-	systemRouter
-);
+app.use(API.system, systemRouter);
 app.use(
 	API.articles,
 	authenticationMiddleware,
@@ -108,7 +102,6 @@ app.use(
 	verificationMiddleware,
 	categoryRouter
 );
-app.use(API.messages, systemMessageRouter);
 app.use(API.users, userRouter);
 
 nextJS.prepare().then(async () => {

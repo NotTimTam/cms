@@ -8,7 +8,7 @@ import {
 	loginUser,
 	authenticateUser,
 	deleteUsers,
-} from "../controllers/users/user.js";
+} from "../../controllers/users/user.js";
 import {
 	createRole,
 	deleteRoles,
@@ -18,12 +18,12 @@ import {
 	findRoleByIdAndUpdate,
 	getPossibleParents,
 	getRoleTree,
-} from "../controllers/users/role.js";
+} from "../../controllers/users/role.js";
 import {
 	authenticationMiddleware,
 	psuedoVerifiedMiddleware,
 	verificationMiddleware,
-} from "../middleware/userMiddleware.js";
+} from "../../middleware/userMiddleware.js";
 
 const userRouter = Router();
 

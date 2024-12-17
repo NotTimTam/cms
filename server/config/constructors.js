@@ -1,8 +1,12 @@
-import { error, log, success, warn } from "@nottimtam/console.js";
+import { error, success, warn } from "@nottimtam/console.js";
 import bcrypt from "bcryptjs";
+import {
+	defaultGlobalConfiguration,
+	generateRandomPassword,
+} from "../../util/data.js";
 import RoleModel from "../models/users/RoleModel.js";
 import UserModel from "../models/users/UserModel.js";
-import { generateRandomPassword } from "../../util/data.js";
+import GlobalConfigurationModel from "../models/GlobalConfigurationModel.js";
 
 /**
  * Ensure that a webmaster exists, and create one if it does not.
@@ -113,5 +117,22 @@ export const constructPublic = async () => {
 		warn(
 			"Public role was left unprotected, (editable) but has been made protected. While this is generally not a concern, the Public role can only be modified through direct database manipulation. If you did not make this change, please verify your system is secure or contact your deployment's webmaster."
 		);
+	}
+};
+
+/**
+ * Ensure that a global configuration exists, and create one if it does not.
+ */
+export const constructGlobalConfiguration = async () => {
+	let globalConfiguration = await GlobalConfigurationModel.findOne({});
+
+	if (!globalConfiguration) {
+		globalConfiguration = new GlobalConfigurationModel(
+			defaultGlobalConfiguration
+		);
+
+		await globalConfiguration.save();
+
+		success("Created global configuration.");
 	}
 };

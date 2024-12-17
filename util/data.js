@@ -32,3 +32,29 @@ export const listLimitOptions = [
 	500,
 	"all",
 ];
+
+/**
+ * The default global configuration object.
+ */
+export const defaultGlobalConfiguration = {
+	site: {
+		name: "Untitled Website",
+		metadata: {
+			robots: "noindex, nofollow",
+			showCMSVersion: true,
+			showAuthorMetaTag: true,
+		},
+	},
+	server: {
+		cache: {
+			use: true,
+			path: "/cache",
+		},
+		temp: "/tmp",
+		webServices: {
+			cors: true,
+			rateLimiter: { use: true, interval: 60000, requests: 5 },
+		},
+	},
+	permissions: [],
+};

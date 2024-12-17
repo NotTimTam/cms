@@ -2,7 +2,7 @@
 
 import Form from "@/components/Form";
 import Nav from "@/app/administrator/components/Nav";
-import { listLimitOptions } from "@/util/data";
+import { defaultGlobalConfiguration, listLimitOptions } from "@/util/data";
 import {
 	capitalizeWords,
 	combineClassNames,
@@ -56,29 +56,6 @@ import { relativePathRegex } from "@/util/regex";
  *          - Behind Load Balancer
  *          - Enable Outbound Proxy (necessary?)
  */
-
-const defaultGlobalConfiguration = {
-	site: {
-		name: "Untitled Website",
-		metadata: {
-			robots: "noindex, nofollow",
-			showCMSVersion: true,
-			showAuthorMetaTag: true,
-		},
-	},
-	server: {
-		cache: {
-			use: true,
-			path: "/cache",
-		},
-		temp: "/tmp",
-		webServices: {
-			cors: true,
-			rateLimiter: { use: true, interval: 60000, requests: 5 },
-		},
-	},
-	permissions: [],
-};
 
 export default function GlobalConfigurationEditor() {
 	const router = useRouter();

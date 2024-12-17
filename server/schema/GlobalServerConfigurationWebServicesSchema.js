@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import GlobalServerConfigurationWebServicesRateLimiterSchema from "./GlobalServerConfigurationWebServicesRateLimiterSchema";
+import GlobalServerConfigurationWebServicesRateLimiterSchema from "./GlobalServerConfigurationWebServicesRateLimiterSchema.js";
 
 const GlobalServerConfigurationWebServicesSchema = new mongoose.Schema(
 	{

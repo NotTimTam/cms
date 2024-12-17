@@ -9,6 +9,7 @@ import nodePackage from "./package.json" assert { type: "json" };
 
 import connectMongoDB from "./server/util/connectMongoDB.js";
 import {
+	constructGlobalConfiguration,
 	constructPublic,
 	constructWebmaster,
 } from "./server/config/constructors.js";
@@ -107,6 +108,7 @@ nextJS.prepare().then(async () => {
 	log(`Staring ${name} version ${version}`);
 
 	await connectMongoDB();
+	await constructGlobalConfiguration();
 	await constructWebmaster();
 	await constructPublic();
 

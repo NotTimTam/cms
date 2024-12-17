@@ -22,6 +22,7 @@ To create an interface for content curation and elegant front-end GUI for users 
 
 The designations front-end, and back-end, refer not to application architecture in this context, but to target audience. The back-end is for administrators to manage content, and the front-end is for users to view that content.
 
+-   Psuedo-form submit on editor save, such as in global configuration, that way form can ensure each value is inputted correctly. All dropdowns, menus, etc, will need to be contained in the form, and have all the content in the dom at all times.
 -   Deliver regular HTML/CSS/JS for client, deliver Next.js for administrator. (maybe)
 -   SCSS/JS/HTML/SVG support.
 -   Fix article refresh editor. Basically if you refresh the article editor after saving a brand new article, since the url doesnt include the ID, refreshing does not open to that article.

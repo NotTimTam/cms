@@ -4,23 +4,23 @@ import { getToken } from "@/app/cookies";
 import API from "@/util/API";
 import { useEffect, useState } from "react";
 
-export default function useUserRoles() {
-	const [userRoles, setUserRoles] = useState(null);
+export default function useGlobalConfiguration() {
+	const [globalConfiguration, setGlobalConfiguration] = useState(null);
 
 	const executeQuery = async () => {
-		setUserRoles(null);
+		setGlobalConfiguration(null);
 
 		try {
 			// Get roles.
 			const token = await getToken();
 			const {
-				data: { roles },
+				data: { globalConfiguration },
 			} = await API.get(
-				`${API.roles}/tree?itemsPerPage=all&sortDir=1&sortField=order&visible=true`,
+				API.globalConfiguration,
 				API.createAuthorizationConfig(token)
 			);
 
-			setUserRoles(roles);
+			setGlobalConfiguration(globalConfiguration);
 		} catch (error) {
 			console.error(error);
 		}
@@ -30,5 +30,5 @@ export default function useUserRoles() {
 		executeQuery();
 	}, []);
 
-	return userRoles;
+	return globalConfiguration;
 }

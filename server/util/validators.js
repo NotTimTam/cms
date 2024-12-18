@@ -3,11 +3,17 @@ import CategoryModel from "../models/content/CategoryModel.js";
 import TagModel from "../models/content/TagModel.js";
 import UserModel from "../models/users/UserModel.js";
 import RoleModel from "../models/users/RoleModel.js";
-import { aliasRegex, emailRegex, nameRegex } from "../../util/regex.js";
+import {
+	aliasRegex,
+	emailRegex,
+	nameRegex,
+	relativePathRegex,
+} from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
-import { sortEnum, statusEnum } from "../../util/enum.js";
+import { robotsEnum, sortEnum, statusEnum } from "../../util/enum.js";
 import { isBoolean } from "../../util/data.js";
 import mongoose from "mongoose";
+import { definitions } from "../../util/permissions.js";
 
 export class ResError {
 	constructor(code, message) {
@@ -456,6 +462,240 @@ export const validateUser = async (user) => {
 		);
 
 	return user;
+};
+
+/**
+ * Validate a Global Configuraiton document.
+ * @param {Object} globalConfiguration The global configuration data to validate.
+ * @throws {Error} An error is thrown if the global configuration is not valid.
+ * @returns {Object} The global configuration data, reformatted, if necessary.
+ */
+export const validateGlobalConfiguration = async (globalConfiguration) => {
+	// Site
+	if (!globalConfiguration.site) {
+		throw new ResError(400, `No site configuration provided.`);
+	} else {
+		if (
+			!globalConfiguration.site.name ||
+			typeof globalConfiguration.site.name !== "string" ||
+			globalConfiguration.site.name.length < 1 ||
+			globalConfiguration.site.name.length > 256
+		)
+			throw new ResError(
+				400,
+				"Invalid site name provided. Expected a string between 1 and 256 characters in length."
+			);
+
+		if (globalConfiguration.site.metadata) {
+			if (
+				globalConfiguration.site.metadata.hasOwnProperty("robots") &&
+				!robotsEnum.includes(globalConfiguration.site.metadata.robots)
+			)
+				throw new ResError(
+					400,
+					`Invalid robots configuration provided. Expected one of: ${robotsEnum}`
+				);
+
+			if (
+				globalConfiguration.site.metadata.hasOwnProperty(
+					"showCMSVersion"
+				) &&
+				typeof globalConfiguration.site.metadata.showCMSVersion !==
+					"boolean"
+			)
+				throw new ResError(
+					400,
+					"Invalid configuration for 'Show CMS Version' provided. Expected a boolean."
+				);
+
+			if (
+				globalConfiguration.site.metadata.hasOwnProperty(
+					"showAuthorMetaTag"
+				) &&
+				typeof globalConfiguration.site.metadata.showAuthorMetaTag !==
+					"boolean"
+			)
+				throw new ResError(
+					400,
+					"Invalid configuration for 'Show Author Meta Tag' provided. Expected a boolean."
+				);
+
+			if (
+				globalConfiguration.site.metadata.hasOwnProperty("author") &&
+				typeof globalConfiguration.site.metadata.author !== "string"
+			)
+				throw new ResError(
+					400,
+					"Invalid site author provided. Expected a string."
+				);
+
+			if (
+				globalConfiguration.site.metadata.hasOwnProperty(
+					"description"
+				) &&
+				typeof globalConfiguration.site.metadata.description !==
+					"string"
+			)
+				throw new ResError(
+					400,
+					"Invalid site description provided. Expected a string."
+				);
+
+			if (
+				globalConfiguration.site.metadata.hasOwnProperty("keywords") &&
+				typeof globalConfiguration.site.metadata.keywords !== "string"
+			)
+				throw new ResError(
+					400,
+					"Invalid site keywords provided. Expected a string."
+				);
+		}
+
+		if (
+			globalConfiguration.site.hasOwnProperty("offline") &&
+			typeof globalConfiguration.site.offline !== "boolean"
+		)
+			throw new ResError(
+				400,
+				"Invalid site offline status provided. Expected a boolean."
+			);
+	}
+
+	// Server
+	if (!globalConfiguration.server) {
+		throw new ResError(400, `No server configuration provided.`);
+	} else {
+		if (!globalConfiguration.server.cache)
+			throw new ResError("No cache configuration provided.");
+		else {
+			if (
+				globalConfiguration.server.cache.hasOwnProperty("use") &&
+				typeof globalConfiguration.server.cache.use !== "boolean"
+			)
+				throw new ResError(
+					400,
+					"Invalid cache use configuration provided. Expected a boolean."
+				);
+
+			if (
+				!globalConfiguration.server.cache.path ||
+				!relativePathRegex.test(globalConfiguration.server.cache.path)
+			)
+				throw new ResError(
+					400,
+					"Invalid cache path provided. Expected a relative path starting with '/'."
+				);
+		}
+
+		if (
+			!globalConfiguration.server.temp ||
+			!relativePathRegex.test(globalConfiguration.server.temp)
+		)
+			throw new ResError(
+				400,
+				"Invalid temp path provided. Expected a relative path starting with '/'."
+			);
+
+		if (globalConfiguration.server.webServices) {
+			if (
+				globalConfiguration.server.webServices.hasOwnProperty("cors") &&
+				typeof globalConfiguration.server.webServices.cors !== "boolean"
+			)
+				throw new ResError(
+					400,
+					"Invalid cors configuration provided. Expected a boolean."
+				);
+
+			if (globalConfiguration.server.webServices.rateLimiter) {
+				if (
+					globalConfiguration.server.webServices.rateLimiter.hasOwnProperty(
+						"use"
+					) &&
+					typeof globalConfiguration.server.webServices.rateLimiter
+						.use !== "boolean"
+				)
+					throw new ResError(
+						400,
+						"Invalid rate limiter use configuration provided. Expected a boolean."
+					);
+
+				if (
+					globalConfiguration.server.webServices.rateLimiter
+						.interval &&
+					(typeof globalConfiguration.server.webServices.rateLimiter
+						.interval !== "number" ||
+						globalConfiguration.server.webServices.rateLimiter
+							.interval < 1)
+				)
+					throw new ResError(
+						400,
+						"Invalid rate limiter interval provided. Expected a number greater than or equal to 1."
+					);
+
+				if (
+					globalConfiguration.server.webServices.rateLimiter
+						.requests &&
+					(typeof globalConfiguration.server.webServices.rateLimiter
+						.requests !== "number" ||
+						globalConfiguration.server.webServices.rateLimiter
+							.requests < 1)
+				)
+					throw new ResError(
+						400,
+						"Invalid rate limiter requests provided. Expected a number greater than or equal to 1."
+					);
+			}
+		}
+	}
+
+	//	Permissions
+	if (globalConfiguration.permissions) {
+		if (!(globalConfiguration.permissions instanceof Array))
+			throw new ResError(
+				400,
+				`Invalid permissions provided. Expected an array of objects.`
+			);
+
+		for (const permissionConfig of globalConfiguration.permissions) {
+			const role = await RoleModel.findById(permissionConfig.role);
+
+			if (!role)
+				throw new ResError(
+					404,
+					`No role with id "${permissionConfig.role}"`
+				);
+
+			if (permissionConfig.permissions) {
+				if (!(permissionConfig.permissions instanceof Array))
+					throw new ResError(
+						400,
+						"Invalid permissions provided. Expected an array of objects."
+					);
+
+				for (const permission of permissionConfig.permissions) {
+					if (
+						!permission.name ||
+						!Object.keys(definitions).includes(permission.name)
+					)
+						throw new ResError(
+							400,
+							`Invalid permission name provided. Expected one of: ${Object.keys(
+								definitions
+							)}`
+						);
+
+					if (
+						permission.status &&
+						typeof permission.status !== "boolean"
+					)
+						throw new ResError(
+							400,
+							"Invalid permission status provided. Expected a boolean."
+						);
+				}
+			}
+		}
+	}
 };
 
 /**

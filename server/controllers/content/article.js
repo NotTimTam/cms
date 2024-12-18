@@ -1,3 +1,4 @@
+import { stripMongoDBFieldsFromBody } from "../../util/data.js";
 import ArticleModel from "../../models/content/ArticleModel.js";
 import { handleUnexpectedError } from "../../util/controller.js";
 import { orderDocuments } from "../../util/database.js";
@@ -30,7 +31,9 @@ export const createArticle = async (req, res) => {
 			: 0;
 
 		try {
-			req.body = await validateArticle(req.body);
+			req.body = await validateArticle(
+				stripMongoDBFieldsFromBody(req.body)
+			);
 		} catch (error) {
 			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
@@ -268,7 +271,7 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 				...(await ArticleModel.findById(id)
 					.select("+status +notes")
 					.lean()),
-				...req.body,
+				...stripMongoDBFieldsFromBody(req.body),
 			});
 		} catch (error) {
 			if (error instanceof ResError)

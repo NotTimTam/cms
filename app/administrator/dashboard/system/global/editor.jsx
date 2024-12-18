@@ -27,6 +27,7 @@ import {
 } from "@/util/permissions";
 import { robotsEnum } from "@/util/enum";
 import { relativePathRegex } from "@/util/regex";
+import useGlobalConfiguration from "@/app/administrator/hooks/useGlobalConfiguration";
 
 /**
  * Main Side Menu
@@ -61,6 +62,7 @@ export default function GlobalConfigurationEditor() {
 	const router = useRouter();
 
 	const userRoles = useUserRoles();
+	const globalConfiguration = useGlobalConfiguration();
 
 	const [active, setActive] = useState(0);
 	const [formData, setFormData] = useState(defaultGlobalConfiguration);
@@ -378,7 +380,7 @@ export default function GlobalConfigurationEditor() {
 
 	const currentMenu = menus.map(({ menu }) => menu).flat()[active];
 
-	const saveGlobalConfiguration = async (isolated = true) => {
+	const saveGlobalConfiguration = async () => {
 		setMessage(null);
 
 		setLoading(true);
@@ -386,40 +388,18 @@ export default function GlobalConfigurationEditor() {
 		let ret;
 
 		try {
-			console.log("save global config");
-			ret = true; // remove
+			const token = await getToken();
 
-			// const token = await getToken();
+			const {
+				data: { globalConfiguration },
+			} = await API.patch(
+				API.createRouteURL(API.globalConfiguration),
+				formData,
+				API.createAuthorizationConfig(token)
+			);
 
-			// // The empty string used to signify "no selection" must be removed.
-			// const submittableRole = {
-			// 	...role,
-			// 	parent: role.parent === "" ? null : role.parent,
-			// };
-
-			// const {
-			// 	data: { role: newRole },
-			// } = role._id
-			// 	? await API.patch(
-			// 			API.createRouteURL(API.roles, role._id),
-			// 			submittableRole,
-			// 			API.createAuthorizationConfig(token)
-			// 	  )
-			// 	: await API.post(
-			// 			API.roles,
-			// 			submittableRole,
-			// 			API.createAuthorizationConfig(token)
-			// 	  );
-
-			// if (!id && isolated)
-			// 	router.push(
-			// 		`/administrator/dashboard/users?view=roles&layout=edit&id=${newRole._id}`
-			// 	);
-			// else {
-			// 	setRole(newRole);
-
-			// 	ret = true;
-			// }
+			setFormData(globalConfiguration);
+			ret = true;
 		} catch (error) {
 			console.error(error);
 
@@ -460,8 +440,8 @@ export default function GlobalConfigurationEditor() {
 	};
 
 	useEffect(() => {
-		console.log(formData);
-	}, [formData]);
+		if (globalConfiguration) setFormData(globalConfiguration);
+	}, [globalConfiguration]);
 
 	if (loading || !userRoles) return <Loading />;
 
@@ -482,13 +462,9 @@ export default function GlobalConfigurationEditor() {
 				<Editor.Header
 					className={styles["--cms-global-configuration-header"]}
 					{...{
-						saveData: () => {},
-						closeEditor: () => {},
-
-						versionsHref: "",
-						previewHref: "",
-						accessiblityCheckHref: "",
-						helpHref: "",
+						saveData: saveGlobalConfiguration,
+						closeEditor: () =>
+							router.push("/administrator/dashboard/system"),
 
 						saveOptions: [
 							{
@@ -500,7 +476,7 @@ export default function GlobalConfigurationEditor() {
 								ariaLabel: "Save & Shutdown",
 								callback: async () => {
 									const savedSuccessfully =
-										await saveGlobalConfiguration(false);
+										await saveGlobalConfiguration();
 
 									if (savedSuccessfully) {
 										const PopupContent = () => {

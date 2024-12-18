@@ -16,6 +16,7 @@ import {
 } from "../../util/validators.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { stripMongoDBFieldsFromBody } from "../../util/data.js";
 
 /**
  * Login as a user.
@@ -96,7 +97,7 @@ export const createUser = async (req, res) => {
 		req.body.jwtTimestamp = new Date().toISOString();
 
 		try {
-			req.body = await validateUser(req.body);
+			req.body = await validateUser(stripMongoDBFieldsFromBody(req.body));
 		} catch (error) {
 			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
@@ -331,7 +332,7 @@ export const findUserByIdAndUpdate = async (req, res) => {
 		try {
 			req.body = await validateUser({
 				...(await UserModel.findById(id).select("+password").lean()),
-				...req.body,
+				...stripMongoDBFieldsFromBody(req.body),
 			});
 		} catch (error) {
 			if (error instanceof ResError)

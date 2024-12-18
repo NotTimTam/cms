@@ -4,7 +4,6 @@ import {
 	flattenDocumentTree,
 	getPathToDocument,
 	orderDocuments,
-	visibleQuery,
 } from "../../util/database.js";
 import RoleModel from "../../models/users/RoleModel.js";
 import { handleUnexpectedError } from "../../util/controller.js";
@@ -16,6 +15,7 @@ import {
 	stripQuery,
 } from "../../util/validators.js";
 import mongoose from "mongoose";
+import { stripMongoDBFieldsFromBody } from "../../util/data.js";
 
 /**
  * Create a new Role document.
@@ -33,7 +33,7 @@ export const createRole = async (req, res) => {
 			: 0;
 
 		try {
-			req.body = await validateRole(req.body);
+			req.body = await validateRole(stripMongoDBFieldsFromBody(req.body));
 		} catch (error) {
 			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
@@ -419,7 +419,7 @@ export const findRoleByIdAndUpdate = async (req, res) => {
 		try {
 			req.body = await validateRole({
 				...(await RoleModel.findById(id).lean()),
-				...req.body,
+				...stripMongoDBFieldsFromBody(req.body),
 			});
 		} catch (error) {
 			if (error instanceof ResError)

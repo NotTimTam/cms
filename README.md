@@ -6,6 +6,10 @@
 
 To create an interface for content curation and elegant front-end GUI for users to explore that content.
 
+Instead of my normal development environment, I decided to push myself to the limit.
+
+Just me, an old laptop, and VSCode. I decided to rely as little on NPM packages as possible, building subsystems from scratch to provide a lightweight, dependable, dependency-less CMS system that boasts competitive features, all for free, forever.
+
 ## Core Object Types
 
 -   Menu &mdash; Functions like a Joomla menu. The site should have a main menu and a default landing page. Menus can be considered internal, portioned off "mini-sites."
@@ -90,6 +94,12 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Direct robots.txt access and control.
 -   Stamp data with cms version to indicate when outdated.
 -   Update menu/(potential autoupdate system) that tells you when version is outdated.
+-   Add:
+    versionsHref: "",
+    previewHref: "",
+    accessiblityCheckHref: "",
+    helpHref: "",
+-   ^ to each `<Editor/>`.
 
 ## Development Process
 

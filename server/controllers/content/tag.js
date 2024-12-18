@@ -14,6 +14,7 @@ import {
 	stripQuery,
 } from "../../util/validators.js";
 import mongoose from "mongoose";
+import { stripMongoDBFieldsFromBody } from "../../util/data.js";
 
 /**
  * Create a new Tag document.
@@ -37,7 +38,7 @@ export const createTag = async (req, res) => {
 			: 0;
 
 		try {
-			req.body = await validateTag(req.body);
+			req.body = await validateTag(stripMongoDBFieldsFromBody(req.body));
 		} catch (error) {
 			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
@@ -380,7 +381,7 @@ export const findTagByIdAndUpdate = async (req, res) => {
 		try {
 			req.body = await validateTag({
 				...(await TagModel.findById(id).lean()),
-				...req.body,
+				...stripMongoDBFieldsFromBody(req.body),
 			});
 		} catch (error) {
 			if (error instanceof ResError)

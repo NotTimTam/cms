@@ -14,6 +14,7 @@ import {
 	stripQuery,
 } from "../../util/validators.js";
 import mongoose from "mongoose";
+import { stripMongoDBFieldsFromBody } from "../../util/data.js";
 
 /**
  * Create a new Category document.
@@ -31,7 +32,9 @@ export const createCategory = async (req, res) => {
 			: 0;
 
 		try {
-			req.body = await validateCategory(req.body);
+			req.body = await validateCategory(
+				stripMongoDBFieldsFromBody(req.body)
+			);
 		} catch (error) {
 			if (error instanceof ResError)
 				return res.status(error.code).send(error.message);
@@ -392,7 +395,7 @@ export const findCategoryByIdAndUpdate = async (req, res) => {
 		try {
 			req.body = await validateCategory({
 				...(await CategoryModel.findById(id).lean()),
-				...req.body,
+				...stripMongoDBFieldsFromBody(req.body),
 			});
 		} catch (error) {
 			if (error instanceof ResError)

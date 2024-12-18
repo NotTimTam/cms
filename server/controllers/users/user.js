@@ -22,9 +22,9 @@ import { stripMongoDBFieldsFromBody } from "../../util/data.js";
  * Login as a user.
  * @param {Express.Request} req The API request object.
  * @param {Object} req.body The user login object.
- * @param {string} req.body.username The user's username. (if no email address is provided)
- * @param {string} req.body.email The user's email address. (if no username is provided)
- * @param {string} req.body.password The user's password.
+ * @param {String} req.body.username The user's username. (if no email address is provided)
+ * @param {String} req.body.email The user's email address. (if no username is provided)
+ * @param {String} req.body.password The user's password.
  */
 export const loginUser = async (req, res) => {
 	try {
@@ -75,7 +75,7 @@ export const loginUser = async (req, res) => {
 /**
  * Authenticate user.
  * @param {Express.Request} req The API request object.
- * @param {string} req.user The user provided by authentication middleware.
+ * @param {String} req.user The user provided by authentication middleware.
  */
 export const authenticateUser = async (req, res) => {
 	try {
@@ -214,7 +214,7 @@ export const findUsers = async (req, res) => {
 /**
  * Find a user by their ID.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the user to find.
+ * @param {String} req.params.id The ID of the user to find.
  */
 export const findUserById = async (req, res) => {
 	try {
@@ -233,7 +233,7 @@ export const findUserById = async (req, res) => {
 /**
  * Find a user by their ID and delete them.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the user to find.
+ * @param {String} req.params.id The ID of the user to find.
  */
 export const findUserByIdAndDelete = async (req, res) => {
 	try {
@@ -286,7 +286,7 @@ export const deleteUsers = async (req, res) => {
 /**
  * Find a user by their ID and update their data.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the user to find.
+ * @param {String} req.params.id The ID of the user to find.
  */
 export const findUserByIdAndUpdate = async (req, res) => {
 	try {

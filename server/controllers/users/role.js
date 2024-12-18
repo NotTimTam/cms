@@ -219,7 +219,7 @@ export const getRoleTree = async (req, res) => {
 /**
  * Query roles for possible parents.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the role to find a parent for.
+ * @param {String} req.params.id The ID of the role to find a parent for.
  */
 export const getPossibleParents = async (req, res) => {
 	try {
@@ -354,8 +354,8 @@ export const deleteRoles = async (req, res) => {
 /**
  * Find a specific role by its ID and position it before another one in the order system.
  * @param {Express.Request} req The API request object.
- * @param {string} req.query.active The ID of the role to move.
- * @param {string} req.query.over The ID of the role to move before.
+ * @param {String} req.query.active The ID of the role to move.
+ * @param {String} req.query.over The ID of the role to move before.
  * @param {1|-1} req.query.dir The direction to move in.
  */
 export const orderRoles = async (req, res) => {
@@ -374,7 +374,7 @@ export const orderRoles = async (req, res) => {
 /**
  * Find a specific role by its ID.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the role to find.
+ * @param {String} req.params.id The ID of the role to find.
  */
 export const findRoleById = async (req, res) => {
 	try {
@@ -393,7 +393,7 @@ export const findRoleById = async (req, res) => {
 /**
  * Find a specific role by its ID and update it.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the role to find.
+ * @param {String} req.params.id The ID of the role to find.
  * @param {Object} req.body The role update object.
  */
 export const findRoleByIdAndUpdate = async (req, res) => {

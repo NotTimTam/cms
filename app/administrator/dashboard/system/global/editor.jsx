@@ -475,71 +475,73 @@ export default function GlobalConfigurationEditor() {
 								),
 								ariaLabel: "Save & Shutdown",
 								callback: async () => {
-									const savedSuccessfully =
-										await saveGlobalConfiguration();
+									const PopupContent = () => {
+										const closePopup =
+											useContext(PopupContext);
 
-									if (savedSuccessfully) {
-										const PopupContent = () => {
-											const closePopup =
-												useContext(PopupContext);
+										return (
+											<div
+												className={combineClassNames(
+													"--cms-popup-content --cms-popup-content-centered",
+													styles["--cms-popup-form"]
+												)}
+											>
+												<Message type="error" fill>
+													Pressing {'"Shutdown"'} will
+													make the server shut down.
+													If your server's container
+													is not configured to
+													automatically reboot it, you
+													will need to reboot it
+													manually. You must also
+													monitor the server's logs to
+													ensure it boots up
+													correctly.
+												</Message>
 
-											return (
 												<div
-													className={combineClassNames(
-														"--cms-popup-content --cms-popup-content-centered",
+													className={
 														styles[
-															"--cms-popup-form"
+															"--cms-popup-form-buttons"
 														]
-													)}
+													}
 												>
-													<Message type="error" fill>
-														Pressing {'"Shutdown"'}{" "}
-														will make the server
-														shut down. If your
-														server's container is
-														not configured to
-														automatically reboot it,
-														you will need to reboot
-														it manually. You must
-														also monitor the
-														server's logs to ensure
-														it boots up correctly.
-													</Message>
-
-													<div
-														className={
-															styles[
-																"--cms-popup-form-buttons"
-															]
+													<button
+														type="button"
+														className="--cms-success"
+														onClick={() =>
+															closePopup(false)
 														}
 													>
-														<button
-															type="button"
-															className="--cms-success"
-															onClick={closePopup}
-														>
-															<X />
-															Cancel
-														</button>
-														<button
-															type="button"
-															className="--cms-error"
-															onClick={() => {
-																closePopup();
-																requestShutdown();
-															}}
-														>
-															<Power />
-															Shutdown
-														</button>
-													</div>
+														<X />
+														Cancel
+													</button>
+													<button
+														type="button"
+														className="--cms-error"
+														onClick={() =>
+															closePopup(true)
+														}
+													>
+														<Power />
+														Shutdown
+													</button>
 												</div>
-											);
-										};
-
-										const res = await createHeadlessPopup(
-											<PopupContent />
+											</div>
 										);
+									};
+
+									const res = await createHeadlessPopup(
+										<PopupContent />
+									);
+
+									if (res === true) {
+										const savedSuccessfully =
+											await saveGlobalConfiguration();
+
+										if (savedSuccessfully) {
+											requestShutdown();
+										}
 									}
 								},
 							},

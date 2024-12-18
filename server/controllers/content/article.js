@@ -203,8 +203,8 @@ export const batchArticles = async (req, res) => {
 /**
  * Find a specific article by its ID and position it before another one in the order system.
  * @param {Express.Request} req The API request object.
- * @param {string} req.query.active The ID of the article to move.
- * @param {string} req.query.over The ID of the article to move before.
+ * @param {String} req.query.active The ID of the article to move.
+ * @param {String} req.query.over The ID of the article to move before.
  * @param {1|-1} req.query.dir The direction to move in.
  */
 export const orderArticles = async (req, res) => {
@@ -223,7 +223,7 @@ export const orderArticles = async (req, res) => {
 /**
  * Find a specific article by its ID.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the article to find.
+ * @param {String} req.params.id The ID of the article to find.
  */
 export const findArticleById = async (req, res) => {
 	try {
@@ -245,7 +245,7 @@ export const findArticleById = async (req, res) => {
 /**
  * Find a specific article by its ID and update it.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the article to find.
+ * @param {String} req.params.id The ID of the article to find.
  * @param {Object} req.body The article update object.
  */
 export const findArticleByIdAndUpdate = async (req, res) => {
@@ -295,7 +295,7 @@ export const findArticleByIdAndUpdate = async (req, res) => {
 /**
  * Find a specific article by its ID and delete it.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the article to find.
+ * @param {String} req.params.id The ID of the article to find.
  */
 export const findArticleByIdAndDelete = async (req, res) => {
 	try {

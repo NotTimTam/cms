@@ -90,37 +90,6 @@ export const constructWebmaster = async () => {
 };
 
 /**
- * Ensure that the public user group exists, and create one if it does not.
- */
-export const constructPublic = async () => {
-	// Role
-	let publicRole = await RoleModel.findOne({ name: "Public" });
-
-	if (!publicRole) {
-		publicRole = new RoleModel({
-			name: "Public",
-			description:
-				"System-generated role, reserved to unauthenticated users.",
-			protected: true,
-			visible: true,
-			permissionGroups: [],
-			order: 1,
-		});
-
-		await publicRole.save();
-
-		success("Created Public role.");
-	} else if (!publicRole.protected) {
-		publicRole.protected = true;
-		await publicRole.save();
-
-		warn(
-			"Public role was left unprotected, (editable) but has been made protected. While this is generally not a concern, the Public role can only be modified through direct database manipulation. If you did not make this change, please verify your system is secure or contact your deployment's webmaster."
-		);
-	}
-};
-
-/**
  * Ensure that a global configuration exists, and create one if it does not.
  */
 export const constructGlobalConfiguration = async () => {
@@ -135,4 +104,6 @@ export const constructGlobalConfiguration = async () => {
 
 		success("Created global configuration.");
 	}
+
+	return globalConfiguration;
 };

@@ -2,11 +2,11 @@ import { ResError } from "./validators.js";
 
 /**
  * Reorder a database Model's documents.
- * @param {string} active The ID of the document being moved.
- * @param {string} over The ID of the document `active` is moving before/after.
+ * @param {String} active The ID of the document being moved.
+ * @param {String} over The ID of the document `active` is moving before/after.
  * @param {-1|1} dir The side of the `over` document that the `active` document should be placed at. `-1` is before, `1` is after.
  * @param {Mongoose.Model} Model The `mongoose` Model object used for document sorting. Must have an `order` integer field which will be used for this.
- * @param {string} label A label to identify the content being reordered, in error messages.
+ * @param {String} label A label to identify the content being reordered, in error messages.
  */
 export const orderDocuments = async (
 	active,
@@ -59,9 +59,9 @@ export const orderDocuments = async (
 
 /**
  * Get the path from the root level to a document.
- * @param {string} id The id of the document to get the path to.
+ * @param {String} id The id of the document to get the path to.
  * @param {Mongoose.Model} Model The mongoose Model for the document tree.
- * @param {string} label A label to identify the content being reordered, in error messages.
+ * @param {String} label A label to identify the content being reordered, in error messages.
  * @returns {string[]} An array of document ids, the first being a top-level document, and the last being the requested document.
  */
 export const getPathToDocument = async (
@@ -84,9 +84,9 @@ export const getPathToDocument = async (
 
 /**
  * Get the child documents of a document using the parent/child system.
- * @param {string} id The id of the document to get the children of.
+ * @param {String} id The id of the document to get the children of.
  * @param {Mongoose.Model} Model The mongoose Model for the document tree.
- * @param {string} label A label to identify the content being reordered, in error messages.
+ * @param {String} label A label to identify the content being reordered, in error messages.
  * @returns {Array} An array of document children.
  */
 export const getDocumentChildren = async (id, Model, label = "document") => {
@@ -104,7 +104,7 @@ export const getDocumentChildren = async (id, Model, label = "document") => {
  * @param {Object} query An optional query object for filtration.
  * @param {Object} sort Optional sorting parameters.
  * @param {string|Object} select Optional document select string for appending items to documents.
- * @param {number} maxDepth The maximum depth to drill for tree building.
+ * @param {Number} maxDepth The maximum depth to drill for tree building.
  * @returns {Array} An array of documents. Each document within children will have a `"children"` field containing them.
  */
 export const buildDocumentTree = async (

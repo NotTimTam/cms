@@ -14,8 +14,8 @@ export async function getToken() {
 
 /**
  * Store an authentication token cookie.
- * @param {string} token The token to set.
- * @param {string} redirect An optional URL to redirect to.
+ * @param {String} token The token to set.
+ * @param {String} redirect An optional URL to redirect to.
  */
 export async function setToken(token, redirect) {
 	(await cookies()).set("token", token, { maxAge: 1000 * 60 * 60 * 24 * 7 });
@@ -25,7 +25,7 @@ export async function setToken(token, redirect) {
 
 /**
  * Delete the user's token.
- * @param {string} redirect An optional URL to redirect to.
+ * @param {String} redirect An optional URL to redirect to.
  */
 export async function deleteToken(redirect) {
 	(await cookies()).delete("token");

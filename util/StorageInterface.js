@@ -54,7 +54,7 @@ export default class StorageInterface {
 
 	/**
 	 * Stores data at a specific key in the storage interface.
-	 * @param {string} key The key to store the data at.
+	 * @param {String} key The key to store the data at.
 	 * @param {*} value The data to store. JavaScript objects are allowed.
 	 */
 	setItem(key, value) {
@@ -68,7 +68,7 @@ export default class StorageInterface {
 
 	/**
 	 * Get data in the storage interface at a specific key.
-	 * @param {string} key The key the data is stored at.
+	 * @param {String} key The key the data is stored at.
 	 * @returns {*} The data stored at the provided key, or `null` if no data is found. Plain JavaScript objects will be unserialized.
 	 */
 	getItem(key) {
@@ -85,7 +85,7 @@ export default class StorageInterface {
 
 	/**
 	 * Removes all data at a specific key in the storage interface.
-	 * @param {string} key The key the data is stored at.
+	 * @param {String} key The key the data is stored at.
 	 */
 	removeItem(key) {
 		this.storageInterface.removeItem(key);

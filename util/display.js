@@ -1,6 +1,6 @@
 /**
  * Capitalizes the first letter of each word in a string.
- * @param {string} str The string to capitalize the words in.
+ * @param {String} str The string to capitalize the words in.
  * @returns {string} The string, adjusted with each word capitalized.
  */
 export const capitalizeWords = (str) =>
@@ -13,7 +13,7 @@ export const capitalizeWords = (str) =>
 /**
  * Get the currently active menu item.
  * @param {Object} menu The menu object to search.
- * @param {string} pathname The return of Next.js' `usePathname()` hook.
+ * @param {String} pathname The return of Next.js' `usePathname()` hook.
  * @param {import("next/dist/server/request/search-params").SearchParams} searchParams The return of Next.js' `useSearchParams()` hook.
  * @returns {Object} The menu object. If a menu item's `quickLink` property is active, the menu's `label` element will be appended with the `quickLink`'s `title` property.
  */
@@ -80,7 +80,7 @@ export const getCurrentMenu = (menu, pathname, searchParams) => {
 
 /**
  * Create a depth indicator for parent/child nesting systems.
- * @param {number} depth The level of depth to indicate.
+ * @param {Number} depth The level of depth to indicate.
  * @returns {string} A string-based depth indicator.
  */
 export const depthIndicator = (depth, char = "\u2013") =>
@@ -126,7 +126,7 @@ export const unflattenDocumentTree = (documents) => {
 /**
  * Search for an item by its id.
  * @param {Array<Object>} array The document array to search.
- * @param {string} _id The id of the item to find.
+ * @param {String} _id The id of the item to find.
  * @returns {Object|undefined} The found item, or undefined if one was not found.
  */
 export const findById = (array, _id) => array.find(({ _id: f }) => f === _id);

@@ -7,7 +7,7 @@ export const isBoolean = (v) => v === true || v === false;
 
 /**
  * Generate a random password of a given length.
- * @param {number} length The length of the password.
+ * @param {Number} length The length of the password.
  * @returns {string} A randomly generated password.
  */
 export const generateRandomPassword = (length) =>

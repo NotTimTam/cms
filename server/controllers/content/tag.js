@@ -201,7 +201,7 @@ export const getTagTree = async (req, res) => {
 /**
  * Query tags for possible parents.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the tag to find a parent for.
+ * @param {String} req.params.id The ID of the tag to find a parent for.
  */
 export const getPossibleParents = async (req, res) => {
 	try {
@@ -321,8 +321,8 @@ export const deleteTags = async (req, res) => {
 /**
  * Find a specific tag by its ID and position it before another one in the order system.
  * @param {Express.Request} req The API request object.
- * @param {string} req.query.active The ID of the tag to move.
- * @param {string} req.query.over The ID of the tag to move before.
+ * @param {String} req.query.active The ID of the tag to move.
+ * @param {String} req.query.over The ID of the tag to move before.
  * @param {1|-1} req.query.dir The direction to move in.
  */
 export const orderTags = async (req, res) => {
@@ -341,7 +341,7 @@ export const orderTags = async (req, res) => {
 /**
  * Find a specific tag by its ID.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the tag to find.
+ * @param {String} req.params.id The ID of the tag to find.
  */
 export const findTagById = async (req, res) => {
 	try {
@@ -360,7 +360,7 @@ export const findTagById = async (req, res) => {
 /**
  * Find a specific tag by its ID and update it.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the tag to find.
+ * @param {String} req.params.id The ID of the tag to find.
  * @param {Object} req.body The tag update object.
  */
 export const findTagByIdAndUpdate = async (req, res) => {

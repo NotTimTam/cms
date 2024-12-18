@@ -88,7 +88,7 @@ export default class API {
 
 	/**
 	 * Authenticate the user.
-	 * @param {string} token The token to authenticate with.
+	 * @param {String} token The token to authenticate with.
 	 * @returns {Object} The user object, or `undefined` if the user is not authorized.
 	 */
 	static authenticate = async (token) => {
@@ -106,7 +106,7 @@ export default class API {
 
 	/**
 	 * Creates a header object with an authorization token.
-	 * @param {string} token The authorization token.
+	 * @param {String} token The authorization token.
 	 * @returns {Object} Authorization headers.
 	 */
 	static createAuthorizationConfig = (token) => ({

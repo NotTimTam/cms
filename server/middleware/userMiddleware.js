@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 /**
  * Authenticate a user before moving forward.
  * @param {Object} req.headers The user login object.
- * @param {string} req.headers.authorization The user's authentication token. Format: `"Bearer <token>"`.
+ * @param {String} req.headers.authorization The user's authentication token. Format: `"Bearer <token>"`.
  */
 export const authenticationMiddleware = async (req, res, next) => {
 	try {

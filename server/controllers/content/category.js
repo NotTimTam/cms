@@ -205,7 +205,7 @@ export const getCategoryTree = async (req, res) => {
 /**
  * Query categories for possible parents.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the category to find a parent for.
+ * @param {String} req.params.id The ID of the category to find a parent for.
  */
 export const getPossibleParents = async (req, res) => {
 	try {
@@ -333,8 +333,8 @@ export const deleteCategories = async (req, res) => {
 /**
  * Find a specific category by its ID and position it before another one in the order system.
  * @param {Express.Request} req The API request object.
- * @param {string} req.query.active The ID of the category to move.
- * @param {string} req.query.over The ID of the category to move before.
+ * @param {String} req.query.active The ID of the category to move.
+ * @param {String} req.query.over The ID of the category to move before.
  * @param {1|-1} req.query.dir The direction to move in.
  */
 export const orderCategories = async (req, res) => {
@@ -353,7 +353,7 @@ export const orderCategories = async (req, res) => {
 /**
  * Find a specific category by its ID.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the category to find.
+ * @param {String} req.params.id The ID of the category to find.
  */
 export const findCategoryById = async (req, res) => {
 	try {
@@ -373,7 +373,7 @@ export const findCategoryById = async (req, res) => {
 /**
  * Find a specific category by its ID and update it.
  * @param {Express.Request} req The API request object.
- * @param {string} req.params.id The ID of the category to find.
+ * @param {String} req.params.id The ID of the category to find.
  * @param {Object} req.body The category update object.
  */
 export const findCategoryByIdAndUpdate = async (req, res) => {

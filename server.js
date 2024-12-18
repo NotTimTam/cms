@@ -10,7 +10,6 @@ import nodePackage from "./package.json" assert { type: "json" };
 import connectMongoDB from "./server/util/connectMongoDB.js";
 import {
 	constructGlobalConfiguration,
-	constructPublic,
 	constructWebmaster,
 } from "./server/config/constructors.js";
 
@@ -77,40 +76,55 @@ const rateLimiter = rateLimit({
 	legacyHeaders: !standardHeaders,
 });
 
-// Configure and use middleware.
-app.disable("x-powered-by");
-app.use(express.json(), cors(), rateLimiter);
-
-// Load and configure API.
-app.use(
-	API.globalConfiguration,
-	authenticationMiddleware,
-	verificationMiddleware,
-	globalConfigurationRouter
-);
-app.use(API.system, systemRouter);
-app.use(
-	API.articles,
-	authenticationMiddleware,
-	verificationMiddleware,
-	articleRouter
-);
-app.use(API.tags, authenticationMiddleware, verificationMiddleware, tagRouter);
-app.use(
-	API.categories,
-	authenticationMiddleware,
-	verificationMiddleware,
-	categoryRouter
-);
-app.use(API.users, userRouter);
-
 nextJS.prepare().then(async () => {
 	log(`Staring ${name} version ${version}`);
 
+	// Connect to database.
 	await connectMongoDB();
-	await constructGlobalConfiguration();
+
+	// Construct initial documents if necessary.
+	const globalConfiguration = await constructGlobalConfiguration();
 	await constructWebmaster();
-	await constructPublic();
+
+	/**
+	 * Configure API.
+	 */
+
+	// Configure and use middleware.
+	app.disable("x-powered-by");
+	app.use(express.json(), cors(), rateLimiter);
+
+	// Load and configure API.
+	app.use(
+		API.globalConfiguration,
+		authenticationMiddleware,
+		verificationMiddleware,
+		globalConfigurationRouter
+	);
+	app.use(API.system, systemRouter);
+	app.use(
+		API.articles,
+		authenticationMiddleware,
+		verificationMiddleware,
+		articleRouter
+	);
+	app.use(
+		API.tags,
+		authenticationMiddleware,
+		verificationMiddleware,
+		tagRouter
+	);
+	app.use(
+		API.categories,
+		authenticationMiddleware,
+		verificationMiddleware,
+		categoryRouter
+	);
+	app.use(API.users, userRouter);
+
+	/**
+	 * Configure request handler and begin handling requests.
+	 */
 
 	app.all("*", (req, res) => nextJSRequestHandler(req, res));
 

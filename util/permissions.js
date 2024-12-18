@@ -19,8 +19,8 @@ export class PermissionDefinition {
 export class ComponentPermissions {
 	/**
 	 * Create a new `ComponentPermissions` instance.
-	 * @param {string} name The name of the component.
-	 * @param {string} label The display label of the component.
+	 * @param {String} name The name of the component.
+	 * @param {String} label The display label of the component.
 	 * @param {string[]} definitions An array of the string indentifiers for `PermissionDefinition` instances in the `definitions` object.
 	 */
 	constructor(name, label, definitions) {

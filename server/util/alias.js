@@ -1,6 +1,6 @@
 /**
  * Convert a document's name into a valid alias.
- * @param {string} name The name to convert.
+ * @param {String} name The name to convert.
  * @returns {string} A valid alias string.
  */
 export const nameToAlias = (name) => {

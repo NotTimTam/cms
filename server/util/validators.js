@@ -696,6 +696,8 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 			}
 		}
 	}
+
+	return globalConfiguration;
 };
 
 /**

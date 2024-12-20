@@ -92,7 +92,7 @@ export const validateArticle = async (article) => {
 		);
 
 	if (!article.featured) article.featured = false;
-	else if (typeof article.featured !== "boolean")
+	else if (!isBoolean(article.featured))
 		throw new ResError(
 			400,
 			'Invalid article "featured" status provided. Expected a boolean.'
@@ -229,7 +229,7 @@ export const validateCategory = async (category) => {
 		);
 
 	if (!category.featured) category.featured = false;
-	else if (typeof category.featured !== "boolean")
+	else if (!isBoolean(category.featured))
 		throw new ResError(
 			400,
 			'Invalid category "featured" status provided. Expected a boolean.'
@@ -349,13 +349,13 @@ export const validateRole = async (role) => {
 			"Invalid order value provided. Expected an integer."
 		);
 
-	if (role.visible && typeof role.visible !== "boolean")
+	if (role.hasOwnProperty("visible") && !isBoolean(role.visible))
 		throw new ResError(
 			400,
 			'Invalid "visible" state provided. Expected a boolean.'
 		);
 
-	if (role.protected && typeof role.protected !== "boolean")
+	if (role.hasOwnProperty("protected") && !isBoolean(role.protected))
 		throw new ResError(
 			400,
 			'Invalid "protected" state provided. Expected a boolean.'
@@ -449,13 +449,13 @@ export const validateUser = async (user) => {
 	)
 		throw new ResError(400, 'Invalid "jwtTimestamp" provided.');
 
-	if (user.visible && typeof user.visible !== "boolean")
+	if (user.hasOwnProperty("visible") && !isBoolean(user.visible))
 		throw new ResError(
 			400,
 			'Invalid "visible" state provided. Expected a boolean.'
 		);
 
-	if (user.protected && typeof user.protected !== "boolean")
+	if (user.hasOwnProperty("protected") && !isBoolean(user.protected))
 		throw new ResError(
 			400,
 			'Invalid "protected" state provided. Expected a boolean.'
@@ -553,7 +553,7 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 
 		if (
 			globalConfiguration.site.hasOwnProperty("offline") &&
-			typeof globalConfiguration.site.offline !== "boolean"
+			!isBoolean(globalConfiguration.site.offline)
 		)
 			throw new ResError(
 				400,
@@ -570,7 +570,7 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 		else {
 			if (
 				globalConfiguration.server.cache.hasOwnProperty("use") &&
-				typeof globalConfiguration.server.cache.use !== "boolean"
+				!isBoolean(globalConfiguration.server.cache.use)
 			)
 				throw new ResError(
 					400,
@@ -592,7 +592,7 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 		if (globalConfiguration.server.webServices) {
 			if (
 				globalConfiguration.server.webServices.hasOwnProperty("cors") &&
-				typeof globalConfiguration.server.webServices.cors !== "boolean"
+				!isBoolean(globalConfiguration.server.webServices.cors)
 			)
 				throw new ResError(
 					400,
@@ -604,8 +604,9 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 					globalConfiguration.server.webServices.rateLimiter.hasOwnProperty(
 						"use"
 					) &&
-					typeof globalConfiguration.server.webServices.rateLimiter
-						.use !== "boolean"
+					!isBoolean(
+						globalConfiguration.server.webServices.rateLimiter.use
+					)
 				)
 					throw new ResError(
 						400,
@@ -677,10 +678,7 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 							)}`
 						);
 
-					if (
-						permission.status &&
-						typeof permission.status !== "boolean"
-					)
+					if (permission.status && !isBoolean(permission.status))
 						throw new ResError(
 							400,
 							"Invalid permission status provided. Expected a boolean."
@@ -725,7 +723,6 @@ export const validateGenericQuery = async (query) => {
 	if (isNaN(page) || !Number.isInteger(+page) || +page < 0)
 		throw new ResError(
 			400,
-
 			`Request "page" parameter must be an integer greater than 0.`
 		);
 

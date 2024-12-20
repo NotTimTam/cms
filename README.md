@@ -58,6 +58,10 @@ The designations front-end, and back-end, refer not to application architecture 
 -   Global template and templates for specific menu items.
 -   User management as well as role and permission definitions.
 -   Plugin installer.
+-   Outward facing API.
+-   Mass file upload, such as artiCles, to batch through and quickly transfer content from one CMS instance to another.
+-   Site migration/transfer utilities, both between CMS versions, and between sites in general.
+-   GridFS storage of articles with large amounts of content.
 -   Front-end icon pack support? (should be template level)
 -   Global Configuration, can be used to define password validation regex, and user experience on the back-end/front-end.
 -   Favicon/Metadata control. Perhaps at template level.

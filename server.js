@@ -26,6 +26,10 @@ import {
 	authenticationMiddleware,
 	verificationMiddleware,
 } from "./server/middleware/userMiddleware.js";
+import GridFSInterface from "./server/util/GridFSInterface.js";
+
+// Create GridFS interface.
+const gridFSInterface = new GridFSInterface();
 
 // Import configuration.
 const { version, name } = nodePackage;
@@ -85,6 +89,19 @@ nextJS.prepare().then(async () => {
 	// Construct initial documents if necessary.
 	const globalConfiguration = await constructGlobalConfiguration();
 	await constructWebmaster();
+
+	// gridFSInterface.uploadFile(
+	// 	"testfile3.js",
+	// 	"test file data 3",
+	// 	"test",
+	// 	{
+	// 		test: "field",
+	// 		another: "field 2",
+	// 		test: 7,
+	// 		another: "ye",
+	// 	},
+	// 	"utf-8"
+	// );
 
 	/**
 	 * Configure API.

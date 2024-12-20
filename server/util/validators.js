@@ -5,9 +5,9 @@ import UserModel from "../models/users/UserModel.js";
 import RoleModel from "../models/users/RoleModel.js";
 import {
 	aliasRegex,
+	collectionNameRegex,
 	emailRegex,
 	nameRegex,
-	relativePathRegex,
 } from "../../util/regex.js";
 import { nameToAlias } from "./alias.js";
 import { robotsEnum, sortEnum, statusEnum } from "../../util/enum.js";
@@ -579,22 +579,13 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 
 			if (
 				!globalConfiguration.server.cache.path ||
-				!relativePathRegex.test(globalConfiguration.server.cache.path)
+				!collectionNameRegex.test(globalConfiguration.server.cache.path)
 			)
 				throw new ResError(
 					400,
-					"Invalid cache path provided. Expected a relative path starting with '/'."
+					"Invalid cache collection name provided. Expected a 1-128 character string containing only letters, numbers, and underscores, but not starting with an underscore."
 				);
 		}
-
-		if (
-			!globalConfiguration.server.temp ||
-			!relativePathRegex.test(globalConfiguration.server.temp)
-		)
-			throw new ResError(
-				400,
-				"Invalid temp path provided. Expected a relative path starting with '/'."
-			);
 
 		if (globalConfiguration.server.webServices) {
 			if (

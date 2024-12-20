@@ -1,4 +1,4 @@
-import { relativePathRegex } from "../../util/regex.js";
+import { collectionNameRegex } from "../../util/regex.js";
 import mongoose from "mongoose";
 
 const GlobalServerConfigurationCacheSchema = new mongoose.Schema(
@@ -10,7 +10,10 @@ const GlobalServerConfigurationCacheSchema = new mongoose.Schema(
 		path: {
 			type: String,
 			required: [true, "No cache directory location provided."],
-			match: relativePathRegex,
+			match: [
+				collectionNameRegex,
+				"Cache name must be a string between 1 and 128 characters. Consisting of letters, numbers, and underscores. But not starting with an underscore.",
+			],
 		},
 	},
 	{ _id: false }

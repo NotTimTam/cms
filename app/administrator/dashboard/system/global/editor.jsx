@@ -26,7 +26,7 @@ import {
 	defaultDefinitions,
 } from "@/util/permissions";
 import { robotsEnum } from "@/util/enum";
-import { relativePathRegex } from "@/util/regex";
+import { collectionNameRegex } from "@/util/regex";
 import useGlobalConfiguration from "@/app/administrator/hooks/useGlobalConfiguration";
 
 /**
@@ -178,30 +178,6 @@ export default function GlobalConfigurationEditor() {
 						{
 							type: "group",
 							name: "server",
-							legend: "Server",
-							elements: [
-								{
-									type: "text",
-									name: "temp",
-									label: "Path to Temp Folder",
-									placeholder: "/tmp",
-									required: true,
-									pattern: relativePathRegex,
-								},
-								<p
-									style={{
-										color: "var(--background-color-6)",
-									}}
-								>
-									{"<root>/files"}
-									{formData.server.temp}
-								</p>,
-							],
-						},
-
-						{
-							type: "group",
-							name: "server",
 							elements: [
 								{
 									type: "group",
@@ -216,19 +192,11 @@ export default function GlobalConfigurationEditor() {
 										{
 											type: "text",
 											name: "path",
-											label: "Path to Cache Folder",
-											placeholder: "/cache",
+											label: "Cache Collection Name",
+											placeholder: "cache",
 											required: true,
-											pattern: relativePathRegex,
+											pattern: collectionNameRegex,
 										},
-										<p
-											style={{
-												color: "var(--background-color-6)",
-											}}
-										>
-											{"<root>/files"}
-											{formData.server.cache.path}
-										</p>,
 									],
 								},
 								{

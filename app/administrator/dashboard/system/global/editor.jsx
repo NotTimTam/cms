@@ -208,7 +208,7 @@ export default function GlobalConfigurationEditor() {
 													type: "number",
 													name: "interval",
 													label: "Request Memory Interval",
-													placeholder: "60000",
+													placeholder: "1000",
 													rebootRequired: true,
 													min: 1,
 													required:
@@ -229,7 +229,7 @@ export default function GlobalConfigurationEditor() {
 													type: "number",
 													name: "requests",
 													label: "Requests Per Interval",
-													placeholder: "5",
+													placeholder: "50",
 													min: 1,
 													rebootRequired: true,
 													required:

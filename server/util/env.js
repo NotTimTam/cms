@@ -8,8 +8,8 @@ export const SERVER__getServerConfig = async () => {
 	const {
 		PORT = 3000,
 		NODE_ENV = "development",
-		RATELIMIT_INTERVAL = "60000",
-		RATELIMIT_REQUESTS = "10000",
+		RATELIMIT_INTERVAL = "1000",
+		RATELIMIT_REQUESTS = "50",
 		RATELIMIT_INFO_IN_HEADERS = "true",
 		JWT_SECRET,
 		SALT,

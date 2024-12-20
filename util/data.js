@@ -53,7 +53,7 @@ export const defaultGlobalConfiguration = {
 		temp: "/tmp",
 		webServices: {
 			cors: true,
-			rateLimiter: { use: true, interval: 60000, requests: 5 },
+			rateLimiter: { use: true, interval: 1000, requests: 50 },
 		},
 	},
 	permissions: [],

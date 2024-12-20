@@ -41,7 +41,7 @@ export class ResError {
 /**
  * Validate an Article document.
  * @param {Object} article The article data to validate.
- * @throws {Error} An error is thrown if the article is not valid.
+ * @throws {ResError} An error is thrown if the article is not valid.
  * @returns {Object} The article data, reformatted, if necessary.
  */
 export const validateArticle = async (article) => {
@@ -135,7 +135,7 @@ export const validateArticle = async (article) => {
 /**
  * Validate a Category document.
  * @param {Object} category The category data to validate.
- * @throws {Error} An error is thrown if the category is not valid.
+ * @throws {ResError} An error is thrown if the category is not valid.
  * @returns {Object} The category data, reformatted, if necessary.
  */
 export const validateCategory = async (category) => {
@@ -244,7 +244,7 @@ export const validateCategory = async (category) => {
 /**
  * Validate a Tag document.
  * @param {Object} tag The tag data to validate.
- * @throws {Error} An error is thrown if the tag is not valid.
+ * @throws {ResError} An error is thrown if the tag is not valid.
  * @returns {Object} The tag data, reformatted, if necessary.
  */
 export const validateTag = async (tag) => {
@@ -316,7 +316,7 @@ export const validateTag = async (tag) => {
 /**
  * Validate a Role document.
  * @param {Object} role The role data to validate.
- * @throws {Error} An error is thrown if the role is not valid.
+ * @throws {ResError} An error is thrown if the role is not valid.
  * @returns {Object} The role data, reformatted, if necessary.
  */
 export const validateRole = async (role) => {
@@ -380,7 +380,7 @@ export const validateRole = async (role) => {
 /**
  * Validate a User document.
  * @param {Object} user The user data to validate.
- * @throws {Error} An error is thrown if the user is not valid.
+ * @throws {ResError} An error is thrown if the user is not valid.
  * @returns {Object} The user data, reformatted, if necessary.
  */
 export const validateUser = async (user) => {
@@ -467,29 +467,36 @@ export const validateUser = async (user) => {
 /**
  * Validate a Global Configuraiton document.
  * @param {Object} globalConfiguration The global configuration data to validate.
- * @throws {Error} An error is thrown if the global configuration is not valid.
+ * @throws {ResError} An error is thrown if the global configuration is not valid.
  * @returns {Object} The global configuration data, reformatted, if necessary.
  */
 export const validateGlobalConfiguration = async (globalConfiguration) => {
+	if (!globalConfiguration)
+		throw new ResError(400, "No global configuration provided.");
+
+	const { site, server, permissions } = globalConfiguration;
+
 	// Site
-	if (!globalConfiguration.site) {
+	if (!site) {
 		throw new ResError(400, `No site configuration provided.`);
 	} else {
+		const { name, metadata } = site;
+
 		if (
-			!globalConfiguration.site.name ||
-			typeof globalConfiguration.site.name !== "string" ||
-			globalConfiguration.site.name.length < 1 ||
-			globalConfiguration.site.name.length > 256
+			!name ||
+			typeof name !== "string" ||
+			name.length < 1 ||
+			name.length > 256
 		)
 			throw new ResError(
 				400,
 				"Invalid site name provided. Expected a string between 1 and 256 characters in length."
 			);
 
-		if (globalConfiguration.site.metadata) {
+		if (metadata) {
 			if (
-				globalConfiguration.site.metadata.hasOwnProperty("robots") &&
-				!robotsEnum.includes(globalConfiguration.site.metadata.robots)
+				metadata.hasOwnProperty("robots") &&
+				!robotsEnum.includes(metadata.robots)
 			)
 				throw new ResError(
 					400,
@@ -497,11 +504,8 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 				);
 
 			if (
-				globalConfiguration.site.metadata.hasOwnProperty(
-					"showCMSVersion"
-				) &&
-				typeof globalConfiguration.site.metadata.showCMSVersion !==
-					"boolean"
+				metadata.hasOwnProperty("showCMSVersion") &&
+				typeof metadata.showCMSVersion !== "boolean"
 			)
 				throw new ResError(
 					400,
@@ -509,11 +513,8 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 				);
 
 			if (
-				globalConfiguration.site.metadata.hasOwnProperty(
-					"showAuthorMetaTag"
-				) &&
-				typeof globalConfiguration.site.metadata.showAuthorMetaTag !==
-					"boolean"
+				metadata.hasOwnProperty("showAuthorMetaTag") &&
+				typeof metadata.showAuthorMetaTag !== "boolean"
 			)
 				throw new ResError(
 					400,
@@ -521,8 +522,8 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 				);
 
 			if (
-				globalConfiguration.site.metadata.hasOwnProperty("author") &&
-				typeof globalConfiguration.site.metadata.author !== "string"
+				metadata.hasOwnProperty("author") &&
+				typeof metadata.author !== "string"
 			)
 				throw new ResError(
 					400,
@@ -530,11 +531,8 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 				);
 
 			if (
-				globalConfiguration.site.metadata.hasOwnProperty(
-					"description"
-				) &&
-				typeof globalConfiguration.site.metadata.description !==
-					"string"
+				metadata.hasOwnProperty("description") &&
+				typeof metadata.description !== "string"
 			)
 				throw new ResError(
 					400,
@@ -542,8 +540,8 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 				);
 
 			if (
-				globalConfiguration.site.metadata.hasOwnProperty("keywords") &&
-				typeof globalConfiguration.site.metadata.keywords !== "string"
+				metadata.hasOwnProperty("keywords") &&
+				typeof metadata.keywords !== "string"
 			)
 				throw new ResError(
 					400,
@@ -551,10 +549,7 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 				);
 		}
 
-		if (
-			globalConfiguration.site.hasOwnProperty("offline") &&
-			!isBoolean(globalConfiguration.site.offline)
-		)
+		if (site.hasOwnProperty("offline") && !isBoolean(site.offline))
 			throw new ResError(
 				400,
 				"Invalid site offline status provided. Expected a boolean."
@@ -562,26 +557,22 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 	}
 
 	// Server
-	if (!globalConfiguration.server) {
+	if (!server) {
 		throw new ResError(400, `No server configuration provided.`);
 	} else {
-		if (!globalConfiguration.server.cache)
-			throw new ResError("No cache configuration provided.");
+		const { cache, webServices } = server;
+
+		if (!cache) throw new ResError("No cache configuration provided.");
 		else {
-			if (
-				globalConfiguration.server.cache.hasOwnProperty("use") &&
-				!isBoolean(globalConfiguration.server.cache.use)
-			)
+			if (cache.hasOwnProperty("use") && !isBoolean(cache.use))
 				throw new ResError(
 					400,
 					"Invalid cache use configuration provided. Expected a boolean."
 				);
 
 			if (
-				!globalConfiguration.server.cache.collection ||
-				!collectionNameRegex.test(
-					globalConfiguration.server.cache.collection
-				)
+				!cache.collection ||
+				!collectionNameRegex.test(cache.collection)
 			)
 				throw new ResError(
 					400,
@@ -589,24 +580,22 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 				);
 		}
 
-		if (globalConfiguration.server.webServices) {
+		if (webServices) {
 			if (
-				globalConfiguration.server.webServices.hasOwnProperty("cors") &&
-				!isBoolean(globalConfiguration.server.webServices.cors)
+				webServices.hasOwnProperty("cors") &&
+				!isBoolean(webServices.cors)
 			)
 				throw new ResError(
 					400,
 					"Invalid cors configuration provided. Expected a boolean."
 				);
 
-			if (globalConfiguration.server.webServices.rateLimiter) {
+			const { rateLimiter } = webServices;
+
+			if (rateLimiter) {
 				if (
-					globalConfiguration.server.webServices.rateLimiter.hasOwnProperty(
-						"use"
-					) &&
-					!isBoolean(
-						globalConfiguration.server.webServices.rateLimiter.use
-					)
+					rateLimiter.hasOwnProperty("use") &&
+					!isBoolean(rateLimiter.use)
 				)
 					throw new ResError(
 						400,
@@ -614,12 +603,9 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 					);
 
 				if (
-					globalConfiguration.server.webServices.rateLimiter
-						.interval &&
-					(typeof globalConfiguration.server.webServices.rateLimiter
-						.interval !== "number" ||
-						globalConfiguration.server.webServices.rateLimiter
-							.interval < 1)
+					rateLimiter.interval &&
+					(typeof rateLimiter.interval !== "number" ||
+						rateLimiter.interval < 1)
 				)
 					throw new ResError(
 						400,
@@ -627,12 +613,9 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 					);
 
 				if (
-					globalConfiguration.server.webServices.rateLimiter
-						.requests &&
-					(typeof globalConfiguration.server.webServices.rateLimiter
-						.requests !== "number" ||
-						globalConfiguration.server.webServices.rateLimiter
-							.requests < 1)
+					rateLimiter.requests &&
+					(typeof rateLimiter.requests !== "number" ||
+						rateLimiter.requests < 1)
 				)
 					throw new ResError(
 						400,
@@ -694,7 +677,7 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 /**
  * Validate a filtration query object.
  * @param {Object} query The query data to validate.
- * @throws {Error} An error is thrown if the query data is not valid.
+ * @throws {ResError} An error is thrown if the query data is not valid.
  * @returns {Object} The query data, reformatted, if necessary.
  */
 export const validateGenericQuery = async (query) => {
@@ -744,7 +727,7 @@ export const validateGenericQuery = async (query) => {
 /**
  * Validate a filtration query object used for filtering through documents that have a nested parent/child system.
  * @param {Object} query The query data to validate.
- * @throws {Error} An error is thrown if the query data is not valid.
+ * @throws {ResError} An error is thrown if the query data is not valid.
  * @returns {Object} The query data, reformatted, if necessary.
  */
 export const validateNestQuery = async (query) => {
@@ -771,7 +754,7 @@ export const validateNestQuery = async (query) => {
 /**
  * Validate a filtration query object used for filtering through users.
  * @param {Object} query The query data to validate.
- * @throws {Error} An error is thrown if the query data is not valid.
+ * @throws {ResError} An error is thrown if the query data is not valid.
  * @returns {Object} The query data, reformatted, if necessary.
  */
 export const validateUserQuery = async (query) => {
@@ -789,7 +772,7 @@ export const validateUserQuery = async (query) => {
 /**
  * Validate an Article filtration query object.
  * @param {Object} query The query data to validate.
- * @throws {Error} An error is thrown if the query data is not valid.
+ * @throws {ResError} An error is thrown if the query data is not valid.
  * @returns {Object} The query data, reformatted, if necessary.
  */
 export const validateArticleQuery = async (query) => {

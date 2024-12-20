@@ -43,6 +43,10 @@ const spinup = async () => {
 	// Connect to database.
 	await connectMongoDB();
 
+	// Construct initial documents if necessary.
+	await constructWebmaster();
+	await constructGlobalConfiguration();
+
 	// Return server configuration.
 	const {
 		PORT,
@@ -68,9 +72,6 @@ const spinup = async () => {
 	const nextJSRequestHandler = nextJS.getRequestHandler();
 
 	const standardHeaders = RATELIMIT_INFO_IN_HEADERS === "true";
-
-	// Construct initial documents if necessary.
-	await constructWebmaster();
 
 	// Configure and use middleware.
 	app.disable("x-powered-by");

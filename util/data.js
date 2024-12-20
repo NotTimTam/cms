@@ -48,7 +48,7 @@ export const defaultGlobalConfiguration = {
 	server: {
 		cache: {
 			use: true,
-			path: "/cache",
+			collection: "cache",
 		},
 		temp: "/tmp",
 		webServices: {

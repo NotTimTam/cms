@@ -191,7 +191,7 @@ export default function GlobalConfigurationEditor() {
 										},
 										{
 											type: "text",
-											name: "path",
+											name: "collection",
 											label: "Cache Collection Name",
 											placeholder: "cache",
 											required: true,

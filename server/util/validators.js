@@ -578,8 +578,10 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 				);
 
 			if (
-				!globalConfiguration.server.cache.path ||
-				!collectionNameRegex.test(globalConfiguration.server.cache.path)
+				!globalConfiguration.server.cache.collection ||
+				!collectionNameRegex.test(
+					globalConfiguration.server.cache.collection
+				)
 			)
 				throw new ResError(
 					400,

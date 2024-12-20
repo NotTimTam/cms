@@ -7,12 +7,12 @@ const GlobalServerConfigurationCacheSchema = new mongoose.Schema(
 			type: Boolean,
 			required: false,
 		},
-		path: {
+		collection: {
 			type: String,
-			required: [true, "No cache directory location provided."],
+			required: [true, "No cache collection name provided."],
 			match: [
 				collectionNameRegex,
-				"Cache name must be a string between 1 and 128 characters. Consisting of letters, numbers, and underscores. But not starting with an underscore.",
+				"Cache collection name must be a string between 1 and 128 characters. Consisting of letters, numbers, and underscores. But not starting with an underscore.",
 			],
 		},
 	},

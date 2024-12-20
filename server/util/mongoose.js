@@ -1,11 +1,13 @@
 import { error, success } from "@nottimtam/console.js";
 import mongoose from "mongoose";
+import GlobalConfigurationModel from "../models/GlobalConfigurationModel.js";
+import { defaultGlobalConfiguration } from "../../util/data.js";
 
 /**
  * Connect to the MongoDB database.
  * @returns {Promise} A promise containing the connection object returned by mongoose.
  */
-const connectMongoDB = () => {
+export const connectMongoDB = () => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			if (!process.env.MONGODB) {
@@ -28,4 +30,17 @@ const connectMongoDB = () => {
 	});
 };
 
-export default connectMongoDB;
+/**
+ * **SYSTEM UTIL**
+ */
+export const SERVER__getGlobalConfiguration = async () => {
+	if (mongoose.connection.readyState !== 1)
+		throw new Error(
+			"Request failed: mongoose has not connected to MongoDB."
+		);
+
+	return (
+		(await GlobalConfigurationModel.findOne({}).lean()) ||
+		defaultGlobalConfiguration
+	);
+};

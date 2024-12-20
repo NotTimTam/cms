@@ -3,11 +3,11 @@ import express from "express";
 import next from "next";
 import cors from "cors";
 import { rateLimit } from "express-rate-limit";
-import { error, log, success, warn } from "@nottimtam/console.js";
+import { error, log, success } from "@nottimtam/console.js";
 
 import nodePackage from "./package.json" assert { type: "json" };
 
-import connectMongoDB from "./server/util/connectMongoDB.js";
+import { connectMongoDB } from "./server/util/mongoose.js";
 import {
 	constructGlobalConfiguration,
 	constructWebmaster,
@@ -27,38 +27,10 @@ import {
 	verificationMiddleware,
 } from "./server/middleware/userMiddleware.js";
 import GridFSInterface from "./server/util/GridFSInterface.js";
+import { SERVER__getServerConfig } from "./server/util/env.js";
 
 // Create GridFS interface.
-const gridFSInterface = new GridFSInterface();
-
-// Import configuration.
-const { version, name } = nodePackage;
-const {
-	PORT = 3000,
-	NODE_ENV = "development",
-	RATELIMIT_INTERVAL = "60000",
-	RATELIMIT_REQUESTS = "10000",
-	RATELIMIT_INFO_IN_HEADERS = "true",
-	JWT_SECRET,
-	SALT,
-} = process.env;
-
-// Validate environment variables.
-if (!JWT_SECRET)
-	throw new Error('No "JWT_SECRET" environment variable defined.');
-
-if (SALT) {
-	if (isNaN(+SALT))
-		throw new Error(`Environment variable "SALT" is not a number.`);
-
-	if (+SALT < 12 || +SALT > 24)
-		warn(
-			`An environment "SALT" variable at or between 12 and 24 is recommended for optimal password security/validation speed.`
-		);
-}
-
-// Initialize express app.
-const app = express();
+export const gridFSInterface = new GridFSInterface();
 
 // Configure process.exit.
 process.on("exit", (code) =>
@@ -67,49 +39,53 @@ process.on("exit", (code) =>
 		: error(`Server stopped with code: ${code}`)
 );
 
-// Load middleware and Next.js.
-const nextJS = next({ dev: NODE_ENV === "development" });
-const nextJSRequestHandler = nextJS.getRequestHandler();
-
-const standardHeaders = RATELIMIT_INFO_IN_HEADERS === "true";
-
-const rateLimiter = rateLimit({
-	windowMs: +RATELIMIT_INTERVAL,
-	limit: +RATELIMIT_REQUESTS,
-	standardHeaders: standardHeaders,
-	legacyHeaders: !standardHeaders,
-});
-
-nextJS.prepare().then(async () => {
-	log(`Staring ${name} version ${version}`);
-
+const spinup = async () => {
 	// Connect to database.
 	await connectMongoDB();
 
+	// Return server configuration.
+	const {
+		PORT,
+		NODE_ENV,
+		RATELIMITER: {
+			USE: USE_RATELIMIT,
+			INTERVAL: RATELIMIT_INTERVAL,
+			REQUESTS: RATELIMIT_REQUESTS,
+			INFO_IN_HEADERS: RATELIMIT_INFO_IN_HEADERS,
+		},
+		CORS: USE_CORS,
+		CACHE: { USE: USE_CACHE, COLLECTION: CACHE_COLLECTION },
+	} = await SERVER__getServerConfig();
+
+	// Import package data.
+	const { version, name } = nodePackage;
+
+	// Initialize express app.
+	const app = express();
+
+	// Load middleware and Next.js.
+	const nextJS = next({ dev: NODE_ENV === "development" });
+	const nextJSRequestHandler = nextJS.getRequestHandler();
+
+	const standardHeaders = RATELIMIT_INFO_IN_HEADERS === "true";
+
 	// Construct initial documents if necessary.
-	const globalConfiguration = await constructGlobalConfiguration();
 	await constructWebmaster();
-
-	// gridFSInterface.uploadFile(
-	// 	"testfile3.js",
-	// 	"test file data 3",
-	// 	"test",
-	// 	{
-	// 		test: "field",
-	// 		another: "field 2",
-	// 		test: 7,
-	// 		another: "ye",
-	// 	},
-	// 	"utf-8"
-	// );
-
-	/**
-	 * Configure API.
-	 */
 
 	// Configure and use middleware.
 	app.disable("x-powered-by");
-	app.use(express.json(), cors(), rateLimiter);
+	app.use(express.json());
+
+	if (USE_CORS) app.use(cors());
+	if (USE_RATELIMIT)
+		app.use(
+			rateLimit({
+				windowMs: RATELIMIT_INTERVAL,
+				limit: RATELIMIT_REQUESTS,
+				standardHeaders: standardHeaders,
+				legacyHeaders: !standardHeaders,
+			})
+		);
 
 	// Load and configure API.
 	app.use(
@@ -139,15 +115,32 @@ nextJS.prepare().then(async () => {
 	);
 	app.use(API.users, userRouter);
 
-	/**
-	 * Configure request handler and begin handling requests.
-	 */
+	// gridFSInterface.uploadFile(
+	// 	"testfile3.js",
+	// 	"test file data 3",
+	// 	"test",
+	// 	{
+	// 		test: "field",
+	// 		another: "field 2",
+	// 		test: 7,
+	// 		another: "ye",
+	// 	},
+	// 	"utf-8"
+	// );
 
-	app.all("*", (req, res) => nextJSRequestHandler(req, res));
+	nextJS.prepare().then(async () => {
+		log(`Staring ${name} version ${version}`);
 
-	app.listen(PORT, (err) => {
-		if (err) {
-			error(err);
-		} else log(`Listening on port ${PORT}`);
+		// Configure request handler and begin handling requests.
+
+		app.all("*", (req, res) => nextJSRequestHandler(req, res));
+
+		app.listen(PORT, (err) => {
+			if (err) {
+				error(err);
+			} else log(`Listening on port ${PORT}`);
+		});
 	});
-});
+};
+
+spinup();

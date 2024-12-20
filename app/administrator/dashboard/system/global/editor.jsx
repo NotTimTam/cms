@@ -95,23 +95,6 @@ export default function GlobalConfigurationEditor() {
 									name: "offline",
 									label: "Site Offline",
 								},
-								{
-									type: "select",
-									name: "defaultListLimit",
-									required: true,
-									label: "Default List Limit",
-									placeholder:
-										"Select a default list limit...",
-									options: listLimitOptions.map(
-										(listLimit) => ({
-											id: listLimit,
-											label:
-												typeof listLimit === "string"
-													? capitalizeWords(listLimit)
-													: listLimit,
-										})
-									),
-								},
 							],
 						},
 						{

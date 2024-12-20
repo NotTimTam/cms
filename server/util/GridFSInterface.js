@@ -16,7 +16,7 @@ export default class GridFSInterface {
 	}
 
 	/**
-	 * **FOR INTERNAL USE**
+	 * **SYSTEM UTIL**
 	 */
 	__catchNotReady() {
 		if (!this.ready)

@@ -82,7 +82,11 @@ export default async function Dashboard() {
 				<ul>
 					<li>Global Checkin</li>
 					<li>Cache</li>
-					<li>Global Configuration</li>
+					<li>
+						<Link href="/administrator/dashboard/system/global">
+							Global Configuration
+						</Link>
+					</li>
 				</ul>
 			</section>
 

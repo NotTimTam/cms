@@ -108,7 +108,7 @@ export const GlobalConfiguration_getRolePermissions = async (
  */
 export const getRolePermissions = async (role, inheritanceOnly = false) => {
 	// First get the global configuration inheritance.
-	const inheritance = await GlobalConfiguration_getRolePermissionsInheritance(
+	const inheritance = await GlobalConfiguration_getRolePermissions(
 		role._id,
 		inheritanceOnly
 	);

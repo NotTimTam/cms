@@ -51,7 +51,7 @@ const RoleEditor = ({ id }) => {
 			setRole(newRole);
 			setPermissionInheritance(permissionInheritance);
 		} catch (error) {
-			console.error(error);
+			console.error(error.data);
 
 			setMessage(
 				<Message type="error">

@@ -99,11 +99,21 @@ export const Permission = ({
 									return undefined;
 							}
 						})()}
-						fill={displayValue.inherited === false}
+						fill={
+							displayValue.inherited === false &&
+							displayValue.value !== null
+						}
 					>
 						<p>
-							{capitalizeWords(valueToString(displayValue.value))}
-							{displayValue.inherited && " (Inherited)"}
+							{!(
+								displayValue.inherited === false &&
+								displayValue.value === null
+							)
+								? `${capitalizeWords(
+										valueToString(displayValue.value)
+								  )}
+							${displayValue.inherited ? " (Inherited)" : ""}`
+								: "Not Configured"}
 						</p>
 					</Message>
 				</td>

@@ -643,9 +643,8 @@ const Listings = () => {
 				}}
 			/>
 			{message && <div className="--cms-padding">{message}</div>}
-			{loading || !articles ? (
-				<Loading />
-			) : (
+			{loading && <Loading />}
+			{articles && (
 				<>
 					<Filter
 						{...{

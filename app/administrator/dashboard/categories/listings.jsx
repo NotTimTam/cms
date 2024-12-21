@@ -401,9 +401,8 @@ const Listings = () => {
 			{message && (
 				<div style={{ padding: "var(--padding)" }}>{message}</div>
 			)}
-			{loading ? (
-				<Loading />
-			) : (
+			{loading && <Loading />}
+			{categories && (
 				<>
 					<Filter
 						{...{

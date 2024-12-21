@@ -76,9 +76,9 @@ export const verificationMiddleware = async (req, res, next) => {
 };
 
 /**
- * Simulate user verification status temporarily, for the purpose of allowing them to validate themselves.
+ * Simulate user verification/permission status temporarily, for the purpose of allowing them to validate themselves.
  */
-export const psuedoVerifiedMiddleware = async (req, res, next) => {
+export const editSelfBypassMiddleware = async (req, res, next) => {
 	try {
 		if (!req.user)
 			return res.status(401).send("User is not authenticated.");
@@ -86,7 +86,10 @@ export const psuedoVerifiedMiddleware = async (req, res, next) => {
 		if (!req.user.verified) {
 			const { id } = req.params;
 
-			if (id === req.user._id.toString()) req.user.verified = true;
+			if (id === req.user._id.toString()) {
+				req.user.verified = true;
+				req.editingSelf = true;
+			}
 		}
 
 		next();
@@ -118,8 +121,16 @@ export const permissionsMiddleware =
 					.status(401)
 					.send("User does not have necessary access permissions.");
 
-			// Automatically let users with "all" permissions through.
+			// Allow a user attempting to edit themselves to continue.
 			if (
+				req.editingSelf &&
+				req.params &&
+				req.params.id &&
+				req.params.id === req.user._id.toString()
+			)
+				permitted = true;
+			// Automatically let users with "all" permissions through.
+			else if (
 				permissions.all &&
 				permissions.all.hasOwnProperty("all") &&
 				permissions.all.all === true

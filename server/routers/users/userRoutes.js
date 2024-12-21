@@ -22,7 +22,7 @@ import {
 import {
 	authenticationMiddleware,
 	permissionsMiddleware,
-	psuedoVerifiedMiddleware,
+	editSelfBypassMiddleware,
 	verificationMiddleware,
 } from "../../middleware/userMiddleware.js";
 
@@ -120,14 +120,14 @@ userRouter
 	.route("/:id")
 	.get(
 		authenticationMiddleware,
-		psuedoVerifiedMiddleware,
+		editSelfBypassMiddleware,
 		verificationMiddleware,
 		permissionsMiddleware("user", "view"),
 		findUserById
 	)
 	.patch(
 		authenticationMiddleware,
-		psuedoVerifiedMiddleware,
+		editSelfBypassMiddleware,
 		verificationMiddleware,
 		permissionsMiddleware("user", "edit"),
 		findUserByIdAndUpdate

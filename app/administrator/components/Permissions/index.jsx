@@ -58,20 +58,22 @@ export const Permission = ({
 				<td>
 					<Message
 						type={(() => {
-							const valueToMessageType = (value) => {
-								switch (value) {
-									case true:
-										return "success";
-									case false:
-										return "error";
-									case null:
-									default:
-										return "";
-								}
-							};
-							if (isBoolean(value))
-								return valueToMessageType(value);
-							else return valueToMessageType(inherited);
+							switch (value) {
+								case true:
+									return "success";
+								case false:
+									return "error";
+								case null:
+								default:
+									if (isBoolean(inherited))
+										switch (inherited) {
+											case true:
+												return "success";
+											case false:
+												return "error";
+										}
+									else return "";
+							}
 						})()}
 						fill={isBoolean(value)}
 					>
@@ -83,11 +85,12 @@ export const Permission = ({
 									case false:
 										return "Not Allowed";
 									case null:
-										return "Inherited";
 									default:
-										return `${capitalizeWords(
-											valueToString(inherited)
-										)} (Inherited)`;
+										return isBoolean(inherited)
+											? `${capitalizeWords(
+													valueToString(inherited)
+											  )} (Inherited)`
+											: "Undefined";
 								}
 							})()}
 						</p>
@@ -189,7 +192,9 @@ const PermissionGroups = ({
 			<Permissions
 				definitions={targetDefinitions[active].definitions}
 				permissions={currentConfig.permissions}
-				inheritance={inheritance}
+				inheritance={
+					inheritance && inheritance[targetDefinitions[active].name]
+				}
 				hideInheritance={hideInheritance}
 				setPermissions={(array) => {
 					// If this item has not been defined yet.

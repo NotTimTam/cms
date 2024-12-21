@@ -1,16 +1,11 @@
 import mongoose from "mongoose";
-import PermissionSchema from "./PermissionSchema.js";
+import RolePermissionGroupsSchema from "./RolePermissionGroupsSchema.js";
 
 const GlobalPermissionsConfigSchema = new mongoose.Schema(
 	{
-		role: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: [true, "No user role id provided."],
-			ref: "Role",
-		},
-		permissions: [
+		system: [
 			{
-				type: PermissionSchema,
+				type: RolePermissionGroupsSchema,
 				required: false,
 			},
 		],

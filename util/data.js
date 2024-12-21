@@ -56,5 +56,5 @@ export const defaultGlobalConfiguration = {
 			rateLimiter: { use: true, interval: 1000, requests: 50 },
 		},
 	},
-	permissions: [],
+	permissions: { system: [] },
 };

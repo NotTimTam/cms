@@ -2,12 +2,8 @@
 
 import Form from "@/components/Form";
 import Nav from "@/app/administrator/components/Nav";
-import { defaultGlobalConfiguration, listLimitOptions } from "@/util/data";
-import {
-	capitalizeWords,
-	combineClassNames,
-	depthIndicator,
-} from "@/util/display";
+import { defaultGlobalConfiguration } from "@/util/data";
+import { combineClassNames, depthIndicator } from "@/util/display";
 import { useContext, useEffect, useState } from "react";
 import styles from "./editor.module.scss";
 import Editor from "@/app/administrator/components/Editor";
@@ -280,9 +276,6 @@ export default function GlobalConfigurationEditor() {
 												</Message>,
 											],
 										},
-										// RATELIMIT_INTERVAL
-										// RATELIMIT_REQUESTS
-										// RATELIMIT_INFO_IN_HEADERS
 									],
 								},
 							],
@@ -309,17 +302,20 @@ export default function GlobalConfigurationEditor() {
 											userRole.depth,
 											"\u2014"
 										)} ${userRole.name}`,
-										[
-											...systemDefinitions,
-											...defaultDefinitions,
-										]
+										systemDefinitions
 									)
 							)}
-							permissions={formData.permissions}
+							permissions={
+								formData.permissions &&
+								formData.permissions.system
+							}
 							setPermissions={(permissions) =>
 								setFormData((formData) => ({
 									...formData,
-									permissions,
+									permissions: {
+										...formData.permissions,
+										system: permissions,
+									},
 								}))
 							}
 						/>,

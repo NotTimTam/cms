@@ -16,6 +16,7 @@ import {
 } from "../../util/validators.js";
 import mongoose from "mongoose";
 import { stripMongoDBFieldsFromBody } from "../../util/data.js";
+import { getRolePermissionInheritance } from "../../util/permissions.js";
 
 /**
  * Create a new Role document.
@@ -384,7 +385,9 @@ export const findRoleById = async (req, res) => {
 
 		if (!role) return res.status(404).send(`No role found with id "${id}"`);
 
-		return res.status(200).json({ role });
+		const permissionInheritance = await getRolePermissionInheritance(role);
+
+		return res.status(200).json({ role, permissionInheritance });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

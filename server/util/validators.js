@@ -625,47 +625,51 @@ export const validateGlobalConfiguration = async (globalConfiguration) => {
 		}
 	}
 
-	//	Permissions
-	if (globalConfiguration.permissions) {
-		if (!(globalConfiguration.permissions instanceof Array))
-			throw new ResError(
-				400,
-				`Invalid permissions provided. Expected an array of objects.`
-			);
+	// Permissions
+	if (permissions) {
+		const { system } = permissions;
 
-		for (const permissionConfig of globalConfiguration.permissions) {
-			const role = await RoleModel.findById(permissionConfig.role);
-
-			if (!role)
+		if (system) {
+			if (!(system instanceof Array))
 				throw new ResError(
-					404,
-					`No role with id "${permissionConfig.role}"`
+					400,
+					`Invalid system permissions provided. Expected an array of objects.`
 				);
 
-			if (permissionConfig.permissions) {
-				if (!(permissionConfig.permissions instanceof Array))
+			for (const permissionConfig of system) {
+				const role = await RoleModel.findById(permissionConfig.role);
+
+				if (!role)
 					throw new ResError(
-						400,
-						"Invalid permissions provided. Expected an array of objects."
+						404,
+						`No role with id "${permissionConfig.role}"`
 					);
 
-				for (const permission of permissionConfig.permissions) {
-					if (
-						!permission.name ||
-						!Object.keys(definitions).includes(permission.name)
-					)
+				if (permissionConfig.permissions) {
+					if (!(permissionConfig.permissions instanceof Array))
 						throw new ResError(
 							400,
-							`Invalid permission name provided. Expected one of: ${Object.keys(
-								definitions
-							)}`
+							"Invalid permissions provided. Expected an array of objects."
 						);
 
-					if (permission.status && !isBoolean(permission.status))
-						throw new ResError(
-							400,
-							"Invalid permission status provided. Expected a boolean."
-						);
+					for (const permission of permissionConfig.permissions) {
+						if (
+							!permission.name ||
+							!Object.keys(definitions).includes(permission.name)
+						)
+							throw new ResError(
+								400,
+								`Invalid permission name provided. Expected one of: ${Object.keys(
+									definitions
+								)}`
+							);
+
+						if (permission.status && !isBoolean(permission.status))
+							throw new ResError(
+								400,
+								"Invalid permission status provided. Expected a boolean."
+							);
+					}
 				}
 			}
 		}

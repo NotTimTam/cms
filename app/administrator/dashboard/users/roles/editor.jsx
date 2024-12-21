@@ -28,6 +28,7 @@ const RoleEditor = ({ id }) => {
 
 	const [role, setRole] = useState(id ? { _id: id } : defaultRole);
 	const [possibleParents, setPossibleParents] = useState(null);
+	const [permissionInheritance, setPermissionInheritance] = useState(null);
 
 	// Functions
 	const getRole = async () => {
@@ -41,13 +42,14 @@ const RoleEditor = ({ id }) => {
 			const token = await getToken();
 
 			const {
-				data: { role: newRole },
+				data: { role: newRole, permissionInheritance },
 			} = await API.get(
 				API.createRouteURL(API.roles, id),
 				API.createAuthorizationConfig(token)
 			);
 
 			setRole(newRole);
+			setPermissionInheritance(permissionInheritance);
 		} catch (error) {
 			console.error(error);
 
@@ -158,9 +160,9 @@ const RoleEditor = ({ id }) => {
 		getPossibleParents();
 	}, [id]);
 
-	useEffect(() => {
-		console.log(role);
-	}, [role]);
+	// useEffect(() => {
+	// 	console.log(role);
+	// }, [role]);
 
 	if (loading) return <Loading />;
 
@@ -366,6 +368,7 @@ const RoleEditor = ({ id }) => {
 										...systemPermissions,
 										...componentPermissions,
 									]}
+									inheritance={permissionInheritance}
 									permissions={role.permissionGroups}
 									setPermissions={(value) =>
 										setRole((role) => ({

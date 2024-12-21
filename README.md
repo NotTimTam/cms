@@ -45,6 +45,10 @@ The designations front-end, and back-end, refer not to application architecture 
 -   https/ssl support. Plus global config for forcing it.
 -   Add save options to article/tag/category and any other editors that don't have them.
 -   Save before exiting protection. Use SHA256 hashing of before/after.
+-   Page Builder dynamic content.
+-   Implement bunyan.
+-   Implement vasync.
+-   Headless alternative.
 -   Fields
 -   A **GOOD** code editor.
 -   Per-component permissions so that specific users/groups can be prevented from editing a specific article without blocking all groups or all users in a group from editing it.

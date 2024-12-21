@@ -13,12 +13,10 @@ const GlobalConfigurationSchema = new mongoose.Schema(
 			type: GlobalServerConfigurationSchema,
 			required: [true, "No server configuration provided."],
 		},
-		permissions: [
-			{
-				type: GlobalPermissionsConfigSchema,
-				required: false,
-			},
-		],
+		permissions: {
+			type: GlobalPermissionsConfigSchema,
+			required: false,
+		},
 	},
 	{ timestamps: true }
 );

@@ -10,23 +10,39 @@ import {
 	findCategoryById,
 	findCategoryByIdAndUpdate,
 } from "../../controllers/content/category.js";
+import { permissionsMiddleware } from "../../middleware/userMiddleware.js";
 
 const categoryRouter = Router();
 
 categoryRouter
 	.route("/")
-	.get(findCategories)
-	.post(createCategory)
-	.delete(deleteCategories);
+	.get(permissionsMiddleware("category", "view"), findCategories)
+	.post(permissionsMiddleware("category", "create"), createCategory)
+	.delete(permissionsMiddleware("category", "delete"), deleteCategories);
 
-categoryRouter.get("/tree", getCategoryTree);
-categoryRouter.get("/parents/:id", getPossibleParents);
+categoryRouter.get(
+	"/tree",
+	permissionsMiddleware("category", "view"),
+	getCategoryTree
+);
+categoryRouter.get(
+	"/parents/:id",
+	permissionsMiddleware("category", "view"),
+	getPossibleParents
+);
 
-categoryRouter.get("/order", orderCategories);
+categoryRouter.get(
+	"/order",
+	permissionsMiddleware("category", "reorder"),
+	orderCategories
+);
 
 categoryRouter
 	.route("/:id")
-	.get(findCategoryById)
-	.patch(findCategoryByIdAndUpdate);
+	.get(permissionsMiddleware("category", "view"), findCategoryById)
+	.patch(
+		permissionsMiddleware("category", "edit"),
+		findCategoryByIdAndUpdate
+	);
 
 export default categoryRouter;

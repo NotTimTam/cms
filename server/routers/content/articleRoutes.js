@@ -9,28 +9,32 @@ import {
 	orderArticles,
 	deleteArticles,
 } from "../../controllers/content/article.js";
+import { permissionsMiddleware } from "../../middleware/userMiddleware.js";
 
 const articleRouter = Router();
 
 articleRouter
 	.route("/")
-	.get(findArticles)
-	.post(createArticle)
-	.delete(deleteArticles);
+	.get(permissionsMiddleware("article", "view"), findArticles)
+	.post(permissionsMiddleware("article", "create"), createArticle)
+	.delete(permissionsMiddleware("article", "delete"), deleteArticles);
 articleRouter.patch(
 	"/batch",
-
+	permissionsMiddleware("article", "edit"),
 	batchArticles
 );
 articleRouter.patch(
 	"/order",
-
+	permissionsMiddleware("article", "reorder"),
 	orderArticles
 );
 articleRouter
 	.route("/:id")
-	.get(findArticleById)
-	.patch(findArticleByIdAndUpdate)
-	.delete(findArticleByIdAndDelete);
+	.get(permissionsMiddleware("article", "view"), findArticleById)
+	.patch(permissionsMiddleware("article", "edit"), findArticleByIdAndUpdate)
+	.delete(
+		permissionsMiddleware("article", "delete"),
+		findArticleByIdAndDelete
+	);
 
 export default articleRouter;

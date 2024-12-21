@@ -50,16 +50,27 @@ export const definitions = {
 	delete: new PermissionDefinition("Delete", "Delete this content."),
 	edit: new PermissionDefinition("Edit", "Edit this content."),
 	reorder: new PermissionDefinition("Reorder", "Reorder this content."),
+	view: new PermissionDefinition("View", "View this content."),
 	all: new PermissionDefinition("All", "Unrestricted control. (dangerous)"),
 };
 
-export const defaultDefinitions = ["create", "delete", "edit", "reorder"];
+export const defaultDefinitions = [
+	"create",
+	"delete",
+	"edit",
+	"reorder",
+	"view",
+];
 export const systemDefinitions = ["permissions", "siteLogin", "adminLogin"];
 
 /**
  * Component groups.
  */
 export const componentPermissions = [
+	new ComponentPermissions("globalConfiguration", "Global Configuration", [
+		"edit",
+		"view",
+	]),
 	new ComponentPermissions("role", "Roles", [...defaultDefinitions]),
 	new ComponentPermissions("user", "Users", [...defaultDefinitions]),
 	new ComponentPermissions("article", "Articles", defaultDefinitions),

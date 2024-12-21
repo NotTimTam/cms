@@ -56,6 +56,17 @@ export const loginUser = async (req, res) => {
 				.status(404)
 				.send(`Incorrect username or password provided.`);
 
+		const permissions = await getUserPermissions(user, false);
+
+		// If user does not have "all" or "adminLogin" permissions, they cannot log in.
+		if (
+			(!permissions ||
+				!permissions.system ||
+				!permissions.system.adminLogin) &&
+			(!permissions || !permissions.all || !permissions.all.all === true)
+		)
+			return res.status(401).send("Access denied.");
+
 		await jwt.sign(
 			{ userId: user._id, jwtTimestamp: user.jwtTimestamp },
 			process.env.JWT_SECRET,

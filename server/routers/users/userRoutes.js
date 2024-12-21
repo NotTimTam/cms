@@ -21,6 +21,7 @@ import {
 } from "../../controllers/users/role.js";
 import {
 	authenticationMiddleware,
+	permissionsMiddleware,
 	psuedoVerifiedMiddleware,
 	verificationMiddleware,
 } from "../../middleware/userMiddleware.js";
@@ -30,43 +31,86 @@ const userRouter = Router();
 // General User Routes
 userRouter
 	.route("/")
-	.get(authenticationMiddleware, verificationMiddleware, findUsers)
-	.post(authenticationMiddleware, verificationMiddleware, createUser)
-	.delete(authenticationMiddleware, verificationMiddleware, deleteUsers);
+	.get(
+		authenticationMiddleware,
+		verificationMiddleware,
+		permissionsMiddleware("user", "view"),
+		findUsers
+	)
+	.post(
+		authenticationMiddleware,
+		verificationMiddleware,
+		permissionsMiddleware("user", "create"),
+		createUser
+	)
+	.delete(
+		authenticationMiddleware,
+		verificationMiddleware,
+		permissionsMiddleware("user", "delete"),
+		deleteUsers
+	);
 userRouter
 	.route("/auth")
 	.post(loginUser)
-	.get(authenticationMiddleware, authenticateUser);
+	.get(
+		authenticationMiddleware,
+		permissionsMiddleware("system", "adminLogin"),
+		authenticateUser
+	);
 
 // Roles
 userRouter
 	.route("/roles")
-	.get(authenticationMiddleware, verificationMiddleware, findRoles)
-	.post(authenticationMiddleware, verificationMiddleware, createRole)
-	.delete(authenticationMiddleware, verificationMiddleware, deleteRoles);
+	.get(
+		authenticationMiddleware,
+		verificationMiddleware,
+		permissionsMiddleware("role", "view"),
+		findRoles
+	)
+	.post(
+		authenticationMiddleware,
+		verificationMiddleware,
+		permissionsMiddleware("role", "create"),
+		createRole
+	)
+	.delete(
+		authenticationMiddleware,
+		verificationMiddleware,
+		permissionsMiddleware("role", "delete"),
+		deleteRoles
+	);
 userRouter.patch(
 	"/roles/order",
 	authenticationMiddleware,
 	verificationMiddleware,
+	permissionsMiddleware("role", "reorder"),
 	orderRoles
 );
 userRouter.get(
 	"/roles/tree",
 	authenticationMiddleware,
 	verificationMiddleware,
+	permissionsMiddleware("role", "view"),
 	getRoleTree
 );
 userRouter.get(
 	"/roles/parents/:id",
 	authenticationMiddleware,
+	permissionsMiddleware("role", "view"),
 	getPossibleParents
 );
 userRouter
 	.route("/roles/:id")
-	.get(authenticationMiddleware, verificationMiddleware, findRoleById)
+	.get(
+		authenticationMiddleware,
+		verificationMiddleware,
+		permissionsMiddleware("role", "view"),
+		findRoleById
+	)
 	.patch(
 		authenticationMiddleware,
 		verificationMiddleware,
+		permissionsMiddleware("role", "edit"),
 		findRoleByIdAndUpdate
 	);
 
@@ -78,17 +122,20 @@ userRouter
 		authenticationMiddleware,
 		psuedoVerifiedMiddleware,
 		verificationMiddleware,
+		permissionsMiddleware("user", "view"),
 		findUserById
 	)
 	.patch(
 		authenticationMiddleware,
 		psuedoVerifiedMiddleware,
 		verificationMiddleware,
+		permissionsMiddleware("user", "edit"),
 		findUserByIdAndUpdate
 	)
 	.delete(
 		authenticationMiddleware,
 		verificationMiddleware,
+		permissionsMiddleware("user", "delete"),
 		findUserByIdAndDelete
 	);
 

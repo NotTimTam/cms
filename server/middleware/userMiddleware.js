@@ -1,6 +1,7 @@
 import UserModel from "../models/users/UserModel.js";
 import { handleUnexpectedError } from "../util/controller.js";
 import jwt from "jsonwebtoken";
+import { getUserPermissions } from "../util/permissions.js";
 
 /**
  * Authenticate a user before moving forward.
@@ -93,3 +94,50 @@ export const psuedoVerifiedMiddleware = async (req, res, next) => {
 		return handleUnexpectedError(res, error);
 	}
 };
+
+/**
+ * **NOTE:** This method *builds* a middleware function.
+ *
+ * Require the user to have a certain permission to access a database route.
+ * @param {string} component The component the permission is a part of. Such as `"system"`.
+ * @param {string} permission The component permission the user must have in order to access this route. Such as `"edit"`.
+ * @returns {function} A middleware method.
+ */
+export const permissionsMiddleware =
+	(component, permission) => async (req, res, next) => {
+		try {
+			if (!req.user)
+				return res.status(401).send("User is not authenticated.");
+
+			let permitted = false;
+
+			// Automatically let users with "all" permissions through.
+			const allPermission = user.permissionGroups.find(
+				({ name }) => name === "all"
+			);
+			if (
+				allPermission &&
+				allPermission.permissions[0] &&
+				allPermission.permissions[0].status === true
+			)
+				permitted = true;
+			else {
+				const permissions = await getUserPermissions(req.user);
+
+				if (
+					permissions[component] &&
+					permissions[component].hasOwnProperty(permission) &&
+					permissions[component][permission] === true
+				)
+					permitted = true;
+			}
+
+			if (permitted) next();
+			else
+				return res
+					.status(401)
+					.send("User does not have necessary access permissions.");
+		} catch (error) {
+			return handleUnexpectedError(res, error);
+		}
+	};

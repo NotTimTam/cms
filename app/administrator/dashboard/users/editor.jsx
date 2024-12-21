@@ -35,6 +35,8 @@ const UserEditor = ({ id }) => {
 
 	const [roles, setRoles] = useState(null);
 	const [user, setUser] = useState(id ? { _id: id } : defaultUser);
+	const [permissionInheritance, setPermissionInheritance] =
+		useState(undefined);
 	const [tab, setTab] = useState(0);
 
 	// Functions
@@ -79,13 +81,14 @@ const UserEditor = ({ id }) => {
 			const token = await getToken();
 
 			const {
-				data: { user: newUser },
+				data: { user: newUser, permissionInheritance },
 			} = await API.get(
 				API.createRouteURL(API.users, id),
 				API.createAuthorizationConfig(token)
 			);
 
 			setUser(newUser);
+			setPermissionInheritance(permissionInheritance);
 		} catch (error) {
 			console.error(error);
 
@@ -464,6 +467,7 @@ const UserEditor = ({ id }) => {
 										...systemPermissions,
 										...componentPermissions,
 									]}
+									inheritance={permissionInheritance}
 									permissions={user.permissionGroups}
 									setPermissions={(value) =>
 										setUser((user) => ({

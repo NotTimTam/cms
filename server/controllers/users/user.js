@@ -17,6 +17,7 @@ import {
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { stripMongoDBFieldsFromBody } from "../../util/data.js";
+import { getUserPermissions } from "../../util/permissions.js";
 
 /**
  * Login as a user.
@@ -224,7 +225,9 @@ export const findUserById = async (req, res) => {
 
 		if (!user) return res.status(404).send(`No user found with id "${id}"`);
 
-		return res.status(200).json({ user });
+		const permissionInheritance = await getUserPermissions(user, true);
+
+		return res.status(200).json({ user, permissionInheritance });
 	} catch (error) {
 		return handleUnexpectedError(res, error);
 	}

@@ -13,6 +13,38 @@ export const Permission = ({
 	setValue,
 	hideInheritance = false,
 }) => {
+	/**
+	 * PREVIOUS LEVEL SETTING + CURRENT LEVEL SETTING = NEW SETTING
+	 * null + null = null
+	 * null + true = true
+	 * null + false = false
+	 *
+	 * true + null = true
+	 * true + true = true
+	 * true + false = false
+	 *
+	 * false + null = false
+	 * false + true = false
+	 * false + false = false
+	 */
+	const displayValue = (() => {
+		switch (inherited) {
+			case true:
+				return {
+					inherited: !isBoolean(value),
+					value: value === false ? false : inherited,
+				};
+			case false:
+				return {
+					inherited: value === false ? false : true,
+					value: false,
+				};
+			case null:
+			default:
+				return { inherited: false, value };
+		}
+	})();
+
 	const valueToString = (value) => {
 		switch (value) {
 			case true:
@@ -58,41 +90,20 @@ export const Permission = ({
 				<td>
 					<Message
 						type={(() => {
-							switch (value) {
+							switch (displayValue.value) {
 								case true:
 									return "success";
 								case false:
 									return "error";
 								case null:
-								default:
-									if (isBoolean(inherited))
-										switch (inherited) {
-											case true:
-												return "success";
-											case false:
-												return "error";
-										}
-									else return "";
+									return undefined;
 							}
 						})()}
-						fill={isBoolean(value)}
+						fill={displayValue.inherited === false}
 					>
 						<p>
-							{(() => {
-								switch (value) {
-									case true:
-										return "Allowed";
-									case false:
-										return "Not Allowed";
-									case null:
-									default:
-										return isBoolean(inherited)
-											? `${capitalizeWords(
-													valueToString(inherited)
-											  )} (Inherited)`
-											: "Undefined";
-								}
-							})()}
+							{capitalizeWords(valueToString(displayValue.value))}
+							{displayValue.inherited && " (Inherited)"}
 						</p>
 					</Message>
 				</td>

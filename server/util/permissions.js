@@ -114,20 +114,6 @@ export const getRolePermissionInheritance = async (role) => {
 						inheritance[name][permissionName] = status;
 					else {
 						const currentValue = inheritance[name][permissionName];
-						/**
-						 * PREVIOUS LEVEL SETTING + CURRENT LEVEL SETTING = NEW SETTING
-						 * null + null = null
-						 * null + true = true
-						 * null + false = false
-						 *
-						 * true + null = true
-						 * true + true = true
-						 * true + false = false
-						 *
-						 * false + null = false
-						 * false + true = false
-						 * false + false = false
-						 */
 
 						let newValue = currentValue;
 

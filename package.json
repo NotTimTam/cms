@@ -1,6 +1,6 @@
 {
 	"name": "cms",
-	"version": "indev-3",
+	"version": "indev-4",
 	"private": true,
 	"main": "server.js",
 	"type": "module",

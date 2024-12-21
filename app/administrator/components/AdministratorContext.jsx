@@ -148,9 +148,9 @@ const menu = (siteMenus, sitePlugins) =>
 				},
 				{
 					type: "a",
-					title: "Menu Items",
+					title: "Pages",
 					icon: <List />,
-					href: "/administrator/dashboard/menus?view=items",
+					href: "/administrator/dashboard/menus?view=pages",
 				},
 				...(siteMenus && siteMenus.length > 0
 					? [{ type: "d" }, ...siteMenus]

@@ -111,26 +111,27 @@ export const permissionsMiddleware =
 
 			let permitted = false;
 
+			const permissions = await getUserPermissions(req.user);
+
+			if (!permissions)
+				return res
+					.status(401)
+					.send("User does not have necessary access permissions.");
+
 			// Automatically let users with "all" permissions through.
-			const allPermission = user.permissionGroups.find(
-				({ name }) => name === "all"
-			);
 			if (
-				allPermission &&
-				allPermission.permissions[0] &&
-				allPermission.permissions[0].status === true
+				permissions.all &&
+				permissions.all.hasOwnProperty("all") &&
+				permissions.all.all === true
 			)
 				permitted = true;
-			else {
-				const permissions = await getUserPermissions(req.user);
-
-				if (
-					permissions[component] &&
-					permissions[component].hasOwnProperty(permission) &&
-					permissions[component][permission] === true
-				)
-					permitted = true;
-			}
+			// Check for specific permission.
+			else if (
+				permissions[component] &&
+				permissions[component].hasOwnProperty(permission) &&
+				permissions[component][permission] === true
+			)
+				permitted = true;
 
 			if (permitted) next();
 			else

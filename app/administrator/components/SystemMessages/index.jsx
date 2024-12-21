@@ -41,23 +41,19 @@ const SystemMessages = ({ token, fill, style = {} }) => {
 		getSystemMessages();
 	}, []);
 
-	if (messages && messages.length === 0) return null;
+	if (!messages || messages.length === 0) return null;
 
 	return (
 		<div style={style} className={styles["--cms-system-messages"]}>
-			{messages ? (
-				messages.map((message, key) => {
-					const { content, type } = message;
+			{messages.map((message, key) => {
+				const { content, type } = message;
 
-					return (
-						<Message fill={fill} key={key} type={type}>
-							<p>{content}</p>
-						</Message>
-					);
-				})
-			) : (
-				<Loading />
-			)}
+				return (
+					<Message fill={fill} key={key} type={type}>
+						<p>{content}</p>
+					</Message>
+				);
+			})}
 		</div>
 	);
 };

@@ -2,58 +2,70 @@ import RoleModel from "../models/users/RoleModel.js";
 import { getPathToDocument } from "./database.js";
 import { SERVER__getGlobalConfiguration } from "./mongoose.js";
 
+// /**
+//  * Convert an array of DB permission groups to a permission object.
+//  * @param {Array<Object>} permissionGroups The array to convert.
+//  * @returns {Object} The permission groups object.
+//  */
+// export const permissionGroupArrayToObject = (permissionGroups) =>
+// 	Object.fromEntries(
+// 		permissionGroups.map(({ name, permissions }) => [
+// 			name,
+// 			Object.fromEntries(
+// 				permissions.map(({ name, status }) => [name, status])
+// 			),
+// 		])
+// 	);
+
 /**
- * Convert an array of DB permission groups to a permission object.
- * @param {Array<Object>} permissionGroups The array to convert.
- * @returns {Object} The permission groups object.
+ * Get a role's permissions configuration from the Global Configuration. Does not include the Role's internal permissions configuration.
+ * @param {string} roleId The ID of the role to get the permissions for.
+ * @param {Boolean} inheritanceOnly When true, it will only get the configuration for what this role inherits. When false, it will get this role's permissions.
+ * @returns {Object} Permission configuration object.
  */
-export const permissionGroupArrayToObject = (permissionGroups) =>
-	Object.fromEntries(
-		permissionGroups.map(({ name, permissions }) => [
-			name,
-			Object.fromEntries(
-				permissions.map(({ name, status }) => [name, status])
-			),
-		])
-	);
-
-export const GlobalConfiguration_getRolePermissions = async (roleId) => {
-	const { permissions } = await SERVER__getGlobalConfiguration();
-
-	if (!permissions) return {};
-
-	return Object.fromEntries(
-		Object.entries(permissions).map(([component, rolePermissionGroups]) => {
-			const rolePermissionGroup = rolePermissionGroups.find(
-				({ role }) => role.toString() === roleId.toString()
-			);
-
-			const rolePermissions =
-				rolePermissionGroup && rolePermissionGroup.permissions
-					? Object.fromEntries(
-							rolePermissionGroup.permissions.map(
-								({ name, status }) => [name, status]
-							)
-					  )
-					: {};
-
-			return [component, rolePermissions];
-		})
-	);
-};
-
-export const GlobalConfiguration_getRolePermissionsPlusInheritance = async (
-	roleId
+export const GlobalConfiguration_getRolePermissions = async (
+	roleId,
+	inheritanceOnly = false
 ) => {
 	const pathToRole = await getPathToDocument(roleId, RoleModel, "role");
+
+	// Remove this role from the path if only the inherited permissions are wanted.
+	if (inheritanceOnly) pathToRole.pop();
 
 	let inheritance = {};
 
 	for (const roleId of pathToRole) {
 		// key = system, value = object of permissions
-		const permissionGroups = await GlobalConfiguration_getRolePermissions(
-			roleId
-		);
+
+		const getRolePermissionsObject = async (roleId) => {
+			const { permissions } = await SERVER__getGlobalConfiguration();
+
+			if (!permissions) return {};
+
+			return Object.fromEntries(
+				Object.entries(permissions).map(
+					([component, rolePermissionGroups]) => {
+						const rolePermissionGroup = rolePermissionGroups.find(
+							({ role }) => role.toString() === roleId.toString()
+						);
+
+						const rolePermissions =
+							rolePermissionGroup &&
+							rolePermissionGroup.permissions
+								? Object.fromEntries(
+										rolePermissionGroup.permissions.map(
+											({ name, status }) => [name, status]
+										)
+								  )
+								: {};
+
+						return [component, rolePermissions];
+					}
+				)
+			);
+		};
+
+		const permissionGroups = await getRolePermissionsObject(roleId);
 
 		componentLoop: for (const [component, permissions] of Object.entries(
 			permissionGroups
@@ -88,12 +100,21 @@ export const GlobalConfiguration_getRolePermissionsPlusInheritance = async (
 	return inheritance;
 };
 
-export const getRolePermissionInheritance = async (role) => {
-	const pathToRole = await getPathToDocument(role._id, RoleModel, "role");
-
+/**
+ * Get a role's permissions configuration, including inherited permissions.
+ * @param {RoleModel} role The Role document to get the permissions for.
+ * @param {Boolean} inheritanceOnly When true, it will only get the configuration for what this role inherits. When false, it will get this role's permissions **and** the permissions it inherits.
+ * @returns {Object} Permission configuration object.
+ */
+export const getRolePermissions = async (role, inheritanceOnly = false) => {
 	// First get the global configuration inheritance.
-	const inheritance =
-		await GlobalConfiguration_getRolePermissionsPlusInheritance(role._id);
+	const inheritance = await GlobalConfiguration_getRolePermissionsInheritance(
+		role._id,
+		inheritanceOnly
+	);
+
+	const pathToRole = await getPathToDocument(role._id, RoleModel, "role");
+	if (inheritanceOnly) pathToRole.pop(); // Remove this role from the path if only the inherited permissions are wanted.
 
 	// Then get the actual permission configurations of all parents.
 	for (const roleId of pathToRole) {
@@ -146,9 +167,5 @@ export const getRolePermissionInheritance = async (role) => {
 	// Note this inheritance is everything UP TO the role's permissions, but not including it.
 	return inheritance;
 };
-
-export const getRolePermissions = async (role) => {};
-
-export const getUserPermissionInheritance = async (user) => {};
 
 export const getUserPermissions = async (user) => {};
